@@ -1,19 +1,9 @@
 import { NextResponse } from "next/server";
 
 import prisma from "@/lib/prisma";
+import { requireUserId } from "@/lib/auth-server";
 
 export const dynamic = "force-dynamic";
-
-const DEFAULT_USER = process.env.ANATOMY_DEFAULT_USER ?? "you";
-
-async function getDefaultUserId() {
-  const user = await prisma.user.upsert({
-    where: { name: DEFAULT_USER },
-    create: { name: DEFAULT_USER },
-    update: {},
-  });
-  return user.id;
-}
 
 function pearson(xs: number[], ys: number[]): number | null {
   const n = Math.min(xs.length, ys.length);
@@ -47,7 +37,10 @@ export async function GET(request: Request) {
   const since = new Date(todayUtc);
   since.setUTCDate(since.getUTCDate() - (days - 1));
 
-  const userId = await getDefaultUserId();
+  const userId = await requireUserId(request);
+  if (userId == null) {
+    return NextResponse.json({ error: "authentication required" }, { status: 401 });
+  }
   const [painGroups, activityGroups] = await Promise.all([
     prisma.symptomLog.groupBy({
       by: ["logDate"],

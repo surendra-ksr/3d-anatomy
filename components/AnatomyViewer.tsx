@@ -38,6 +38,7 @@ import { useLowStim } from "@/lib/low-stim";
 import type { GroupDto } from "@/lib/types";
 import AutonomicLayer from "@/components/overlays/AutonomicLayer";
 import TenderPointLayer from "@/components/overlays/TenderPointLayer";
+import { assetUrl } from "@/lib/assets";
 import PainSlider from "@/components/PainSlider";
 import PacingDialog from "@/components/PacingDialog";
 import TimelineBar from "@/components/TimelineBar";
@@ -223,7 +224,7 @@ function ModelGroup({
   registry: MeshRegistry;
   onFirstLoad: () => void;
 }) {
-  const { scene } = useGLTF(group.url, "/draco/");
+  const { scene } = useGLTF(assetUrl(group.url), "/draco/");
   const markLoaded = useAnatomy((s) => s.markGroupLoaded);
   const registered = useRef(false);
 

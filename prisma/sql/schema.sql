@@ -88,13 +88,20 @@ EXCEPTION WHEN duplicate_object THEN NULL; WHEN duplicate_table THEN NULL; END $
 -- ---------------------------------------------------------------------------
 
 CREATE TABLE IF NOT EXISTS "users" (
-    "id"        SERIAL NOT NULL,
-    "name"      TEXT   NOT NULL,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "id"           SERIAL NOT NULL,
+    "name"         TEXT   NOT NULL,
+    "email"        TEXT,
+    "passwordHash" TEXT,
+    "createdAt"    TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT "users_pkey" PRIMARY KEY ("id")
 );
 DO $$ BEGIN
   ALTER TABLE "users" ADD CONSTRAINT "users_name_key" UNIQUE ("name");
+EXCEPTION WHEN duplicate_object THEN NULL; WHEN duplicate_table THEN NULL; END $$;
+ALTER TABLE "users" ADD COLUMN IF NOT EXISTS "email" TEXT;
+ALTER TABLE "users" ADD COLUMN IF NOT EXISTS "passwordHash" TEXT;
+DO $$ BEGIN
+  ALTER TABLE "users" ADD CONSTRAINT "users_email_key" UNIQUE ("email");
 EXCEPTION WHEN duplicate_object THEN NULL; WHEN duplicate_table THEN NULL; END $$;
 
 CREATE TABLE IF NOT EXISTS "symptom_logs" (

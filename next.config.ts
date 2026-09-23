@@ -1,17 +1,12 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // FastAPI data service mounted under /api/py/* (server-side proxy, so the
-  // browser never needs to reach the backend host directly).
-  async rewrites() {
-    const backend = process.env.FASTAPI_URL ?? "http://127.0.0.1:8000";
-    return [
-      {
-        source: "/api/py/:path*",
-        destination: `${backend}/api/:path*`,
-      },
-    ];
-  },
+  // Produce .next/standalone for the production Docker image (Dockerfile).
+  output: "standalone",
+
+  // NOTE: /api/py/* is proxied by middleware.ts (not a rewrite here) so the
+  // authenticated user's internal bearer token can be attached to every
+  // backend call. The browser only ever talks to the Next origin.
   async headers() {
     return [
       {

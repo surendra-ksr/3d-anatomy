@@ -277,3 +277,21 @@ MAX_FACES_OVERRIDES: dict[str, int] = {
 
 DRACO_COMPRESSION_LEVEL = 7
 DRACO_QUANTIZATION_BITS = 11  # position quantization (web-standard)
+
+
+def asset_base_url() -> str:
+    """Absolute CDN base for manifest/asset URLs.
+
+    In production (NODE_ENV=production, as set by the Docker/ECS images)
+    MESH_ASSET_BASE_URL points at the S3+CloudFront distribution and manifest
+    URLs are written absolute. Development keeps relative /models/ paths
+    unless ANATOMY_FORCE_CDN=1 (for local CDN testing).
+    """
+    import os
+
+    base = os.environ.get("MESH_ASSET_BASE_URL", "").rstrip("/")
+    if not base:
+        return ""
+    if os.environ.get("NODE_ENV") == "production" or os.environ.get("ANATOMY_FORCE_CDN") == "1":
+        return base
+    return ""

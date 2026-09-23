@@ -17,6 +17,10 @@ cd "$(dirname "$0")/.."
 export DATABASE_URL="${DATABASE_URL:-postgresql://postgres@127.0.0.1:5432/anatomy}"
 export FASTAPI_URL="${FASTAPI_URL:-http://127.0.0.1:8000}"
 export NEXT_TELEMETRY_DISABLED=1
+# multi-tenant auth (CHANGE THESE in any real deployment!)
+export NEXTAUTH_SECRET="${NEXTAUTH_SECRET:-dev-insecure-secret-change-me}"
+export NEXTAUTH_URL="${NEXTAUTH_URL:-http://localhost:3000}"
+export AUTH_INTERNAL_SECRET="${AUTH_INTERNAL_SECRET:-dev-insecure-internal-secret-change-me}"
 
 # --- prisma generate (engine CDN unreachable in restricted networks) --------
 if ! curl -sfI --max-time 4 https://binaries.prisma.sh >/dev/null 2>&1; then

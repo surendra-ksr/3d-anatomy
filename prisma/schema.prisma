@@ -106,9 +106,17 @@ model MeshAsset {
 /// A local profile. The MVP ships single-user (self-tracking) semantics:
 /// the API resolves/creates the default profile by name (see
 /// ANATOMY_DEFAULT_USER). Swap for real auth in a multi-user deployment.
+/// A profile. Multi-tenant: rows are created at registration (email +
+/// bcrypt password hash) and every SymptomLog / ActivityLog is keyed to the
+/// authenticated user id. The seeded "you" row has no password and exists
+/// only as the pipeline's reference profile.
 model User {
   id           Int           @id @default(autoincrement())
   name         String        @unique
+  /// Login identity (unique). Null only for the seeded reference profile.
+  email        String?       @unique
+  /// bcrypt hash of the login password (bcryptjs, cost 10).
+  passwordHash String?
   createdAt    DateTime      @default(now())
   symptomLogs  SymptomLog[]
   activityLogs ActivityLog[]

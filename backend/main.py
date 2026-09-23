@@ -25,9 +25,10 @@ from contextlib import asynccontextmanager
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 
+import jwt as pyjwt
 import psycopg
 import psycopg_pool
-from fastapi import FastAPI, HTTPException, Query
+from fastapi import Depends, FastAPI, HTTPException, Query, Request
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
@@ -40,7 +41,43 @@ from anatomy_pipeline import metabolic  # noqa: E402  (canonical pacing model)
 DATABASE_URL = os.environ.get(
     "DATABASE_URL", "postgresql://postgres@127.0.0.1:5432/anatomy"
 )
-DEFAULT_USER = os.environ.get("ANATOMY_DEFAULT_USER", "you")
+# Multi-tenant auth: middleware.ts mints a short-lived HS256 internal JWT for
+# every authenticated /api/py/* call; this service validates it and scopes
+# every query to the token's user. Browser cookies never cross this boundary.
+AUTH_INTERNAL_SECRET = os.environ.get(
+    "AUTH_INTERNAL_SECRET", "dev-insecure-internal-secret-change-me"
+)
+AUTH_ISSUER = "anatomy-engine"
+
+
+class AuthUser(BaseModel):
+    idClaim: str
+    email: str | None = None
+    name: str | None = None
+
+
+def internal_auth(request: Request) -> AuthUser:
+    """FastAPI dependency: require + validate the internal bearer JWT."""
+    auth = request.headers.get("authorization", "")
+    if not auth.lower().startswith("bearer "):
+        raise HTTPException(
+            401, "authentication required", headers={"WWW-Authenticate": "Bearer"}
+        )
+    token = auth.split(" ", 1)[1].strip()
+    try:
+        claims = pyjwt.decode(
+            token,
+            AUTH_INTERNAL_SECRET,
+            algorithms=["HS256"],
+            issuer=AUTH_ISSUER,
+            options={"require": ["exp", "sub"]},
+        )
+    except pyjwt.PyJWTError as exc:
+        raise HTTPException(
+            401, f"invalid token: {exc}", headers={"WWW-Authenticate": "Bearer"}
+        ) from exc
+    return AuthUser(idClaim=str(claims["sub"]), email=claims.get("email"),
+                    name=claims.get("name"))
 ASSET_BASE = os.environ.get("MESH_ASSET_BASE_URL", "").rstrip("/")
 MANIFEST_PATH = Path(__file__).resolve().parent.parent / "public" / "models" / "manifest.json"
 
@@ -50,7 +87,15 @@ pool: psycopg_pool.ConnectionPool
 def resolve_asset_url(url: str) -> str:
     if re.match(r"^https?://", url, re.I):
         return url
-    return f"{ASSET_BASE}/{url.lstrip('/')}" if ASSET_BASE else url
+    # CDN base applies in production (NODE_ENV=production, as in the Docker
+    # images) or when ANATOMY_FORCE_CDN=1 for local CDN testing.
+    base = ""
+    if ASSET_BASE and (
+        os.environ.get("NODE_ENV") == "production"
+        or os.environ.get("ANATOMY_FORCE_CDN") == "1"
+    ):
+        base = ASSET_BASE
+    return f"{base}/{url.lstrip('/')}" if base else url
 
 
 @asynccontextmanager
@@ -347,23 +392,53 @@ def stats():
 # profile (single-user MVP)
 # ---------------------------------------------------------------------------
 
-def get_or_create_default_user(conn) -> tuple[int, str]:
+
+
+def resolve_user(conn: psycopg.Connection, user: AuthUser) -> tuple[int, str]:
+    """Map validated token claims to a users row (multi-tenant identity).
+
+    Real accounts carry their email in the token; the row is looked up by
+    email and created on first sight. The seeded reference profile ("you",
+    no email) is never resolved here.
+    """
+    if user.email:
+        row = conn.execute(
+            'select id, name from users where "email" = %s', (user.email,)
+        ).fetchone()
+        if row is None:
+            name = user.name or user.email.split("@")[0]
+            row = conn.execute(
+                """
+                insert into users (name, "email")
+                values (%s, %s)
+                on conflict ("name") do nothing
+                returning id, name
+                """,
+                (name, user.email),
+            ).fetchone()
+            if row is None:  # display name taken by another row - disambiguate
+                row = conn.execute(
+                    """
+                    insert into users (name, "email")
+                    values (%s, %s)
+                    returning id, name
+                    """,
+                    (user.email, user.email),
+                ).fetchone()
+        return int(row[0]), str(row[1])
+    # email-less tokens are only valid if the referenced row exists
     row = conn.execute(
-        "select id, name from users where name = %s", (DEFAULT_USER,)
+        "select id, name from users where id = %s", (int(user.idClaim),)
     ).fetchone()
-    if row:
-        return row[0], row[1]
-    row = conn.execute(
-        "insert into users (name) values (%s) returning id, name",
-        (DEFAULT_USER,),
-    ).fetchone()
-    return row[0], row[1]
+    if row is None:
+        raise HTTPException(401, "unknown user")
+    return int(row[0]), str(row[1])
 
 
 @app.get("/api/me")
-def me():
+def me(user: AuthUser = Depends(internal_auth)):
     with pool.connection() as conn:
-        user_id, name = get_or_create_default_user(conn)
+        user_id, name = resolve_user(conn, user)
         count = conn.execute(
             'select count(*) from symptom_logs where "userId" = %s', (user_id,)
         ).fetchone()[0]
@@ -395,10 +470,11 @@ def pain_logs_get(
     since: str | None = None,
     From: str | None = Query(default=None, alias="from"),
     until: str | None = None,
+    user: AuthUser = Depends(internal_auth),
 ):
     """List pain logs (optionally windowed: since / from / until, YYYY-MM-DD)."""
     with pool.connection() as conn:
-        user_id, _ = get_or_create_default_user(conn)
+        user_id, user_name = resolve_user(conn, user)
         clauses = ['"userId" = %s']
         params: list[object] = [user_id]
         for param, value, op in (("since", since, ">="), ("from", From, ">="),
@@ -418,7 +494,7 @@ def pain_logs_get(
         """
         rows = conn.execute(sql, params).fetchall()
     return {
-        "user": DEFAULT_USER,
+        "user": user_name,
         "logs": [
             {
                 "fmaId": r[0],
@@ -433,13 +509,13 @@ def pain_logs_get(
 
 
 @app.post("/api/pain-logs")
-def pain_logs_post(body: PainLogWrite):
+def pain_logs_post(body: PainLogWrite, user: AuthUser = Depends(internal_auth)):
     """Upsert pain ratings (one row per structure per day). Each entry
     defaults to today (UTC); pass logDate (YYYY-MM-DD) to backfill history."""
     today = datetime.now(timezone.utc).date()
     saved = []
     with pool.connection() as conn:
-        user_id, _ = get_or_create_default_user(conn)
+        user_id, _ = resolve_user(conn, user)
         for entry in body.entries:
             fid = _normalize_fma(entry.fmaId)
             try:
@@ -472,6 +548,7 @@ def pain_logs_post(body: PainLogWrite):
 def pain_logs_delete(
     fmaId: str | None = Query(default=None),
     logDate: str | None = Query(default=None),
+    user: AuthUser = Depends(internal_auth),
 ):
     """Clear one structure's rating, a whole day, or the whole current map."""
     today = datetime.now(timezone.utc).date()
@@ -483,7 +560,7 @@ def pain_logs_delete(
     else:
         target = today
     with pool.connection() as conn:
-        user_id, _ = get_or_create_default_user(conn)
+        user_id, _ = resolve_user(conn, user)
         if fmaId:
             deleted = conn.execute(
                 'delete from symptom_logs where "userId" = %s and "fmaId" = %s '
@@ -513,7 +590,7 @@ class MetabolicCostRequest(BaseModel):
 
 
 @app.post("/api/metabolic-cost")
-def metabolic_cost(body: MetabolicCostRequest):
+def metabolic_cost(body: MetabolicCostRequest, user: AuthUser = Depends(internal_auth)):
     """
     Estimate the theoretical metabolic cost ("Energy Drain") of sustaining
     the given muscle groups - a pacing aid for preventing post-exertional
@@ -533,7 +610,7 @@ def metabolic_cost(body: MetabolicCostRequest):
 
 
 @app.get("/api/metabolic-cost/groups")
-def metabolic_groups():
+def metabolic_groups(user: AuthUser = Depends(internal_auth)):
     """The muscle-group table with derived masses for a reference body."""
     groups = []
     for g in metabolic.MUSCLE_GROUPS:
@@ -557,6 +634,7 @@ def analytics_clusters(
     days: int = Query(default=90, ge=7, le=365),
     minIntensity: int = Query(default=1, ge=1, le=10, alias="minIntensity"),
     minSupport: int = Query(default=2, ge=2, le=60),
+    user: AuthUser = Depends(internal_auth),
 ):
     """
     Cluster the user's flare history: which structures / regions tend to
@@ -567,7 +645,7 @@ def analytics_clusters(
     from anatomy_pipeline import analytics as analytics_mod
 
     with pool.connection() as conn:
-        user_id, _ = get_or_create_default_user(conn)
+        user_id, _ = resolve_user(conn, user)
         rows = conn.execute(
             """
             select s."fmaId", s."logDate", s.intensity, o.name
@@ -611,6 +689,7 @@ def export_report(
     days: int = Query(default=30, ge=1, le=365),
     start: str | None = Query(default=None, description="YYYY-MM-DD (overrides days)"),
     end: str | None = Query(default=None, description="YYYY-MM-DD (default today, UTC)"),
+    user: AuthUser = Depends(internal_auth),
 ):
     """
     Downloadable clinical PDF (ReportLab + matplotlib) summarizing the user's
@@ -629,7 +708,7 @@ def export_report(
         raise HTTPException(422, "'start' must be on or before 'end'")
 
     with pool.connection() as conn:
-        user_id, user_name = get_or_create_default_user(conn)
+        user_id, user_name = resolve_user(conn, user)
         pain_rows = conn.execute(
             """
             select s."fmaId", s."logDate", s.intensity, o.name

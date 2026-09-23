@@ -21,6 +21,7 @@
  *    plain-language aliases for every label
  */
 import { useEffect, useMemo, useState } from "react";
+import { signOut, useSession } from "next-auth/react";
 
 import { checkState, painColor, rangeDates, useAnatomy } from "@/lib/store";
 import { useLowStim } from "@/lib/low-stim";
@@ -445,6 +446,33 @@ function SystemSection({
 
 // ---------------------------------------------------------------------------
 
+function AccountMenu() {
+  const { data: session } = useSession();
+  const { lowStim } = useLowStim();
+  const label = session?.user?.email ?? session?.user?.name ?? "account";
+  return (
+    <div className="flex items-center gap-1.5">
+      <span
+        className="max-w-[110px] truncate rounded-full px-2 py-0.5 text-[10px]"
+        style={{
+          background: lowStim ? "#1d4ed8" : "rgba(56,189,248,0.14)",
+          color: lowStim ? "#fff" : "#7dd3fc",
+        }}
+        title={`signed in as ${label}`}
+      >
+        {label}
+      </span>
+      <button
+        onClick={() => void signOut({ callbackUrl: "/login" })}
+        className="rounded px-1.5 py-0.5 text-[10px] text-slate-400 hover:bg-white/10 hover:text-slate-100"
+        title="sign out"
+      >
+        ⎋
+      </button>
+    </div>
+  );
+}
+
 export default function LayerTree() {
   const tree = useAnatomy((s) => s.tree);
   const treeError = useAnatomy((s) => s.treeError);
@@ -492,9 +520,12 @@ export default function LayerTree() {
         className="border-b px-3 py-3"
         style={{ borderColor: lowStim ? "#fff" : "rgba(255,255,255,0.1)" }}
       >
-        <h1 className="text-sm font-semibold tracking-tight text-slate-100">
-          Interactive Anatomy Engine
-        </h1>
+        <div className="flex items-center justify-between gap-2">
+          <h1 className="text-sm font-semibold tracking-tight text-slate-100">
+            Interactive Anatomy Engine
+          </h1>
+          <AccountMenu />
+        </div>
         <p className="mt-0.5 text-[11px] text-slate-500">
           BodyParts3D (DBCLS) → FMA ontology · Draco compressed
         </p>

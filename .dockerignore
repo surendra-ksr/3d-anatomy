@@ -1,0 +1,11 @@
+.git
+.next
+node_modules
+.pgdata
+pipeline/.work
+pipeline/data/bp3d-src
+__pycache__
+*.pyc
+*.pdf
+.env*
+!.env.example

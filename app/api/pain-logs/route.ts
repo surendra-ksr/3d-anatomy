@@ -1,19 +1,9 @@
 import { NextResponse } from "next/server";
 
 import prisma from "@/lib/prisma";
+import { requireUserId } from "@/lib/auth-server";
 
 export const dynamic = "force-dynamic";
-
-const DEFAULT_USER = process.env.ANATOMY_DEFAULT_USER ?? "you";
-
-async function getDefaultUserId() {
-  const user = await prisma.user.upsert({
-    where: { name: DEFAULT_USER },
-    create: { name: DEFAULT_USER },
-    update: {},
-  });
-  return user.id;
-}
 
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 
@@ -24,7 +14,10 @@ const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
  */
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
-  const userId = await getDefaultUserId();
+  const userId = await requireUserId(request);
+  if (userId == null) {
+    return NextResponse.json({ error: "authentication required" }, { status: 401 });
+  }
 
   const window: { gte?: Date; lte?: Date } = {};
   for (const [param, op] of [
@@ -47,7 +40,7 @@ export async function GET(request: Request) {
     take: 2000,
   });
   return NextResponse.json({
-    user: DEFAULT_USER,
+    user: userId,
     logs: logs.map((l) => ({
       fmaId: l.fmaId,
       intensity: l.intensity,
@@ -115,7 +108,10 @@ export async function POST(request: Request) {
     normalized.push({ fmaId, intensity, note, logDateIso });
   }
 
-  const userId = await getDefaultUserId();
+  const userId = await requireUserId(request);
+  if (userId == null) {
+    return NextResponse.json({ error: "authentication required" }, { status: 401 });
+  }
   const saved = [];
   for (const entry of normalized) {
     const logDate = new Date(entry.logDateIso);
@@ -160,7 +156,10 @@ export async function DELETE(request: Request) {
   const logDateRaw = searchParams.get("logDate");
   const todayIso = new Date().toISOString().slice(0, 10);
   const logDateIso = logDateRaw && DATE_RE.test(logDateRaw) ? logDateRaw : todayIso;
-  const userId = await getDefaultUserId();
+  const userId = await requireUserId(request);
+  if (userId == null) {
+    return NextResponse.json({ error: "authentication required" }, { status: 401 });
+  }
   const deleted = await prisma.symptomLog.deleteMany({
     where: {
       userId,

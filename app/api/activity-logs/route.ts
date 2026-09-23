@@ -1,20 +1,11 @@
 import { NextResponse } from "next/server";
 
 import prisma from "@/lib/prisma";
+import { requireUserId } from "@/lib/auth-server";
 
 export const dynamic = "force-dynamic";
 
-const DEFAULT_USER = process.env.ANATOMY_DEFAULT_USER ?? "you";
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
-
-async function getDefaultUserId() {
-  const user = await prisma.user.upsert({
-    where: { name: DEFAULT_USER },
-    create: { name: DEFAULT_USER },
-    update: {},
-  });
-  return user.id;
-}
 
 /**
  * GET /api/activity-logs?days=30
@@ -25,14 +16,17 @@ export async function GET(request: Request) {
   const days = Math.min(365, Math.max(1, Number(searchParams.get("days") ?? 30)));
   const since = new Date();
   since.setUTCDate(since.getUTCDate() - days + 1);
-  const userId = await getDefaultUserId();
+  const userId = await requireUserId(request);
+  if (userId == null) {
+    return NextResponse.json({ error: "authentication required" }, { status: 401 });
+  }
   const rows = await prisma.activityLog.findMany({
     where: { userId, logDate: { gte: since } },
     orderBy: { createdAt: "desc" },
     take: 500,
   });
   return NextResponse.json({
-    user: DEFAULT_USER,
+    user: userId,
     activities: rows.map((a) => ({
       id: a.id,
       fmaIds: a.fmaIds,
@@ -109,7 +103,10 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "logDate is in the future" }, { status: 400 });
   }
 
-  const userId = await getDefaultUserId();
+  const userId = await requireUserId(request);
+  if (userId == null) {
+    return NextResponse.json({ error: "authentication required" }, { status: 401 });
+  }
   const row = await prisma.activityLog.create({
     data: {
       userId,

@@ -17,6 +17,12 @@ import numpy as np
 import trimesh
 
 from . import config, gltf_writer, optimize, sources
+
+
+def manifest_url(path: str) -> str:
+    """Relative /models/... path, or absolute CDN URL in production."""
+    base = config.asset_base_url()
+    return f"{base}{path}" if base else path
 from .fma import FmaCatalog
 
 # anatomical atlas palette used for the default glTF materials; the frontend
@@ -269,7 +275,7 @@ class Pipeline:
                     "name": name,
                     "systemKey": group.system_key,
                     "groupKey": group.key,
-                    "url": f"/models/{group.key}.glb",
+                    "url": manifest_url(f"/models/{group.key}.glb"),
                     "nodePath": part_id,
                     "byteSize": write_meta["byteSize"],
                     "compressedByteSize": comp["compressedByteSize"],
@@ -283,7 +289,7 @@ class Pipeline:
                 "key": group.key,
                 "label": group.label,
                 "systemKey": group.system_key,
-                "url": f"/models/{group.key}.glb",
+                "url": manifest_url(f"/models/{group.key}.glb"),
                 **write_meta,
                 **comp,
             }
@@ -304,7 +310,7 @@ class Pipeline:
         groups = [{
             "key": g.key, "label": g.label, "systemKey": g.system_key,
             "order": g.order, "defaultVisible": g.default_visible,
-            "url": f"/models/{g.key}.glb",
+            "url": manifest_url(f"/models/{g.key}.glb"),
             "byteSize": group_meta[g.key]["compressedByteSize"],
             "triangleCount": group_meta[g.key]["triangleCount"],
         } for g in sorted(config.GROUPS, key=lambda g: g.order)]

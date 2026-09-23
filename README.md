@@ -200,6 +200,74 @@ data anywhere; empty states explain how to accumulate real entries.
 
 ---
 
+---
+
+## Production deployment (multi-tenant SaaS)
+
+### Authentication (NextAuth v4, JWT)
+
+Email + password accounts (`/login` screen, self-registration) with a
+stateless **JWT session** strategy. Passwords are bcrypt hashes
+(`users.passwordHash`, cost 10). The signed-in user's database id rides in
+the token, and **every** data path scopes to it:
+
+* Next route handlers (`/api/pain-logs`, `/api/activity-logs`,
+  `/api/analytics/daily`) resolve the session via
+  `lib/auth-server.ts` and 401 anonymous calls.
+* `/api/py/*` is proxied by `app/api/py/[...path]/route.ts`, which mints a
+  short-lived **internal HS256 JWT** (`AUTH_INTERNAL_SECRET`,
+  5-minute expiry, user id + email) and attaches it as a Bearer header.
+  The FastAPI service validates that token on **every** endpoint
+  (`backend/main.py -> internal_auth`) and resolves it to a `users` row —
+  browser cookies never cross the service boundary and the backend refuses
+  unauthenticated requests even on its own port.
+* `middleware.ts` redirects anonymous visitors from `/` and `/dashboard`
+  to `/login`.
+* `SymptomLog` / `ActivityLog` are keyed to the authenticated
+  `users.id` (FK cascade) — strict per-tenant isolation, verified with
+  two concurrent accounts.
+
+Env: `NEXTAUTH_SECRET`, `NEXTAUTH_URL`, `AUTH_INTERNAL_SECRET`
+(dev defaults in `scripts/dev.sh` — change them in production).
+
+### Cloud asset delivery (S3 + CloudFront)
+
+`NODE_ENV=production` + `MESH_ASSET_BASE_URL` switches every asset URL to
+the CDN:
+
+* `pipeline/anatomy_pipeline/config.py -> asset_base_url()` gates the
+  manifest writer (`build.py -> manifest_url`) — production builds write
+  absolute CloudFront URLs into `manifest.json`.
+* `backend/main.py -> resolve_asset_url` and `lib/assets.ts -> assetUrl /
+  resolveAssetUrl` prefix mesh URLs the same way (client side reads
+  `NEXT_PUBLIC_MESH_ASSET_BASE_URL`, inlined at build time).
+* `scripts/upload_assets.py` syncs `public/models/` + `public/draco/` to a
+  bucket with correct `Content-Type` (`model/gltf-binary`, `application/wasm`,
+  …) and `Cache-Control` (immutable for GLBs/decoder, short TTL for
+  `manifest.json`), skips unchanged objects by ETag, supports `--delete`
+  and optional CloudFront invalidation:
+
+  ```sh
+  python3 scripts/upload_assets.py --bucket my-bucket --prefix assets       --distribution-id E1234ABCDEF
+  ```
+
+### Containers
+
+* `Dockerfile` — multi-stage Next.js build (deps → build → standalone
+  runtime, non-root); build args inline `FASTAPI_URL` /
+  `NEXT_PUBLIC_MESH_ASSET_BASE_URL` into the edge middleware + client bundle.
+* `Dockerfile.backend` — FastAPI service (uvicorn, non-root, healthcheck)
+  with the pipeline models installed.
+* `docker-compose.yml` — Next.js + FastAPI + PostgreSQL 16 (schema applied
+  automatically on first boot); `docker compose up --build` gives a
+  production-like stack on :3000. Optional catalog seed:
+  `docker compose --profile seed run --rm seed`.
+* For ECS/Fargate: build both images, run the seed once, and supply
+  `DATABASE_URL`, `NEXTAUTH_SECRET`, `NEXTAUTH_URL`, `AUTH_INTERNAL_SECRET`
+  (and `MESH_ASSET_BASE_URL`) via secrets/task definition.
+
+---
+
 ## Clinical export & PDF generation
 
 `GET /api/py/export/report` (`pipeline/anatomy_pipeline/report.py` +
