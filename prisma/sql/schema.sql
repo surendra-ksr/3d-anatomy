@@ -82,3 +82,39 @@ DO $$ BEGIN
     FOREIGN KEY ("organId") REFERENCES "organs"("id")
     ON DELETE CASCADE ON UPDATE CASCADE;
 EXCEPTION WHEN duplicate_object THEN NULL; WHEN duplicate_table THEN NULL; END $$;
+
+-- ---------------------------------------------------------------------------
+-- users + symptom logs (pain map tracking)
+-- ---------------------------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS "users" (
+    "id"        SERIAL NOT NULL,
+    "name"      TEXT   NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT "users_pkey" PRIMARY KEY ("id")
+);
+DO $$ BEGIN
+  ALTER TABLE "users" ADD CONSTRAINT "users_name_key" UNIQUE ("name");
+EXCEPTION WHEN duplicate_object THEN NULL; WHEN duplicate_table THEN NULL; END $$;
+
+CREATE TABLE IF NOT EXISTS "symptom_logs" (
+    "id"        SERIAL NOT NULL,
+    "userId"    INTEGER NOT NULL,
+    "fmaId"     TEXT   NOT NULL,
+    "intensity" INTEGER NOT NULL,
+    "note"      TEXT,
+    "logDate"   DATE   NOT NULL,
+    "timestamp" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT "symptom_logs_pkey" PRIMARY KEY ("id")
+);
+CREATE INDEX IF NOT EXISTS "symptom_logs_userId_timestamp_idx"
+  ON "symptom_logs"("userId", "timestamp");
+DO $$ BEGIN
+  ALTER TABLE "symptom_logs" ADD CONSTRAINT "symptom_logs_userId_fmaId_logDate_key"
+    UNIQUE ("userId", "fmaId", "logDate");
+EXCEPTION WHEN duplicate_object THEN NULL; WHEN duplicate_table THEN NULL; END $$;
+DO $$ BEGIN
+  ALTER TABLE "symptom_logs" ADD CONSTRAINT "symptom_logs_userId_fkey"
+    FOREIGN KEY ("userId") REFERENCES "users"("id")
+    ON DELETE CASCADE ON UPDATE CASCADE;
+EXCEPTION WHEN duplicate_object THEN NULL; WHEN duplicate_table THEN NULL; END $$;

@@ -1,0 +1,289 @@
+{
+  "$meta": {
+    "description": "Clinical overlay layers for the ME/CFS & Fibromyalgia feature set. Every FMA id is a real Foundational Model of Anatomy concept (validated against the FMA ontology shipped with BodyParts3D by `pipeline/run_pipeline.py validate`). Mesh anchors reference BodyParts3D parts in public/models/manifest.json; 'frac' positions [x,y,z] in [0,1] are evaluated against that part's real bounding box in BP3D millimetre space (right = -X, anterior = -Y, superior = +Z), optionally linearly blended between two meshes with 't'.",
+    "coordinateSpace": "BodyParts3D 3.0 mm (root: X left-to-right with +X = LEFT, +Y = POSTERIOR, +Z = SUPERIOR; converted to glTF m/Y-up by BP3D_ROOT)",
+    "tenderPointSource": "ACR 1990 Fibromyalgia classification criteria (Wolfe et al., Arthritis Rheum 1990;33:160-72): 9 bilateral pairs.",
+    "autonomicNote": "BodyParts3D 3.0 ships no vagus-nerve mesh, so the autonomic layer is a schematic: nerve paths are drawn through anchors computed from real loaded organ meshes, and every depicted structure keeps its real FMA concept id. It visualizes the vagal/baroreflex circuitry implicated in dysautonomia (POTS/orthostatic intolerance) in ME/CFS."
+  },
+  "autonomic": {
+    "label": "Autonomic Nervous System (schematic)",
+    "commonLabel": "Automatic body-control wiring",
+    "description": "Central autonomic hubs (hypothalamus, brainstem) and the vagus nerve with its connections to heart, lungs and gut - the circuitry whose dysfunction causes dysautonomia in ME/CFS.",
+    "nodes": [
+      { "id": "brain", "fmaId": "FMA50801", "name": "Brain", "commonName": "brain", "schematic": false },
+      { "id": "hypothalamus", "fmaId": "FMA62008", "name": "Hypothalamus", "commonName": "body-control hub", "meshFmaId": "FMA62008nsn", "schematic": false },
+      { "id": "midbrain", "fmaId": "FMA61993", "name": "Midbrain", "commonName": "upper brainstem", "meshFmaId": "FMA61993nsn", "schematic": false },
+      { "id": "pons", "fmaId": "FMA67943", "name": "Pons", "commonName": "middle brainstem", "meshFmaId": "FMA67943", "schematic": false },
+      { "id": "medulla", "fmaId": "FMA62004", "name": "Medulla oblongata", "commonName": "breathing/heart-rate centre", "meshFmaId": "FMA62004", "schematic": false },
+      { "id": "vagus", "fmaId": "FMA5731", "name": "Vagus nerve", "commonName": "main 'rest & digest' nerve", "schematic": true },
+      { "id": "vagus-right", "fmaId": "FMA6219", "name": "Right vagus nerve", "commonName": "right vagus nerve", "schematic": true },
+      { "id": "vagus-left", "fmaId": "FMA6220", "name": "Left vagus nerve", "commonName": "left vagus nerve", "schematic": true },
+      { "id": "anterior-vagal-trunk", "fmaId": "FMA6226", "name": "Anterior vagal trunk", "commonName": "front stomach nerve trunk", "schematic": true },
+      { "id": "posterior-vagal-trunk", "fmaId": "FMA6227", "name": "Posterior vagal trunk", "commonName": "back stomach nerve trunk", "schematic": true },
+      { "id": "carotid-sinus-right", "fmaId": "FMA50099", "name": "Right carotid sinus", "commonName": "right neck blood-pressure sensor", "schematic": true },
+      { "id": "carotid-sinus-left", "fmaId": "FMA50100", "name": "Left carotid sinus", "commonName": "left neck blood-pressure sensor", "schematic": true },
+      { "id": "sympathetic-trunk", "fmaId": "FMA6258", "name": "Sympathetic trunk", "commonName": "'fight or flight' nerve chain", "schematic": true }
+    ],
+    "connections": [
+      {
+        "id": "vagus-right-heart",
+        "label": "Right vagus -> cardiac branches -> heart",
+        "kind": "parasympathetic",
+        "conceptFmaIds": ["FMA6219", "FMA265388", "FMA7088"],
+        "via": [
+          { "a": { "fmaId": "FMA52738", "frac": [0.78, 0.72, 0.08] } },
+          { "a": { "fmaId": "FMA12523", "frac": [0.12, 0.03, 0.42] } },
+          { "a": { "fmaId": "FMA55099", "frac": [0.1, 0.1, 0.55] } },
+          { "a": { "fmaId": "FMA7394", "frac": [0.32, 0.85, 0.96] } },
+          { "a": { "fmaId": "FMA7274", "frac": [0.16, 0.95, 0.88] } }
+        ]
+      },
+      {
+        "id": "vagus-left-heart",
+        "label": "Left vagus -> cardiac branches -> heart",
+        "kind": "parasympathetic",
+        "conceptFmaIds": ["FMA6220", "FMA265388", "FMA7088"],
+        "via": [
+          { "a": { "fmaId": "FMA52739", "frac": [0.22, 0.72, 0.08] } },
+          { "a": { "fmaId": "FMA12523", "frac": [0.88, 0.03, 0.42] } },
+          { "a": { "fmaId": "FMA55099", "frac": [0.9, 0.1, 0.55] } },
+          { "a": { "fmaId": "FMA7394", "frac": [0.68, 0.85, 0.96] } },
+          { "a": { "fmaId": "FMA7274", "frac": [0.84, 0.95, 0.88] } }
+        ]
+      },
+      {
+        "id": "vagus-right-pulmonary",
+        "label": "Right vagus -> bronchial branches -> right lung",
+        "kind": "parasympathetic",
+        "conceptFmaIds": ["FMA6219", "FMA75514", "FMA7309"],
+        "via": [
+          { "a": { "fmaId": "FMA7274", "frac": [0.16, 0.95, 0.88] } },
+          { "a": { "fmaId": "FMA7333", "frac": [0.88, 0.75, 0.3] } }
+        ]
+      },
+      {
+        "id": "vagus-left-pulmonary",
+        "label": "Left vagus -> bronchial branches -> left lung",
+        "kind": "parasympathetic",
+        "conceptFmaIds": ["FMA6220", "FMA75514", "FMA7310"],
+        "via": [
+          { "a": { "fmaId": "FMA7274", "frac": [0.84, 0.95, 0.88] } },
+          { "a": { "fmaId": "FMA7370", "frac": [0.12, 0.75, 0.3] } }
+        ]
+      },
+      {
+        "id": "vagus-right-gut",
+        "label": "Right vagus -> posterior vagal trunk -> coeliac + gastric branches -> stomach & gut",
+        "kind": "parasympathetic",
+        "conceptFmaIds": ["FMA6219", "FMA6227", "FMA6667", "FMA6718", "FMA7148"],
+        "via": [
+          { "a": { "fmaId": "FMA7333", "frac": [0.88, 0.75, 0.3] } },
+          { "a": { "fmaId": "FMA7131", "frac": [0.4, 0.55, 0.45] } },
+          { "a": { "fmaId": "FMA7148", "frac": [0.45, 0.9, 0.55] } },
+          { "a": { "fmaId": "FMA7198nsn", "frac": [0.47, 0.55, 0.3] } },
+          { "a": { "fmaId": "FMA14543nsn", "frac": [0.42, 0.72, 0.18] } }
+        ]
+      },
+      {
+        "id": "vagus-left-gut",
+        "label": "Left vagus -> anterior vagal trunk -> gastric + hepatic branches -> stomach & liver",
+        "kind": "parasympathetic",
+        "conceptFmaIds": ["FMA6220", "FMA6226", "FMA6718", "FMA6685", "FMA7148", "FMA7197"],
+        "via": [
+          { "a": { "fmaId": "FMA7370", "frac": [0.12, 0.75, 0.3] } },
+          { "a": { "fmaId": "FMA7131", "frac": [0.6, 0.55, 0.45] } },
+          { "a": { "fmaId": "FMA7148", "frac": [0.55, 0.1, 0.6] } },
+          { "a": { "fmaId": "FMA7198nsn", "frac": [0.53, 0.45, 0.35] } }
+        ]
+      },
+      {
+        "id": "baroreflex-carotid-right",
+        "label": "Right carotid sinus (baroreceptor) -> medulla",
+        "kind": "baroreflex",
+        "conceptFmaIds": ["FMA50099", "FMA53508", "FMA62004"],
+        "via": [
+          { "a": { "fmaId": "FMA55099", "frac": [0.1, 0.2, 0.9] } },
+          { "a": { "fmaId": "FMA62004", "frac": [0.35, 0.3, 0.1] } }
+        ]
+      },
+      {
+        "id": "baroreflex-carotid-left",
+        "label": "Left carotid sinus (baroreceptor) -> medulla",
+        "kind": "baroreflex",
+        "conceptFmaIds": ["FMA50100", "FMA53509", "FMA62004"],
+        "via": [
+          { "a": { "fmaId": "FMA55099", "frac": [0.9, 0.2, 0.9] } },
+          { "a": { "fmaId": "FMA62004", "frac": [0.65, 0.3, 0.1] } }
+        ]
+      },
+      {
+        "id": "baroreflex-aortic",
+        "label": "Aortic arch (baroreceptors) -> medulla",
+        "kind": "baroreflex",
+        "conceptFmaIds": ["FMA3768", "FMA62004"],
+        "via": [
+          { "a": { "fmaId": "FMA3768", "frac": [0.5, 0.5, 0.95] } },
+          { "a": { "fmaId": "FMA62004", "frac": [0.5, 0.5, 0.05] } }
+        ]
+      },
+      {
+        "id": "sympathetic-chain-right",
+        "label": "Sympathetic trunk (right chain, cervical -> lumbar)",
+        "kind": "sympathetic",
+        "conceptFmaIds": ["FMA6258", "FMA6261"],
+        "via": [
+          { "a": { "fmaId": "FMA12525", "frac": [0.12, 0.1, 0.6] } },
+          { "a": { "fmaId": "FMA9922", "frac": [0.12, 0.1, 0.5] } },
+          { "a": { "fmaId": "FMA13074", "frac": [0.12, 0.1, 0.5] } }
+        ]
+      },
+      {
+        "id": "sympathetic-chain-left",
+        "label": "Sympathetic trunk (left chain, cervical -> lumbar)",
+        "kind": "sympathetic",
+        "conceptFmaIds": ["FMA6258", "FMA6261"],
+        "via": [
+          { "a": { "fmaId": "FMA12525", "frac": [0.88, 0.1, 0.6] } },
+          { "a": { "fmaId": "FMA9922", "frac": [0.88, 0.1, 0.5] } },
+          { "a": { "fmaId": "FMA13074", "frac": [0.88, 0.1, 0.5] } }
+        ]
+      }
+    ]
+  },
+  "tenderPoints": [
+    {
+      "id": "occiput-right", "pair": "occiput", "side": "RIGHT",
+      "name": "Occiput (right) - suboccipital insertion",
+      "commonName": "base of skull, right",
+      "conceptFmaId": "FMA32582",
+      "anchor": { "a": { "fmaId": "FMA52735", "frac": [0.35, 0.97, 0.1] } }
+    },
+    {
+      "id": "occiput-left", "pair": "occiput", "side": "LEFT",
+      "name": "Occiput (left) - suboccipital insertion",
+      "commonName": "base of skull, left",
+      "conceptFmaId": "FMA32582",
+      "anchor": { "a": { "fmaId": "FMA52735", "frac": [0.65, 0.97, 0.1] } }
+    },
+    {
+      "id": "cervical-right", "pair": "cervical", "side": "RIGHT",
+      "name": "Low cervical (right) - anterior C5-C7",
+      "commonName": "front of neck, right",
+      "conceptFmaId": "FMA12524",
+      "anchor": { "a": { "fmaId": "FMA12524", "frac": [0.42, 0.02, 0.5] } }
+    },
+    {
+      "id": "cervical-left", "pair": "cervical", "side": "LEFT",
+      "name": "Low cervical (left) - anterior C5-C7",
+      "commonName": "front of neck, left",
+      "conceptFmaId": "FMA12524",
+      "anchor": { "a": { "fmaId": "FMA12524", "frac": [0.58, 0.02, 0.5] } }
+    },
+    {
+      "id": "trapezius-right", "pair": "trapezius", "side": "RIGHT",
+      "name": "Trapezius (right) - midpoint of upper border",
+      "commonName": "top of shoulder ridge, right",
+      "conceptFmaId": "FMA9626",
+      "anchor": {
+        "a": { "fmaId": "FMA52735", "frac": [0.5, 0.95, 0.12] },
+        "b": { "fmaId": "FMA13395", "frac": [0.03, 0.45, 0.97] },
+        "t": 0.5
+      }
+    },
+    {
+      "id": "trapezius-left", "pair": "trapezius", "side": "LEFT",
+      "name": "Trapezius (left) - midpoint of upper border",
+      "commonName": "top of shoulder ridge, left",
+      "conceptFmaId": "FMA9626",
+      "anchor": {
+        "a": { "fmaId": "FMA52735", "frac": [0.5, 0.95, 0.12] },
+        "b": { "fmaId": "FMA13396", "frac": [0.97, 0.45, 0.97] },
+        "t": 0.5
+      }
+    },
+    {
+      "id": "supraspinatus-right", "pair": "supraspinatus", "side": "RIGHT",
+      "name": "Supraspinatus (right) - above scapula spine",
+      "commonName": "shoulder blade top, right",
+      "conceptFmaId": "FMA9629",
+      "anchor": { "a": { "fmaId": "FMA13395", "frac": [0.72, 0.5, 0.78] } }
+    },
+    {
+      "id": "supraspinatus-left", "pair": "supraspinatus", "side": "LEFT",
+      "name": "Supraspinatus (left) - above scapula spine",
+      "commonName": "shoulder blade top, left",
+      "conceptFmaId": "FMA9629",
+      "anchor": { "a": { "fmaId": "FMA13396", "frac": [0.28, 0.5, 0.78] } }
+    },
+    {
+      "id": "secondRib-right", "pair": "secondRib", "side": "RIGHT",
+      "name": "Second rib (right) - costochondral junction",
+      "commonName": "breastbone-side of 2nd rib, right",
+      "conceptFmaId": "FMA7882",
+      "anchor": { "a": { "fmaId": "FMA7882", "frac": [0.94, 0.03, 0.5] } }
+    },
+    {
+      "id": "secondRib-left", "pair": "secondRib", "side": "LEFT",
+      "name": "Second rib (left) - costochondral junction",
+      "commonName": "breastbone-side of 2nd rib, left",
+      "conceptFmaId": "FMA8012",
+      "anchor": { "a": { "fmaId": "FMA8012", "frac": [0.06, 0.03, 0.5] } }
+    },
+    {
+      "id": "epicondyle-right", "pair": "epicondyle", "side": "RIGHT",
+      "name": "Lateral epicondyle (right) - 2 cm distal",
+      "commonName": "outside of elbow, right",
+      "conceptFmaId": "FMA23444",
+      "anchor": { "a": { "fmaId": "FMA23130", "frac": [0.06, 0.5, 0.0] } }
+    },
+    {
+      "id": "epicondyle-left", "pair": "epicondyle", "side": "LEFT",
+      "name": "Lateral epicondyle (left) - 2 cm distal",
+      "commonName": "outside of elbow, left",
+      "conceptFmaId": "FMA23446",
+      "anchor": { "a": { "fmaId": "FMA23131", "frac": [0.94, 0.5, 0.0] } }
+    },
+    {
+      "id": "gluteal-right", "pair": "gluteal", "side": "RIGHT",
+      "name": "Gluteal (right) - upper outer quadrant",
+      "commonName": "upper outer buttock, right",
+      "conceptFmaId": "FMA22314",
+      "anchor": { "a": { "fmaId": "FMA16586", "frac": [0.14, 0.55, 0.82] } }
+    },
+    {
+      "id": "gluteal-left", "pair": "gluteal", "side": "LEFT",
+      "name": "Gluteal (left) - upper outer quadrant",
+      "commonName": "upper outer buttock, left",
+      "conceptFmaId": "FMA22314",
+      "anchor": { "a": { "fmaId": "FMA16587", "frac": [0.86, 0.55, 0.82] } }
+    },
+    {
+      "id": "trochanter-right", "pair": "trochanter", "side": "RIGHT",
+      "name": "Greater trochanter (right) - posterior to prominence",
+      "commonName": "hip bone point, right",
+      "conceptFmaId": "FMA51523",
+      "anchor": { "a": { "fmaId": "FMA24474", "frac": [0.05, 0.55, 0.985] } }
+    },
+    {
+      "id": "trochanter-left", "pair": "trochanter", "side": "LEFT",
+      "name": "Greater trochanter (left) - posterior to prominence",
+      "commonName": "hip bone point, left",
+      "conceptFmaId": "FMA51524",
+      "anchor": { "a": { "fmaId": "FMA24475", "frac": [0.95, 0.55, 0.985] } }
+    },
+    {
+      "id": "knee-right", "pair": "knee", "side": "RIGHT",
+      "name": "Knee (right) - medial fat pad",
+      "commonName": "inner knee, right",
+      "conceptFmaId": "FMA32862",
+      "anchor": { "a": { "fmaId": "FMA24474", "frac": [0.95, 0.35, 0.02] } }
+    },
+    {
+      "id": "knee-left", "pair": "knee", "side": "LEFT",
+      "name": "Knee (left) - medial fat pad",
+      "commonName": "inner knee, left",
+      "conceptFmaId": "FMA32863",
+      "anchor": { "a": { "fmaId": "FMA24475", "frac": [0.05, 0.35, 0.02] } }
+    }
+  ]
+}

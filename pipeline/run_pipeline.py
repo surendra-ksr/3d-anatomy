@@ -6,7 +6,8 @@ Stages
 ------
 fetch   Ensure the curated BP3D STL subset is available locally.
 build   Convert -> classify (FMA) -> decimate -> Draco-compress -> manifest.
-validate  Cross-check the curated selection against the BP3D/FMA tables.
+validate  Cross-check the curated selection, the metabolic pacing model and
+          the clinical overlay config against the BP3D/FMA tables.
 
 Usage
 -----
@@ -18,6 +19,7 @@ Usage
 from __future__ import annotations
 
 import argparse
+import json
 import sys
 from pathlib import Path
 
@@ -26,8 +28,59 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from anatomy_pipeline import build as build_mod  # noqa: E402
 from anatomy_pipeline import config  # noqa: E402
+from anatomy_pipeline import metabolic  # noqa: E402
 from anatomy_pipeline.fma import FmaCatalog  # noqa: E402
 from anatomy_pipeline import sources  # noqa: E402
+
+OVERLAYS_PATH = REPO / "public" / "data" / "clinical-overlays.json"
+MANIFEST_PATH = REPO / "public" / "models" / "manifest.json"
+
+
+def _validate_overlays(fma_labels: dict[str, str], catalog) -> list[str]:
+    """Every FMA reference in the clinical overlay config must exist in the
+    FMA ontology, and every mesh anchor must exist in the built manifest
+    (bounds are used to derive anchor positions from real anatomy)."""
+    if not OVERLAYS_PATH.exists():
+        return [f"missing {OVERLAYS_PATH.relative_to(REPO)}"]
+    problems: list[str] = []
+    data = json.loads(OVERLAYS_PATH.read_text())
+
+    mesh_ids: set[str] = set()
+    if MANIFEST_PATH.exists():
+        manifest = json.loads(MANIFEST_PATH.read_text())
+        mesh_ids = {a["fmaId"] for a in manifest["meshAssets"]}
+
+    def check_concept(fid: str, ctx: str) -> None:
+        # FMA ontology ids AND BP3D-original ids (e.g. "FMA7198nsn") are real
+        # published concepts - the latter live in parts_list_e.txt
+        if fid not in fma_labels and fid not in catalog._parts:
+            problems.append(f"{ctx}: FMA id {fid} unknown in FMA.csv/parts list")
+
+    def check_anchor(anchor: dict, ctx: str) -> None:
+        for endpoint in ("a", "b"):
+            ep = anchor.get(endpoint)
+            if not ep:
+                continue
+            fid = ep.get("fmaId", "")
+            check_concept(fid, ctx)
+            if mesh_ids and fid not in mesh_ids:
+                problems.append(
+                    f"{ctx}: anchor mesh {fid} is not in the manifest "
+                    "(add it to the curated selection)")
+
+    for conn in data.get("autonomic", {}).get("connections", []):
+        ctx = f"autonomic connection {conn.get('id')}"
+        for fid in conn.get("conceptFmaIds", []):
+            check_concept(fid, ctx)
+        for point in conn.get("via", []):
+            check_anchor(point, ctx)
+    for node in data.get("autonomic", {}).get("nodes", []):
+        check_concept(node.get("fmaId", ""), f"autonomic node {node.get('id')}")
+    for tp in data.get("tenderPoints", []):
+        ctx = f"tender point {tp.get('id')}"
+        check_concept(tp.get("conceptFmaId", ""), ctx)
+        check_anchor(tp["anchor"], ctx)
+    return problems
 
 
 def main() -> int:
@@ -52,6 +105,8 @@ def main() -> int:
         src = sources.resolve_source(args.source, work / "source")
         cat = FmaCatalog(src.meta_dir)
         problems = cat.validate_selection(work / "stl") + cat.verify_system_ids()
+        problems += metabolic.validate_against_catalog(cat._fma_labels)
+        problems += _validate_overlays(cat._fma_labels, cat)
         problems = [p for p in problems if "STL file missing" not in p] \
             if args.stage == "validate" else problems
         if problems:
@@ -59,7 +114,8 @@ def main() -> int:
             for p in problems:
                 print(f"  - {p}")
             return 2
-        print("Selection is consistent with the BodyParts3D distribution.")
+        print("Selection, metabolic model and clinical overlays are "
+              "consistent with the BodyParts3D/FMA data.")
 
     if args.stage == "fetch":
         from anatomy_pipeline import build as b

@@ -22,3 +22,5 @@ pipeline/.work/
 *.log
 .DS_Store
 *.tsbuildinfo
+__pycache__/
+*.pyc

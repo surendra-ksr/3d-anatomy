@@ -103,6 +103,39 @@ model MeshAsset {
   @@map("mesh_assets")
 }
 
+/// A local profile. The MVP ships single-user (self-tracking) semantics:
+/// the API resolves/creates the default profile by name (see
+/// ANATOMY_DEFAULT_USER). Swap for real auth in a multi-user deployment.
+model User {
+  id          Int          @id @default(autoincrement())
+  name        String       @unique
+  createdAt   DateTime     @default(now())
+  symptomLogs SymptomLog[]
+
+  @@map("users")
+}
+
+/// One painted pain rating for one anatomical structure on one day.
+/// Re-painting the same structure the same day upserts (timestamp moves).
+model SymptomLog {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  /// FMA concept id of the painted structure, e.g. "FMA13377".
+  fmaId     String
+  /// Clinical pain rating, 1 (minimal) - 10 (worst imaginable).
+  intensity Int
+  note      String?
+  /// UTC midnight of the log day - the upsert key for "today's pain map".
+  logDate   DateTime @db.Date
+  /// Last update for this rating.
+  timestamp DateTime @default(now()) @updatedAt
+
+  @@unique([userId, fmaId, logDate])
+  @@index([userId, timestamp])
+  @@map("symptom_logs")
+}
+
 enum Laterality {
   LEFT
   RIGHT

@@ -234,6 +234,12 @@ class Pipeline:
                     "laterality": _laterality(name),
                     "source": f"BodyParts3D {config.BP3D_VERSION}",
                 }
+                # source-data bounds (BP3D mm) -- consumed by the clinical
+                # overlay layers (tender points, autonomic schematic) so their
+                # anchor positions derive from real anatomy
+                verts_src = np.asarray(mesh.vertices)
+                bmin = [float(x) for x in verts_src.min(axis=0)]
+                bmax = [float(x) for x in verts_src.max(axis=0)]
                 part_meshes.append(gltf_writer.PartMesh(
                     part_id=part.id, name=name,
                     vertices=np.asarray(v, dtype=np.float32),
@@ -242,7 +248,7 @@ class Pipeline:
                     extras=extras,
                     base_color=base_color,
                 ))
-                stats.append((part.id, name, len(v), len(f) // 3, stl_path))
+                stats.append((part.id, name, len(v), len(f) // 3, stl_path, bmin, bmax))
 
             glb_raw = self.work_dir / f"{group.key}.glb"
             write_meta = gltf_writer.write_glb(
@@ -257,7 +263,7 @@ class Pipeline:
             comp = optimize.draco_compress(glb_raw, glb_out)
             glb_raw.unlink()
 
-            for part_id, name, nv, nf, stl_path in stats:
+            for part_id, name, nv, nf, stl_path, bmin, bmax in stats:
                 mesh_assets.append({
                     "fmaId": part_id,
                     "name": name,
@@ -269,6 +275,7 @@ class Pipeline:
                     "compressedByteSize": comp["compressedByteSize"],
                     "vertexCount": nv,
                     "triangleCount": nf,
+                    "boundsBp3dMm": {"min": bmin, "max": bmax},
                     "sourceFile": stl_path.name,
                     "sourceSha256": _sha256(stl_path),
                 })

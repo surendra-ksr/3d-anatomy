@@ -4,6 +4,7 @@ import dynamic from "next/dynamic";
 
 import LayerTree from "@/components/LayerTree";
 import InfoPanel from "@/components/InfoPanel";
+import { LowStimProvider } from "@/lib/low-stim";
 
 // The 3D viewer touches WebGL + the pointer; load it client-side only.
 const AnatomyViewer = dynamic(() => import("@/components/AnatomyViewer"), {
@@ -19,12 +20,14 @@ const AnatomyViewer = dynamic(() => import("@/components/AnatomyViewer"), {
 
 export default function Home() {
   return (
-    <main className="flex h-dvh w-full">
-      <LayerTree />
-      <div className="relative min-w-0 flex-1">
-        <AnatomyViewer />
-      </div>
-      <InfoPanel />
-    </main>
+    <LowStimProvider>
+      <main className="flex h-dvh w-full">
+        <LayerTree />
+        <div className="relative min-w-0 flex-1">
+          <AnatomyViewer />
+        </div>
+        <InfoPanel />
+      </main>
+    </LowStimProvider>
   );
 }

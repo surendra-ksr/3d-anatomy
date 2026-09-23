@@ -20,17 +20,27 @@ from __future__ import annotations
 
 import os
 import re
+import sys
 from contextlib import asynccontextmanager
+from datetime import date, datetime, timezone
 from pathlib import Path
 
 import psycopg
 import psycopg_pool
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel, Field
+
+REPO_ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(REPO_ROOT))
+sys.path.insert(0, str(REPO_ROOT / "pipeline"))
+
+from anatomy_pipeline import metabolic  # noqa: E402  (canonical pacing model)
 
 DATABASE_URL = os.environ.get(
     "DATABASE_URL", "postgresql://postgres@127.0.0.1:5432/anatomy"
 )
+DEFAULT_USER = os.environ.get("ANATOMY_DEFAULT_USER", "you")
 ASSET_BASE = os.environ.get("MESH_ASSET_BASE_URL", "").rstrip("/")
 MANIFEST_PATH = Path(__file__).resolve().parent.parent / "public" / "models" / "manifest.json"
 
@@ -330,4 +340,194 @@ def stats():
         "triangles": row[3],
         "artifactBytes": artifact_bytes,
         "meta": dataset_meta(),
+    }
+
+
+# ---------------------------------------------------------------------------
+# profile (single-user MVP)
+# ---------------------------------------------------------------------------
+
+def get_or_create_default_user(conn) -> tuple[int, str]:
+    row = conn.execute(
+        "select id, name from users where name = %s", (DEFAULT_USER,)
+    ).fetchone()
+    if row:
+        return row[0], row[1]
+    row = conn.execute(
+        "insert into users (name) values (%s) returning id, name",
+        (DEFAULT_USER,),
+    ).fetchone()
+    return row[0], row[1]
+
+
+@app.get("/api/me")
+def me():
+    with pool.connection() as conn:
+        user_id, name = get_or_create_default_user(conn)
+        count = conn.execute(
+            'select count(*) from symptom_logs where "userId" = %s', (user_id,)
+        ).fetchone()[0]
+    return {"id": user_id, "name": name, "symptomLogCount": count}
+
+
+# ---------------------------------------------------------------------------
+# pain map logging (SymptomLog)
+# ---------------------------------------------------------------------------
+
+class PainEntry(BaseModel):
+    fmaId: str = Field(min_length=3, max_length=32)
+    intensity: int = Field(ge=1, le=10)
+    note: str | None = Field(default=None, max_length=500)
+
+
+class PainLogWrite(BaseModel):
+    entries: list[PainEntry] = Field(min_length=1, max_length=200)
+
+
+def _normalize_fma(raw: str) -> str:
+    fid = raw.strip().upper()
+    return fid if fid.startswith("FMA") else f"FMA{fid}"
+
+
+@app.get("/api/pain-logs")
+def pain_logs_get(since: str | None = None):
+    """List the user's pain logs (optionally since a date, YYYY-MM-DD)."""
+    with pool.connection() as conn:
+        user_id, _ = get_or_create_default_user(conn)
+        if since:
+            try:
+                since_date = date.fromisoformat(since)
+            except ValueError as exc:
+                raise HTTPException(400, f"bad 'since' date: {exc}") from exc
+            rows = conn.execute(
+                """
+                select "fmaId", intensity, note, "logDate", "timestamp"
+                from symptom_logs
+                where "userId" = %s and "logDate" >= %s
+                order by "timestamp" desc
+                """,
+                (user_id, since_date),
+            ).fetchall()
+        else:
+            rows = conn.execute(
+                """
+                select "fmaId", intensity, note, "logDate", "timestamp"
+                from symptom_logs where "userId" = %s
+                order by "timestamp" desc limit 500
+                """,
+                (user_id,),
+            ).fetchall()
+    return {
+        "user": DEFAULT_USER,
+        "logs": [
+            {
+                "fmaId": r[0],
+                "intensity": r[1],
+                "note": r[2],
+                "logDate": r[3].isoformat(),
+                "timestamp": r[4].isoformat(),
+            }
+            for r in rows
+        ],
+    }
+
+
+@app.post("/api/pain-logs")
+def pain_logs_post(body: PainLogWrite):
+    """Upsert today's pain ratings (one row per structure per day)."""
+    today = datetime.now(timezone.utc).date()
+    saved = []
+    with pool.connection() as conn:
+        user_id, _ = get_or_create_default_user(conn)
+        for entry in body.entries:
+            fid = _normalize_fma(entry.fmaId)
+            row = conn.execute(
+                """
+                insert into symptom_logs
+                    ("userId", "fmaId", intensity, note, "logDate", "timestamp")
+                values (%s, %s, %s, %s, %s, now())
+                on conflict ("userId", "fmaId", "logDate")
+                do update set intensity = excluded.intensity,
+                              note = excluded.note,
+                              "timestamp" = now()
+                returning "fmaId", intensity, "logDate", "timestamp"
+                """,
+                (user_id, fid, entry.intensity, entry.note, today),
+            ).fetchone()
+            saved.append({
+                "fmaId": row[0],
+                "intensity": row[1],
+                "logDate": row[2].isoformat(),
+                "timestamp": row[3].isoformat(),
+            })
+    return {"saved": saved, "logDate": today.isoformat()}
+
+
+@app.delete("/api/pain-logs")
+def pain_logs_delete(fmaId: str | None = Query(default=None)):
+    """Clear one structure's rating, or the whole current pain map."""
+    today = datetime.now(timezone.utc).date()
+    with pool.connection() as conn:
+        user_id, _ = get_or_create_default_user(conn)
+        if fmaId:
+            deleted = conn.execute(
+                'delete from symptom_logs where "userId" = %s and "fmaId" = %s '
+                'and "logDate" = %s',
+                (user_id, _normalize_fma(fmaId), today),
+            ).rowcount
+        else:
+            deleted = conn.execute(
+                'delete from symptom_logs where "userId" = %s and "logDate" = %s',
+                (user_id, today),
+            ).rowcount
+    return {"deleted": deleted, "logDate": today.isoformat()}
+
+
+# ---------------------------------------------------------------------------
+# energy cost (pacing) tracker
+# ---------------------------------------------------------------------------
+
+class MetabolicCostRequest(BaseModel):
+    fmaIds: list[str] = Field(min_length=1, max_length=64)
+    minutes: float = Field(default=20.0, gt=0, le=24 * 60)
+    bodyMassKg: float = Field(default=70.0, gt=20, le=300)
+    sex: str = Field(default="unspecified", pattern="^(male|female|unspecified)$")
+    intensities: dict[str, float] | None = None
+    pacingBudgetKcal: float | None = Field(default=None, gt=0, le=5000)
+    severity: str | None = Field(default=None, pattern="^(mild|moderate|severe)$")
+
+
+@app.post("/api/metabolic-cost")
+def metabolic_cost(body: MetabolicCostRequest):
+    """
+    Estimate the theoretical metabolic cost ("Energy Drain") of sustaining
+    the given muscle groups - a pacing aid for preventing post-exertional
+    malaise (PEM). Accepts muscle-group FMA ids and mesh-bearing muscle ids
+    (e.g. FMA13377 right rectus abdominis). See anatomy_pipeline.metabolic
+    for the documented model and references.
+    """
+    return metabolic.compute_energy_drain(
+        body.fmaIds,
+        minutes=body.minutes,
+        body_mass_kg=body.bodyMassKg,
+        sex=body.sex,
+        intensities=body.intensities,
+        pacing_budget_kcal=body.pacingBudgetKcal,
+        severity=body.severity,
+    )
+
+
+@app.get("/api/metabolic-cost/groups")
+def metabolic_groups():
+    """The muscle-group table with derived masses for a reference body."""
+    groups = []
+    for g in metabolic.MUSCLE_GROUPS:
+        mass = metabolic.group_mass_kg(g, 70.0, "unspecified")
+        groups.append({**g, "referenceMassKg70": round(mass, 3)})
+    return {
+        "groups": groups,
+        "pacingBudgetsKcal": metabolic.PACING_BUDGETS_KCAL,
+        "defaultSeverity": metabolic.DEFAULT_SEVERITY,
+        "references": metabolic.REFERENCES,
+        "disclaimer": metabolic.DISCLAIMER,
     }

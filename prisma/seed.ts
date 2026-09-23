@@ -165,6 +165,15 @@ async function main() {
   }
   console.log(`mesh assets: ${meshes}`);
 
+  // -- default user (single-profile MVP; see model comment in schema) -------
+  const userName = process.env.ANATOMY_DEFAULT_USER ?? "you";
+  await prisma.user.upsert({
+    where: { name: userName },
+    create: { name: userName },
+    update: {},
+  });
+  console.log(`user: ${userName}`);
+
   const counts = await prisma.$transaction([
     prisma.anatomicalSystem.count(),
     prisma.organ.count(),

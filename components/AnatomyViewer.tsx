@@ -9,11 +9,17 @@
  *    into a normalized device coordinate, a Raycaster is cast against the
  *    loaded anatomy meshes, and the first hit's glTF `extras.fmaId` (written
  *    by the data pipeline) is isolated into the selection
+ *  - pain-paint mode: clicking a mesh opens a 1-10 intensity slider and the
+ *    mesh material is recolored on the GPU to a clinical heat map (ME/CFS &
+ *    Fibromyalgia feature set)
+ *  - clinical overlay layers: autonomic nervous system schematic + 18
+ *    fibromyalgia tender points (components/overlays)
  *  - medical-grade lighting: soft ambient fill + warm key light + cool
- *    directional rim light for depth separation
+ *    directional rim light for depth separation; a flat, brighter high
+ *    contrast rig in Low Cognitive Load mode
  *  - OrbitControls for rotate / pan / zoom with damping
- *  - visibility + opacity of every part is driven by the zustand store, which
- *    the LayerTree component writes to
+ *  - visibility + opacity + pain color of every part is driven by the
+ *    zustand store, which the LayerTree component writes to
  */
 import {
   Suspense,
@@ -27,8 +33,13 @@ import { Canvas, useThree } from "@react-three/fiber";
 import { OrbitControls, useGLTF, useProgress } from "@react-three/drei";
 import * as THREE from "three";
 
-import { useAnatomy } from "@/lib/store";
+import { useAnatomy, painColor, type PainDraft } from "@/lib/store";
+import { useLowStim } from "@/lib/low-stim";
 import type { GroupDto } from "@/lib/types";
+import AutonomicLayer from "@/components/overlays/AutonomicLayer";
+import TenderPointLayer from "@/components/overlays/TenderPointLayer";
+import PainSlider from "@/components/PainSlider";
+import PacingDialog from "@/components/PacingDialog";
 
 // ---------------------------------------------------------------------------
 // shared mesh registry
@@ -41,6 +52,7 @@ export interface RegisteredMesh {
   name: string;
   systemKey: string;
   groupKey: string;
+  baseColor: THREE.Color;
 }
 export type MeshRegistry = Map<string, RegisteredMesh>; // key: fmaId
 
@@ -165,10 +177,21 @@ function useAnatomyRaycaster(
 }
 
 // ---------------------------------------------------------------------------
-// lighting rig (medical viewing: neutral ambient fill, key + rim directional)
+// lighting rig
 // ---------------------------------------------------------------------------
 
-function LightingRig() {
+function LightingRig({ lowStim }: { lowStim: boolean }) {
+  if (lowStim) {
+    // Low Cognitive Load: flat, bright, neutral - maximal form legibility,
+    // no colored or dramatic lights
+    return (
+      <>
+        <ambientLight intensity={0.85} />
+        <directionalLight position={[2, 3, 2]} intensity={0.55} />
+        <directionalLight position={[-2, -1, -2]} intensity={0.3} />
+      </>
+    );
+  }
   return (
     <>
       {/* soft neutral fill so concavities never go fully black */}
@@ -217,17 +240,17 @@ function ModelGroup({
       const fmaId = node.userData.fmaId ?? mesh.name;
       const organIdFromStore = useAnatomy.getState().organIdByFmaId.get(fmaId ?? "");
 
-      // per-part material instance (highlight/opacity are per organ)
+      // per-part material instance (highlight/opacity/pain are per organ)
       const prev = mesh.material as THREE.MeshStandardMaterial;
+      const baseColor = prev?.color?.clone() ?? new THREE.Color(0.85, 0.82, 0.75);
       const mat = new THREE.MeshStandardMaterial({
-        color: prev?.color?.clone() ?? new THREE.Color(0.85, 0.82, 0.75),
+        color: baseColor.clone(),
         roughness: prev?.roughness ?? 0.6,
         metalness: prev?.metalness ?? 0.0,
         side: THREE.FrontSide,
         flatShading: false,
       });
       mesh.material = mat;
-      // dispose the shared original
       prev?.dispose?.();
 
       mesh.castShadow = false;
@@ -242,8 +265,6 @@ function ModelGroup({
           systemKey: node.userData.systemKey ?? group.systemKey,
           organId: organIdFromStore ?? 0,
         };
-        // build the node hierarchy path for debugging/lookup
-        node.userData.nodePath = node.name;
         registry.set(fmaId, {
           mesh,
           organId: organIdFromStore ?? 0,
@@ -251,6 +272,7 @@ function ModelGroup({
           name: node.userData.name ?? fmaId,
           systemKey: node.userData.systemKey ?? group.systemKey,
           groupKey: group.key,
+          baseColor,
         });
       }
     });
@@ -266,7 +288,7 @@ function ModelGroup({
 }
 
 // ---------------------------------------------------------------------------
-// applies store visibility / opacity / highlight to the registered meshes
+// applies store visibility / opacity / highlight / pain heatmap to meshes
 // ---------------------------------------------------------------------------
 
 function useApplyPartStyles(registry: MeshRegistry) {
@@ -276,10 +298,12 @@ function useApplyPartStyles(registry: MeshRegistry) {
   const hoveredId = useAnatomy((s) => s.hoveredId);
   const isolate = useAnatomy((s) => s.isolate);
   const organById = useAnatomy((s) => s.organById);
+  const painMap = useAnatomy((s) => s.painMap);
+  const lowStim = useAnatomy((s) => s.lowStim);
 
   useEffect(() => {
-    const SELECTED_EMISSIVE = new THREE.Color("#ff8a3c");
-    const HOVER_EMISSIVE = new THREE.Color("#69b7ff");
+    const SELECTED_COLOR = new THREE.Color(lowStim ? "#ffffff" : "#ff8a3c");
+    const HOVER_COLOR = new THREE.Color(lowStim ? "#dddddd" : "#69b7ff");
 
     // precompute the visible id set in isolate mode (selected subtree only)
     let isolateIds: Set<number> | null = null;
@@ -293,7 +317,8 @@ function useApplyPartStyles(registry: MeshRegistry) {
       }
     }
 
-    for (const { mesh, organId } of registry.values()) {
+    for (const entry of registry.values()) {
+      const { mesh, organId, baseColor } = entry;
       let visible = !hidden.has(organId);
       if (isolateIds) visible = visible && isolateIds.has(organId);
 
@@ -303,19 +328,31 @@ function useApplyPartStyles(registry: MeshRegistry) {
       mat.opacity = opa;
       mat.depthWrite = opa >= 1;
 
+      const pain = painMap.get(organId);
       const isSelected = selectedId === organId;
       const isHovered = hoveredId === organId && !isSelected;
-      mat.emissive = isSelected
-        ? SELECTED_EMISSIVE
-        : isHovered
-          ? HOVER_EMISSIVE
-          : new THREE.Color(0x000000);
-      mat.emissiveIntensity = isSelected ? 0.5 : isHovered ? 0.22 : 0;
+
+      if (pain != null) {
+        // clinical heat map: green(1) -> yellow(3) -> orange(5) -> red(8) ->
+        // deep crimson(10); emissive keeps the color readable in shadow
+        const [r, g, b] = painColor(pain);
+        mat.color.setRGB(r, g, b);
+        mat.emissive.setRGB(r, g, b);
+        mat.emissiveIntensity = lowStim ? 0.15 : 0.38;
+      } else {
+        mat.color.copy(baseColor);
+        mat.emissive = isSelected
+          ? SELECTED_COLOR
+          : isHovered
+            ? HOVER_COLOR
+            : new THREE.Color(0x000000);
+        mat.emissiveIntensity = isSelected ? 0.5 : isHovered ? 0.22 : 0;
+      }
       mat.needsUpdate = true;
 
       mesh.visible = visible;
     }
-  }, [registry, hidden, opacity, selectedId, hoveredId, isolate, organById]);
+  }, [registry, hidden, opacity, selectedId, hoveredId, isolate, organById, painMap, lowStim]);
 }
 
 // ---------------------------------------------------------------------------
@@ -371,18 +408,19 @@ function SceneContents({
   controlsRef: React.RefObject<any>;
 }) {
   const enabledGroups = useAnatomy((s) => s.enabledGroups);
+  const ansVisible = useAnatomy((s) => s.ansVisible);
+  const tenderVisible = useAnatomy((s) => s.tenderVisible);
+  const painMode = useAnatomy((s) => s.painMode);
   const select = useAnatomy((s) => s.select);
   const hover = useAnatomy((s) => s.hover);
+  const openPainDraft = useAnatomy((s) => s.openPainDraft);
+  const { lowStim } = useLowStim();
   const [frameTrigger, setFrameTrigger] = useState(0);
   const framedOnce = useRef(false);
 
   const onHover = useCallback(
     (hit: HitInfo | null) => {
-      if (!hit) {
-        hover(null);
-        return;
-      }
-      hover(hit.organId || null);
+      hover(hit ? hit.organId || null : null);
     },
     [hover],
   );
@@ -393,9 +431,14 @@ function SceneContents({
         select(null);
         return;
       }
+      if (painMode && hit.organId) {
+        // pain-paint mode: open the intensity slider for the clicked muscle
+        openPainDraft({ organId: hit.organId, fmaId: hit.fmaId, name: hit.name });
+        return;
+      }
       select(hit.organId || null);
     },
-    [select],
+    [select, painMode, openPainDraft],
   );
 
   useAnatomyRaycaster(registry, onHover, onSelect);
@@ -418,11 +461,14 @@ function SceneContents({
     setTimeout(() => setFrameTrigger((t) => t + 1), 60);
   }, []);
 
-  const enabled = groupTable.filter((g) => enabledGroups.has(g.key));
+  const enabled = useMemo(
+    () => groupTable.filter((g) => enabledGroups.has(g.key)),
+    [groupTable, enabledGroups],
+  );
 
   return (
     <>
-      <LightingRig />
+      <LightingRig lowStim={lowStim} />
       <Suspense fallback={null}>
         {enabled.map((group) => (
           <ModelGroup
@@ -432,12 +478,14 @@ function SceneContents({
             onFirstLoad={onFirstLoad}
           />
         ))}
+        {ansVisible && <AutonomicLayer />}
+        {tenderVisible && <TenderPointLayer />}
       </Suspense>
       <CameraRig registry={registry} trigger={frameTrigger} controlsRef={controlsRef} />
       <OrbitControls
         ref={controlsRef}
         makeDefault
-        enableDamping
+        enableDamping={!lowStim}
         dampingFactor={0.08}
         screenSpacePanning
         minDistance={0.05}
@@ -449,7 +497,7 @@ function SceneContents({
 }
 
 // ---------------------------------------------------------------------------
-// overlay (progress + hover tooltip + isolate bar)
+// overlay (progress + hover tooltip + pain draft)
 // ---------------------------------------------------------------------------
 
 function LoadingOverlay() {
@@ -495,32 +543,54 @@ export default function AnatomyViewer() {
   const isolate = useAnatomy((s) => s.isolate);
   const setIsolate = useAnatomy((s) => s.setIsolate);
   const select = useAnatomy((s) => s.select);
+  const painMode = useAnatomy((s) => s.painMode);
+  const painDraft = useAnatomy((s) => s.painDraft);
+  const [pacingOpen, setPacingOpen] = useState(false);
   const [mouse, setMouse] = useState<{ x: number; y: number } | null>(null);
+  const { lowStim } = useLowStim();
 
   useEffect(() => {
     const onMove = (e: PointerEvent) => setMouse({ x: e.clientX, y: e.clientY });
     window.addEventListener("pointermove", onMove);
-    return () => window.removeEventListener("pointermove", onMove);
+    const openPacing = () => setPacingOpen(true);
+    window.addEventListener("anatomy:open-pacing", openPacing);
+    return () => {
+      window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("anatomy:open-pacing", openPacing);
+    };
   }, []);
 
   const hoveredName = hovered != null ? organById.get(hovered)?.name : null;
 
   return (
-    <div className="relative h-full w-full overflow-hidden bg-[radial-gradient(ellipse_at_50%_20%,#1c2434_0%,#0b0f17_70%)]">
+    <div
+      className="relative h-full w-full overflow-hidden"
+      style={{
+        background: lowStim
+          ? "#000000"
+          : "radial-gradient(ellipse at 50% 20%, #1c2434 0%, #0b0f17 70%)",
+      }}
+    >
       <Canvas
-        dpr={[1, 2]}
+        key={lowStim ? "low-stim" : "standard"}
+        dpr={lowStim ? 1 : [1, 2]}
         camera={{ position: [0.25, 0.1, 1.9], fov: 42, near: 0.01, far: 60 }}
-        gl={{ antialias: true, alpha: false }}
-        onPointerMissed={() => select(null)}
-        style={{ cursor: hoveredName ? "pointer" : "default" }}
+        gl={{ antialias: !lowStim, alpha: false }}
+        onPointerMissed={() => {
+          if (!painDraft) select(null);
+        }}
+        style={{ cursor: painMode ? "crosshair" : hoveredName ? "pointer" : "default" }}
       >
-        <color attach="background" args={["#0d1117"]} />
+        <color attach="background" args={[lowStim ? "#000000" : "#0d1117"]} />
         <SceneContents registry={registry} controlsRef={controlsRef} />
       </Canvas>
 
       <LoadingOverlay />
+      <PainSlider />
 
-      {hoveredName && mouse && (
+      {pacingOpen && <PacingDialog onClose={() => setPacingOpen(false)} />}
+
+      {hoveredName && mouse && !painDraft && (
         <div
           className="pointer-events-none absolute z-10 rounded bg-slate-900/90 px-2.5 py-1.5 text-xs text-slate-100 shadow-lg ring-1 ring-white/10"
           style={{ left: mouse.x + 14, top: mouse.y + 14 }}
@@ -530,6 +600,18 @@ export default function AnatomyViewer() {
       )}
 
       <div className="pointer-events-auto absolute bottom-3 right-3 flex items-center gap-2">
+        {painMode && (
+          <span className="rounded-md bg-rose-600/90 px-2.5 py-1.5 text-xs font-medium text-white shadow ring-1 ring-rose-400">
+            Pain paint ON — click a structure
+          </span>
+        )}
+        <button
+          onClick={() => setPacingOpen(true)}
+          className="rounded-md bg-slate-900/85 px-3 py-1.5 text-xs font-medium text-slate-300 shadow ring-1 ring-white/10 hover:bg-slate-800"
+          title="Estimate the metabolic cost of an activity"
+        >
+          ⚡ Pacing
+        </button>
         <button
           onClick={() => setIsolate(!isolate)}
           className={`rounded-md px-3 py-1.5 text-xs font-medium shadow ring-1 transition ${

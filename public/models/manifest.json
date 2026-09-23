@@ -1,6 +1,6 @@
 {
   "meta": {
-    "generatedAt": "2026-09-23T13:11:04Z",
+    "generatedAt": "2026-09-23T13:30:43Z",
     "dataset": "BodyParts3D",
     "datasetVersion": "3.0",
     "ontology": "FMA 3.2.1 (as distributed with BP3D 3.0)",
@@ -3099,6 +3099,18 @@
       "compressedByteSize": 531448,
       "vertexCount": 16531,
       "triangleCount": 33062,
+      "boundsBp3dMm": {
+        "min": [
+          -59.876399993896484,
+          -182.26600646972656,
+          1529.0799560546875
+        ],
+        "max": [
+          58.542301177978516,
+          -115.28399658203125,
+          1632.2900390625
+        ]
+      },
       "sourceFile": "FMA52734.stl",
       "sourceSha256": "0791c2e2dde886005d3d5997b75a05353d3ae20d908fc74ab820a58520d26f46"
     },
@@ -3113,6 +3125,18 @@
       "compressedByteSize": 531448,
       "vertexCount": 14863,
       "triangleCount": 29734,
+      "boundsBp3dMm": {
+        "min": [
+          -72.63030242919922,
+          -135.67300415039062,
+          1526.27001953125
+        ],
+        "max": [
+          4.820010185241699,
+          -0.758965015411377,
+          1638.219970703125
+        ]
+      },
       "sourceFile": "FMA52788.stl",
       "sourceSha256": "b2bb58e09216066e45af9d74894b8974cbe84bc3a0fa4db5b614670272d5c428"
     },
@@ -3127,6 +3151,18 @@
       "compressedByteSize": 531448,
       "vertexCount": 15123,
       "triangleCount": 30250,
+      "boundsBp3dMm": {
+        "min": [
+          -7.79118013381958,
+          -139.25100708007812,
+          1526.22998046875
+        ],
+        "max": [
+          71.35479736328125,
+          -0.509967029094696,
+          1638.2099609375
+        ]
+      },
       "sourceFile": "FMA52789.stl",
       "sourceSha256": "fbff8a906a4a96ff287b842c5a14ebbee2d96c2df6d554608861b011836a1346"
     },
@@ -3141,6 +3177,18 @@
       "compressedByteSize": 531448,
       "vertexCount": 5633,
       "triangleCount": 11274,
+      "boundsBp3dMm": {
+        "min": [
+          -70.73750305175781,
+          -141.2209930419922,
+          1486.4599609375
+        ],
+        "max": [
+          -11.908599853515625,
+          -47.782798767089844,
+          1558.6600341796875
+        ]
+      },
       "sourceFile": "FMA52738.stl",
       "sourceSha256": "c4d134473a62f43ab18efa415f394ff6c01a07ca14664a640a4ba787eaa6cadc"
     },
@@ -3155,6 +3203,18 @@
       "compressedByteSize": 531448,
       "vertexCount": 5604,
       "triangleCount": 11208,
+      "boundsBp3dMm": {
+        "min": [
+          10.615500450134277,
+          -141.06500244140625,
+          1486.4200439453125
+        ],
+        "max": [
+          69.43150329589844,
+          -47.804901123046875,
+          1558.5899658203125
+        ]
+      },
       "sourceFile": "FMA52739.stl",
       "sourceSha256": "c42357deb26fb0468d7a2f4b471e7e7d8e7363cc5abe7e6d90e982c3d1ae449f"
     },
@@ -3169,6 +3229,18 @@
       "compressedByteSize": 531448,
       "vertexCount": 13904,
       "triangleCount": 27812,
+      "boundsBp3dMm": {
+        "min": [
+          -58.6431999206543,
+          -110.1989974975586,
+          1488.489990234375
+        ],
+        "max": [
+          57.31119918823242,
+          2.225019931793213,
+          1589.6099853515625
+        ]
+      },
       "sourceFile": "FMA52735.stl",
       "sourceSha256": "22467369bae988b5afc2699c631f3ae0d2db2ef65a624ccb5c6a259d767415b5"
     },
@@ -3183,6 +3255,18 @@
       "compressedByteSize": 531448,
       "vertexCount": 7647,
       "triangleCount": 15322,
+      "boundsBp3dMm": {
+        "min": [
+          -53.292999267578125,
+          -151.8470001220703,
+          1489.489990234375
+        ],
+        "max": [
+          51.99829864501953,
+          -99.96839904785156,
+          1555.530029296875
+        ]
+      },
       "sourceFile": "FMA52736.stl",
       "sourceSha256": "76e95b3525d5e94964f5ed5308e8234f78945b9c2ffdc6065e5d3a6e2dc08777"
     },
@@ -3197,6 +3281,18 @@
       "compressedByteSize": 531448,
       "vertexCount": 3887,
       "triangleCount": 7774,
+      "boundsBp3dMm": {
+        "min": [
+          -20.24839973449707,
+          -172.2989959716797,
+          1506.56005859375
+        ],
+        "max": [
+          15.651700019836426,
+          -129.66200256347656,
+          1541.3599853515625
+        ]
+      },
       "sourceFile": "FMA52740.stl",
       "sourceSha256": "732b19d2f1784564cdcbe3dd892eebbc1d0274a62491fecb3779186371faaf93"
     },
@@ -3211,6 +3307,18 @@
       "compressedByteSize": 531448,
       "vertexCount": 2308,
       "triangleCount": 4612,
+      "boundsBp3dMm": {
+        "min": [
+          -61.061500549316406,
+          -167.2760009765625,
+          1491.27001953125
+        ],
+        "max": [
+          -31.232500076293945,
+          -129.552001953125,
+          1544.4100341796875
+        ]
+      },
       "sourceFile": "FMA52892.stl",
       "sourceSha256": "a7af6f93c52cd816c3b5f134811ebe1cba5766e0ab170747cff37c089cbcc001"
     },
@@ -3225,6 +3333,18 @@
       "compressedByteSize": 531448,
       "vertexCount": 2282,
       "triangleCount": 4560,
+      "boundsBp3dMm": {
+        "min": [
+          29.867599487304688,
+          -167.28199768066406,
+          1491.219970703125
+        ],
+        "max": [
+          59.73320007324219,
+          -129.52000427246094,
+          1544.4100341796875
+        ]
+      },
       "sourceFile": "FMA52893.stl",
       "sourceSha256": "a47bff85f4f2fbde1ed67cdb79688414616f9ca05187425bc2ffa1b841295feb"
     },
@@ -3239,6 +3359,18 @@
       "compressedByteSize": 531448,
       "vertexCount": 7068,
       "triangleCount": 14148,
+      "boundsBp3dMm": {
+        "min": [
+          -45.17789840698242,
+          -188.7689971923828,
+          1475.5799560546875
+        ],
+        "max": [
+          0.021546000614762306,
+          -136.67599487304688,
+          1541.219970703125
+        ]
+      },
       "sourceFile": "FMA53649.stl",
       "sourceSha256": "a83de38623317730c5f6c47be8c98b1fd7780b23317d09ca35e1f4f0735dd02e"
     },
@@ -3253,6 +3385,18 @@
       "compressedByteSize": 531448,
       "vertexCount": 7251,
       "triangleCount": 14506,
+      "boundsBp3dMm": {
+        "min": [
+          -3.3842198848724365,
+          -187.60000610351562,
+          1475.47998046875
+        ],
+        "max": [
+          43.312198638916016,
+          -134.33900451660156,
+          1541.239990234375
+        ]
+      },
       "sourceFile": "FMA53650.stl",
       "sourceSha256": "875a8fafabc5df5c11d9cdc6c99ac37326c7f77c5ab5987e8d5b3d00e0d8b907"
     },
@@ -3267,6 +3411,18 @@
       "compressedByteSize": 531448,
       "vertexCount": 514,
       "triangleCount": 1024,
+      "boundsBp3dMm": {
+        "min": [
+          -8.742250442504883,
+          -195.0260009765625,
+          1510.6800537109375
+        ],
+        "max": [
+          -0.43773001432418823,
+          -174.7010040283203,
+          1541.050048828125
+        ]
+      },
       "sourceFile": "FMA53647.stl",
       "sourceSha256": "a2c4e73f0346df903e9fcc4c7522c2ce9a82fd65f2f8f2993867812306577303"
     },
@@ -3281,6 +3437,18 @@
       "compressedByteSize": 531448,
       "vertexCount": 564,
       "triangleCount": 1124,
+      "boundsBp3dMm": {
+        "min": [
+          -2.7096099853515625,
+          -193.6820068359375,
+          1511.280029296875
+        ],
+        "max": [
+          7.026140213012695,
+          -174.4010009765625,
+          1541.3299560546875
+        ]
+      },
       "sourceFile": "FMA53648.stl",
       "sourceSha256": "576a778c98145cbe676ca7c97f599430f8f52ed367ba4907d7ab1ebb720bb5ca"
     },
@@ -3295,6 +3463,18 @@
       "compressedByteSize": 531448,
       "vertexCount": 559,
       "triangleCount": 1114,
+      "boundsBp3dMm": {
+        "min": [
+          -17.185400009155273,
+          -171.67999267578125,
+          1510.1099853515625
+        ],
+        "max": [
+          -6.874209880828857,
+          -157.43099975585938,
+          1534.47998046875
+        ]
+      },
       "sourceFile": "FMA53645.stl",
       "sourceSha256": "19849965bec68b62f2d6c08968ab1d421cddd433f65e7d7e60fedaa4b5cf3466"
     },
@@ -3309,6 +3489,18 @@
       "compressedByteSize": 531448,
       "vertexCount": 578,
       "triangleCount": 1152,
+      "boundsBp3dMm": {
+        "min": [
+          6.668019771575928,
+          -170.5749969482422,
+          1507.4000244140625
+        ],
+        "max": [
+          17.093799591064453,
+          -156.91099548339844,
+          1535.1099853515625
+        ]
+      },
       "sourceFile": "FMA53646.stl",
       "sourceSha256": "9c3dc16643b4d11476b055f6785775a725d6e1cdf7497e26d4c634fda446e010"
     },
@@ -3323,6 +3515,18 @@
       "compressedByteSize": 531448,
       "vertexCount": 806,
       "triangleCount": 1616,
+      "boundsBp3dMm": {
+        "min": [
+          -15.0177001953125,
+          -170.9250030517578,
+          1489.7900390625
+        ],
+        "max": [
+          -4.865739822387695,
+          -137.3780059814453,
+          1511.5899658203125
+        ]
+      },
       "sourceFile": "FMA54737.stl",
       "sourceSha256": "7797ac8cb5c391b89091f704b810ee72d0a2e6f2bc31e088d9d9732c12606acf"
     },
@@ -3337,6 +3541,18 @@
       "compressedByteSize": 531448,
       "vertexCount": 744,
       "triangleCount": 1484,
+      "boundsBp3dMm": {
+        "min": [
+          2.5677599906921387,
+          -173.86300659179688,
+          1493.02001953125
+        ],
+        "max": [
+          12.59850025177002,
+          -139.93800354003906,
+          1508.1300048828125
+        ]
+      },
       "sourceFile": "FMA54738.stl",
       "sourceSha256": "b5433ce863c424e22f113062e23812b81afbbdacac33b5afa73ecab03b6ebeff"
     },
@@ -3351,6 +3567,18 @@
       "compressedByteSize": 531448,
       "vertexCount": 1798,
       "triangleCount": 3592,
+      "boundsBp3dMm": {
+        "min": [
+          -26.832799911499023,
+          -155.95599365234375,
+          1481.9200439453125
+        ],
+        "max": [
+          -1.207319974899292,
+          -121.86199951171875,
+          1520.7900390625
+        ]
+      },
       "sourceFile": "FMA53655.stl",
       "sourceSha256": "318b033125aa504ed5583e61c4a6808a7fd998835d2dceef9df17c327726582b"
     },
@@ -3365,6 +3593,18 @@
       "compressedByteSize": 531448,
       "vertexCount": 1823,
       "triangleCount": 3642,
+      "boundsBp3dMm": {
+        "min": [
+          -3.4295499324798584,
+          -157.9320068359375,
+          1481.0999755859375
+        ],
+        "max": [
+          22.37150001525879,
+          -119.19599914550781,
+          1519.22998046875
+        ]
+      },
       "sourceFile": "FMA53656.stl",
       "sourceSha256": "1ac7ac814f39eb834d2f175002825085c6b04ecc94751ec247ab7c0161cabe37"
     },
@@ -3379,6 +3619,18 @@
       "compressedByteSize": 531448,
       "vertexCount": 1213,
       "triangleCount": 2422,
+      "boundsBp3dMm": {
+        "min": [
+          -6.211999893188477,
+          -177.3679962158203,
+          1494.949951171875
+        ],
+        "max": [
+          3.4725399017333984,
+          -118.1780014038086,
+          1518.300048828125
+        ]
+      },
       "sourceFile": "FMA9710.stl",
       "sourceSha256": "8504c22ef2017bf56768f1127d607ccb0947dab8b2893e546d0ececc76d28d9b"
     },
@@ -3393,6 +3645,18 @@
       "compressedByteSize": 531448,
       "vertexCount": 10831,
       "triangleCount": 21658,
+      "boundsBp3dMm": {
+        "min": [
+          -50.89649963378906,
+          -178.92599487304688,
+          1435.6500244140625
+        ],
+        "max": [
+          49.557498931884766,
+          -99.56210327148438,
+          1515.5
+        ]
+      },
       "sourceFile": "FMA52748.stl",
       "sourceSha256": "e0321ce797a06e8e14fea22261084262cf28099172224e22f44a60d66c42a888"
     },
@@ -3407,6 +3671,18 @@
       "compressedByteSize": 531448,
       "vertexCount": 2769,
       "triangleCount": 5534,
+      "boundsBp3dMm": {
+        "min": [
+          -21.618099212646484,
+          -135.65699768066406,
+          1431.0400390625
+        ],
+        "max": [
+          20.314599990844727,
+          -100.80899810791016,
+          1449.949951171875
+        ]
+      },
       "sourceFile": "FMA52749.stl",
       "sourceSha256": "6fb62b5be3fa82ee49daaebc00368eda788d113bacfee742a066b41aad17621b"
     },
@@ -3421,6 +3697,18 @@
       "compressedByteSize": 1868816,
       "vertexCount": 3082,
       "triangleCount": 6172,
+      "boundsBp3dMm": {
+        "min": [
+          -42.327301025390625,
+          -100.9729995727539,
+          1471.1600341796875
+        ],
+        "max": [
+          41.97669982910156,
+          -53.18579864501953,
+          1490.5799560546875
+        ]
+      },
       "sourceFile": "FMA12519.stl",
       "sourceSha256": "cc959122b7875a65d78597d89134fdb2f59a7c0f60d2e781c399db4010208f81"
     },
@@ -3435,6 +3723,18 @@
       "compressedByteSize": 1868816,
       "vertexCount": 3431,
       "triangleCount": 6870,
+      "boundsBp3dMm": {
+        "min": [
+          -26.553499221801758,
+          -98.29779815673828,
+          1447.6400146484375
+        ],
+        "max": [
+          25.436899185180664,
+          -47.15549850463867,
+          1489.300048828125
+        ]
+      },
       "sourceFile": "FMA12520.stl",
       "sourceSha256": "9e2a940db7b4bf921f97b63ed5aa549f675effe55af2cc81ad8589331309f896"
     },
@@ -3449,6 +3749,18 @@
       "compressedByteSize": 1868816,
       "vertexCount": 2635,
       "triangleCount": 5278,
+      "boundsBp3dMm": {
+        "min": [
+          -27.968599319458008,
+          -98.07060241699219,
+          1432.530029296875
+        ],
+        "max": [
+          27.021699905395508,
+          -45.61349868774414,
+          1458.4100341796875
+        ]
+      },
       "sourceFile": "FMA12521.stl",
       "sourceSha256": "1147f621766b9dce37b21a827f552c5669afaaf49531aab8d7b0df6f374233d1"
     },
@@ -3463,6 +3775,18 @@
       "compressedByteSize": 1868816,
       "vertexCount": 2108,
       "triangleCount": 4224,
+      "boundsBp3dMm": {
+        "min": [
+          -28.663799285888672,
+          -97.69490051269531,
+          1420.510009765625
+        ],
+        "max": [
+          27.058399200439453,
+          -46.530399322509766,
+          1444.75
+        ]
+      },
       "sourceFile": "FMA12522.stl",
       "sourceSha256": "34ea19b8f1c42e91c96f1ce19c520c2f72cda372c5373b15f85dc102e8da8208"
     },
@@ -3477,6 +3801,18 @@
       "compressedByteSize": 1868816,
       "vertexCount": 2373,
       "triangleCount": 4754,
+      "boundsBp3dMm": {
+        "min": [
+          -30.344900131225586,
+          -96.5698013305664,
+          1409.1700439453125
+        ],
+        "max": [
+          28.22410011291504,
+          -41.72169876098633,
+          1431.1500244140625
+        ]
+      },
       "sourceFile": "FMA12523.stl",
       "sourceSha256": "e33ae49024283758ff60e48d14eeacf123fb79c48730e275951222e0fd91739c"
     },
@@ -3491,6 +3827,18 @@
       "compressedByteSize": 1868816,
       "vertexCount": 3171,
       "triangleCount": 6350,
+      "boundsBp3dMm": {
+        "min": [
+          -30.26259994506836,
+          -94.8572998046875,
+          1394.4200439453125
+        ],
+        "max": [
+          28.57229995727539,
+          -32.87730026245117,
+          1418.3499755859375
+        ]
+      },
       "sourceFile": "FMA12524.stl",
       "sourceSha256": "449c209bd191ce4a0fbd32b422d48d0ab73142427b336dde45688f08f06455c6"
     },
@@ -3505,6 +3853,18 @@
       "compressedByteSize": 1868816,
       "vertexCount": 2607,
       "triangleCount": 5222,
+      "boundsBp3dMm": {
+        "min": [
+          -35.08359909057617,
+          -91.16449737548828,
+          1379.68994140625
+        ],
+        "max": [
+          31.256799697875977,
+          -22.861900329589844,
+          1406.68994140625
+        ]
+      },
       "sourceFile": "FMA12525.stl",
       "sourceSha256": "083c2e5aa6876089f4b9fa43aaa1cb2ce5284ba5b49cb1700b8dbdaca89729b7"
     },
@@ -3519,6 +3879,18 @@
       "compressedByteSize": 1868816,
       "vertexCount": 2807,
       "triangleCount": 5614,
+      "boundsBp3dMm": {
+        "min": [
+          -38.214298248291016,
+          -86.97940063476562,
+          1364.3199462890625
+        ],
+        "max": [
+          33.33250045776367,
+          -16.92460060119629,
+          1394.1500244140625
+        ]
+      },
       "sourceFile": "FMA9165.stl",
       "sourceSha256": "ca7d411ee7e536c64f37ab217a151b9edfa4fbd7fdc80994ddb8e2a895a14cff"
     },
@@ -3533,6 +3905,18 @@
       "compressedByteSize": 1868816,
       "vertexCount": 4180,
       "triangleCount": 8360,
+      "boundsBp3dMm": {
+        "min": [
+          -36.96120071411133,
+          -82.09310150146484,
+          1345.02001953125
+        ],
+        "max": [
+          33.03839874267578,
+          -11.337200164794922,
+          1379.5400390625
+        ]
+      },
       "sourceFile": "FMA9187.stl",
       "sourceSha256": "819eee72d2b2582a6ac99757371a451ae22496311cbffbc7fd8a5027c51316a4"
     },
@@ -3547,6 +3931,18 @@
       "compressedByteSize": 1868816,
       "vertexCount": 4455,
       "triangleCount": 8910,
+      "boundsBp3dMm": {
+        "min": [
+          -33.93709945678711,
+          -76.19580078125,
+          1321.3599853515625
+        ],
+        "max": [
+          29.8927001953125,
+          -0.6576619744300842,
+          1361.31005859375
+        ]
+      },
       "sourceFile": "FMA9209.stl",
       "sourceSha256": "3fb7d0c13bb268aba5bd60d3ebb6cc8fa0b2c3e265003d103cb126164b89653c"
     },
@@ -3561,6 +3957,18 @@
       "compressedByteSize": 1868816,
       "vertexCount": 4465,
       "triangleCount": 8930,
+      "boundsBp3dMm": {
+        "min": [
+          -34.91419982910156,
+          -69.8207015991211,
+          1297.699951171875
+        ],
+        "max": [
+          33.60200119018555,
+          -0.0680840015411377,
+          1341.5699462890625
+        ]
+      },
       "sourceFile": "FMA9248.stl",
       "sourceSha256": "807493e20e64589561133744080d1d1259417b54a355f03b302aac2deb6aa2d9"
     },
@@ -3575,6 +3983,18 @@
       "compressedByteSize": 1868816,
       "vertexCount": 4917,
       "triangleCount": 9834,
+      "boundsBp3dMm": {
+        "min": [
+          -37.243099212646484,
+          -66.10279846191406,
+          1265.31005859375
+        ],
+        "max": [
+          32.29909896850586,
+          -1.1176300048828125,
+          1317.800048828125
+        ]
+      },
       "sourceFile": "FMA9922.stl",
       "sourceSha256": "c4d79d935d42cebc31350995d2b1270aa33c9d00afab8b965ac9571dbca89e86"
     },
@@ -3589,6 +4009,18 @@
       "compressedByteSize": 1868816,
       "vertexCount": 2448,
       "triangleCount": 4896,
+      "boundsBp3dMm": {
+        "min": [
+          -37.39339828491211,
+          -65.53880310058594,
+          1229.25
+        ],
+        "max": [
+          32.39310073852539,
+          -0.9102410078048706,
+          1290.6400146484375
+        ]
+      },
       "sourceFile": "FMA9945.stl",
       "sourceSha256": "591757ab8228e95d93733e276f424b240ce9e050cf7bf7ec10775c35004f908b"
     },
@@ -3603,6 +4035,18 @@
       "compressedByteSize": 1868816,
       "vertexCount": 5370,
       "triangleCount": 10740,
+      "boundsBp3dMm": {
+        "min": [
+          -37.68410110473633,
+          -67.2063980102539,
+          1202.22998046875
+        ],
+        "max": [
+          34.036399841308594,
+          -2.732719898223877,
+          1262.72998046875
+        ]
+      },
       "sourceFile": "FMA9968.stl",
       "sourceSha256": "e1ee58047e8e28646aeb1d94a4afa20395aed9573509de6a659db31ddfa8b8fd"
     },
@@ -3617,6 +4061,18 @@
       "compressedByteSize": 1868816,
       "vertexCount": 2603,
       "triangleCount": 5206,
+      "boundsBp3dMm": {
+        "min": [
+          -34.62810134887695,
+          -72.1447982788086,
+          1173.699951171875
+        ],
+        "max": [
+          32.61130142211914,
+          -0.7810779809951782,
+          1233.2099609375
+        ]
+      },
       "sourceFile": "FMA9991.stl",
       "sourceSha256": "80b1dc4d2ef0c3e2828d9fb56c4f079d3b8007531c0ac21069f9e47bc784bb0f"
     },
@@ -3631,6 +4087,18 @@
       "compressedByteSize": 1868816,
       "vertexCount": 5643,
       "triangleCount": 11286,
+      "boundsBp3dMm": {
+        "min": [
+          -35.6068000793457,
+          -77.75080108642578,
+          1149.010009765625
+        ],
+        "max": [
+          33.09629821777344,
+          -4.399539947509766,
+          1203.8399658203125
+        ]
+      },
       "sourceFile": "FMA10014.stl",
       "sourceSha256": "9b44be02a7fc5a136a79d77bbbaa8d7c1642df160b281a8a7220f338db954d2f"
     },
@@ -3645,6 +4113,18 @@
       "compressedByteSize": 1868816,
       "vertexCount": 5964,
       "triangleCount": 11928,
+      "boundsBp3dMm": {
+        "min": [
+          -37.0182991027832,
+          -84.12090301513672,
+          1117.739990234375
+        ],
+        "max": [
+          33.33409881591797,
+          -8.670570373535156,
+          1175.1700439453125
+        ]
+      },
       "sourceFile": "FMA10037.stl",
       "sourceSha256": "a7453a5baca48e378e8bdbdfd1cf3733e9a84445f7139e43605b5997f29c7083"
     },
@@ -3659,6 +4139,18 @@
       "compressedByteSize": 1868816,
       "vertexCount": 2826,
       "triangleCount": 5652,
+      "boundsBp3dMm": {
+        "min": [
+          -28.72170066833496,
+          -92.6094970703125,
+          1092.4300537109375
+        ],
+        "max": [
+          26.192800521850586,
+          -16.055099487304688,
+          1145.75
+        ]
+      },
       "sourceFile": "FMA10059.stl",
       "sourceSha256": "fbdbd603ced5d3e0cb29597deb56bd2e84788228d1cb2c8b056f9709b23759cd"
     },
@@ -3673,6 +4165,18 @@
       "compressedByteSize": 1868816,
       "vertexCount": 3019,
       "triangleCount": 6038,
+      "boundsBp3dMm": {
+        "min": [
+          -23.259300231933594,
+          -101.49199676513672,
+          1063.31005859375
+        ],
+        "max": [
+          22.00950050354004,
+          -23.132299423217773,
+          1116.1199951171875
+        ]
+      },
       "sourceFile": "FMA10081.stl",
       "sourceSha256": "a5c83982e93be05165e2aa51eb2ae9abcd92b6bfbb9abb076bca29aa17ecad74"
     },
@@ -3687,6 +4191,18 @@
       "compressedByteSize": 1868816,
       "vertexCount": 6473,
       "triangleCount": 12946,
+      "boundsBp3dMm": {
+        "min": [
+          -36.692501068115234,
+          -109.79100036621094,
+          1026.949951171875
+        ],
+        "max": [
+          32.67290115356445,
+          -29.34749984741211,
+          1084.469970703125
+        ]
+      },
       "sourceFile": "FMA13072.stl",
       "sourceSha256": "fc7e0f70a87808629ee655a344e986d741c6111d2664f2b245685d523e5e143a"
     },
@@ -3701,6 +4217,18 @@
       "compressedByteSize": 1868816,
       "vertexCount": 3473,
       "triangleCount": 6946,
+      "boundsBp3dMm": {
+        "min": [
+          -41.18130111694336,
+          -114.93399810791016,
+          1003.3900146484375
+        ],
+        "max": [
+          37.51689910888672,
+          -33.9651985168457,
+          1051.719970703125
+        ]
+      },
       "sourceFile": "FMA13073.stl",
       "sourceSha256": "230f9a1ca9efae14e7223bba05e49b2093a486103a29fe67b7907aba41b8ad28"
     },
@@ -3715,6 +4243,18 @@
       "compressedByteSize": 1868816,
       "vertexCount": 7375,
       "triangleCount": 14750,
+      "boundsBp3dMm": {
+        "min": [
+          -41.00230026245117,
+          -116.68099975585938,
+          975.2429809570312
+        ],
+        "max": [
+          38.78110122680664,
+          -33.89799880981445,
+          1020.8499755859375
+        ]
+      },
       "sourceFile": "FMA13074.stl",
       "sourceSha256": "8b04d8e2e380daba38d00333658cc0809a0ab8ce8fd7cb7634615628715592fb"
     },
@@ -3729,6 +4269,18 @@
       "compressedByteSize": 1868816,
       "vertexCount": 7713,
       "triangleCount": 15426,
+      "boundsBp3dMm": {
+        "min": [
+          -43.57350158691406,
+          -115.56099700927734,
+          948.9910278320312
+        ],
+        "max": [
+          42.1161994934082,
+          -33.70429992675781,
+          992.0809936523438
+        ]
+      },
       "sourceFile": "FMA13075.stl",
       "sourceSha256": "3464b94d03d42e43bf5ba01a741b7677bec8113a8359eb4a2caec960c6cf341c"
     },
@@ -3743,6 +4295,18 @@
       "compressedByteSize": 1868816,
       "vertexCount": 8641,
       "triangleCount": 17282,
+      "boundsBp3dMm": {
+        "min": [
+          -51.84189987182617,
+          -109.73300170898438,
+          914.0430297851562
+        ],
+        "max": [
+          48.90950012207031,
+          -29.38680076599121,
+          963.1599731445312
+        ]
+      },
       "sourceFile": "FMA13076.stl",
       "sourceSha256": "244f54f1388b1cb02014a6de9c1b32ef40d398967bc8e17ed56b46c637fe11c1"
     },
@@ -3757,6 +4321,18 @@
       "compressedByteSize": 1868816,
       "vertexCount": 22194,
       "triangleCount": 44416,
+      "boundsBp3dMm": {
+        "min": [
+          -60.176700592041016,
+          -94.5697021484375,
+          790.6900024414062
+        ],
+        "max": [
+          62.09989929199219,
+          -5.626349925994873,
+          935.9990234375
+        ]
+      },
       "sourceFile": "FMA16202.stl",
       "sourceSha256": "d52dac1add057e05699c3c767736ab45c9c426ab0eebd438e20cd4f0768ee3d8"
     },
@@ -3771,6 +4347,18 @@
       "compressedByteSize": 1868816,
       "vertexCount": 7099,
       "triangleCount": 14194,
+      "boundsBp3dMm": {
+        "min": [
+          -69.52619934082031,
+          -133.81399536132812,
+          1330.030029296875
+        ],
+        "max": [
+          -16.3705997467041,
+          -65.39769744873047,
+          1387.550048828125
+        ]
+      },
       "sourceFile": "FMA7857.stl",
       "sourceSha256": "60aaf884bbba890b825cc96036ab3af04ab8ba9a8d283752ba5c86105927b265"
     },
@@ -3785,6 +4373,18 @@
       "compressedByteSize": 1868816,
       "vertexCount": 11849,
       "triangleCount": 23694,
+      "boundsBp3dMm": {
+        "min": [
+          -96.8541030883789,
+          -162.44400024414062,
+          1289.31005859375
+        ],
+        "max": [
+          -17.34939956665039,
+          -54.024898529052734,
+          1377.699951171875
+        ]
+      },
       "sourceFile": "FMA7882.stl",
       "sourceSha256": "be841be06ebe7f2554655e222a5c5237a40103335816eb6c2d51dae28bb9a7b0"
     },
@@ -3799,6 +4399,18 @@
       "compressedByteSize": 1868816,
       "vertexCount": 15432,
       "triangleCount": 30860,
+      "boundsBp3dMm": {
+        "min": [
+          -109.58200073242188,
+          -171.85899353027344,
+          1256.0699462890625
+        ],
+        "max": [
+          -17.110300064086914,
+          -37.079898834228516,
+          1358.47998046875
+        ]
+      },
       "sourceFile": "FMA7909.stl",
       "sourceSha256": "942b53665d37f1541b49772e092d557ffee0407fa917205eb204c612c707710a"
     },
@@ -3813,6 +4425,18 @@
       "compressedByteSize": 1868816,
       "vertexCount": 19246,
       "triangleCount": 38488,
+      "boundsBp3dMm": {
+        "min": [
+          -122.0260009765625,
+          -187.70799255371094,
+          1223.969970703125
+        ],
+        "max": [
+          -15.922499656677246,
+          -23.306499481201172,
+          1337.3199462890625
+        ]
+      },
       "sourceFile": "FMA7957.stl",
       "sourceSha256": "f09aed293efeaca491348e4b0d68aba243ad69b12da16c99ca0af8dfdbbe1537"
     },
@@ -3827,6 +4451,18 @@
       "compressedByteSize": 1868816,
       "vertexCount": 20819,
       "triangleCount": 41634,
+      "boundsBp3dMm": {
+        "min": [
+          -127.75299835205078,
+          -196.70899963378906,
+          1188.8699951171875
+        ],
+        "max": [
+          -15.610799789428711,
+          -13.423299789428711,
+          1310.8399658203125
+        ]
+      },
       "sourceFile": "FMA8066.stl",
       "sourceSha256": "692ce079c288c646d05f30bd656554c2ea5efb382390a2cfa5f1f3215a57fb4c"
     },
@@ -3841,6 +4477,18 @@
       "compressedByteSize": 1868816,
       "vertexCount": 22319,
       "triangleCount": 44634,
+      "boundsBp3dMm": {
+        "min": [
+          -135.0290069580078,
+          -193.5679931640625,
+          1154.3699951171875
+        ],
+        "max": [
+          -15.857000350952148,
+          -3.622450113296509,
+          1288.5400390625
+        ]
+      },
       "sourceFile": "FMA8175.stl",
       "sourceSha256": "c7ceddf05e6f5b31a51f5cd5017659f10496fc004007052c45c0fddce2cbcf90"
     },
@@ -3855,6 +4503,18 @@
       "compressedByteSize": 1868816,
       "vertexCount": 21575,
       "triangleCount": 43146,
+      "boundsBp3dMm": {
+        "min": [
+          -137.75900268554688,
+          -180.30099487304688,
+          1121.199951171875
+        ],
+        "max": [
+          -16.56999969482422,
+          -4.478509902954102,
+          1260.93994140625
+        ]
+      },
       "sourceFile": "FMA8229.stl",
       "sourceSha256": "035891a2b0a602bc07206e6a560c43ace3270f9111fda00d3407a95991a69e3f"
     },
@@ -3869,6 +4529,18 @@
       "compressedByteSize": 1868816,
       "vertexCount": 18325,
       "triangleCount": 36646,
+      "boundsBp3dMm": {
+        "min": [
+          -131.60800170898438,
+          -162.75599670410156,
+          1086.18994140625
+        ],
+        "max": [
+          -17.48979949951172,
+          -4.554810047149658,
+          1232.8800048828125
+        ]
+      },
       "sourceFile": "FMA8283.stl",
       "sourceSha256": "bb77ea1b25858457b67e2be43a09077a2de0e2a3c662c3bc2b1528f28b458b84"
     },
@@ -3883,6 +4555,18 @@
       "compressedByteSize": 1868816,
       "vertexCount": 17141,
       "triangleCount": 34278,
+      "boundsBp3dMm": {
+        "min": [
+          -129.77099609375,
+          -135.68600463867188,
+          1055.68994140625
+        ],
+        "max": [
+          -18.22960090637207,
+          -7.5069899559021,
+          1205.8599853515625
+        ]
+      },
       "sourceFile": "FMA8364.stl",
       "sourceSha256": "22f08d07eb9edcd51a3de7d3bb59df3cf848cc091808ec9e7080a937620a06fe"
     },
@@ -3897,6 +4581,18 @@
       "compressedByteSize": 1868816,
       "vertexCount": 15507,
       "triangleCount": 31010,
+      "boundsBp3dMm": {
+        "min": [
+          -127.89600372314453,
+          -121.2760009765625,
+          1025.3699951171875
+        ],
+        "max": [
+          -18.57080078125,
+          -15.363100051879883,
+          1177.199951171875
+        ]
+      },
       "sourceFile": "FMA8445.stl",
       "sourceSha256": "74b03c2cd1d227d262d848aa0564b2022f1944bcaf6d3b469cceb5310da07c70"
     },
@@ -3911,6 +4607,18 @@
       "compressedByteSize": 1868816,
       "vertexCount": 11216,
       "triangleCount": 22428,
+      "boundsBp3dMm": {
+        "min": [
+          -116.5260009765625,
+          -100.69499969482422,
+          1012.2999877929688
+        ],
+        "max": [
+          -19.881799697875977,
+          -22.10110092163086,
+          1140.1199951171875
+        ]
+      },
       "sourceFile": "FMA8531.stl",
       "sourceSha256": "e2bc61ccb59923b00048f093cb5d105c5a4a03f5d4cabce2be147df0192af269"
     },
@@ -3925,6 +4633,18 @@
       "compressedByteSize": 1868816,
       "vertexCount": 6633,
       "triangleCount": 13262,
+      "boundsBp3dMm": {
+        "min": [
+          -83.34049987792969,
+          -74.88899993896484,
+          1009.8400268554688
+        ],
+        "max": [
+          -19.419300079345703,
+          -31.9153995513916,
+          1104.5999755859375
+        ]
+      },
       "sourceFile": "FMA8533.stl",
       "sourceSha256": "eb47b3d7b6b8440a90fe27f333c8f30f72c6ae82694f4d0737ca6279b04e0b74"
     },
@@ -3939,6 +4659,18 @@
       "compressedByteSize": 1868816,
       "vertexCount": 7734,
       "triangleCount": 15464,
+      "boundsBp3dMm": {
+        "min": [
+          13.327400207519531,
+          -133.78399658203125,
+          1330.4100341796875
+        ],
+        "max": [
+          67.20259857177734,
+          -65.50779724121094,
+          1387.530029296875
+        ]
+      },
       "sourceFile": "FMA7987.stl",
       "sourceSha256": "47054d1d5654d7612a853d28529784a04719235c7162c20f3c11b14778735526"
     },
@@ -3953,6 +4685,18 @@
       "compressedByteSize": 1868816,
       "vertexCount": 12654,
       "triangleCount": 25304,
+      "boundsBp3dMm": {
+        "min": [
+          15.036399841308594,
+          -162.3719940185547,
+          1289.3499755859375
+        ],
+        "max": [
+          94.53510284423828,
+          -53.69129943847656,
+          1379.199951171875
+        ]
+      },
       "sourceFile": "FMA8012.stl",
       "sourceSha256": "f6aadf30d7b507bd545fdcbb4f43630fc331c652fe1c4024d75380c1dfae45e6"
     },
@@ -3967,6 +4711,18 @@
       "compressedByteSize": 1868816,
       "vertexCount": 15608,
       "triangleCount": 31212,
+      "boundsBp3dMm": {
+        "min": [
+          14.813799858093262,
+          -171.83900451660156,
+          1256.0799560546875
+        ],
+        "max": [
+          107.27100372314453,
+          -37.083499908447266,
+          1358.469970703125
+        ]
+      },
       "sourceFile": "FMA8039.stl",
       "sourceSha256": "344b8098d9d10c0fb24bc11cd5f1cf41aba35070c4344d84b9a9b9b01026d394"
     },
@@ -3981,6 +4737,18 @@
       "compressedByteSize": 1868816,
       "vertexCount": 18963,
       "triangleCount": 37922,
+      "boundsBp3dMm": {
+        "min": [
+          13.613200187683105,
+          -187.6580047607422,
+          1223.56005859375
+        ],
+        "max": [
+          119.72000122070312,
+          -23.308799743652344,
+          1337.3199462890625
+        ]
+      },
       "sourceFile": "FMA8148.stl",
       "sourceSha256": "477e7de3c896937eb7df14760a63c0003cdeb6de9ae156d02a46da960081456f"
     },
@@ -3995,6 +4763,18 @@
       "compressedByteSize": 1868816,
       "vertexCount": 20786,
       "triangleCount": 41568,
+      "boundsBp3dMm": {
+        "min": [
+          13.307999610900879,
+          -196.6439971923828,
+          1188.9100341796875
+        ],
+        "max": [
+          125.44300079345703,
+          -13.425999641418457,
+          1310.8299560546875
+        ]
+      },
       "sourceFile": "FMA8093.stl",
       "sourceSha256": "c795ccae604bc9ffa90b607c04135548e6c6febcbe2276fb19a29167d4f2591e"
     },
@@ -4009,6 +4789,18 @@
       "compressedByteSize": 1868816,
       "vertexCount": 22219,
       "triangleCount": 44434,
+      "boundsBp3dMm": {
+        "min": [
+          13.549099922180176,
+          -193.5469970703125,
+          1154.4000244140625
+        ],
+        "max": [
+          132.71200561523438,
+          -3.62391996383667,
+          1288.5400390625
+        ]
+      },
       "sourceFile": "FMA8202.stl",
       "sourceSha256": "1230ade55f5abf93769e38411a2e6cb72a8e480a9335bfff21a0ef4c3ef78a1c"
     },
@@ -4023,6 +4815,18 @@
       "compressedByteSize": 1868816,
       "vertexCount": 22033,
       "triangleCount": 44062,
+      "boundsBp3dMm": {
+        "min": [
+          14.262299537658691,
+          -180.23899841308594,
+          1121.239990234375
+        ],
+        "max": [
+          135.44900512695312,
+          -4.478499889373779,
+          1260.93994140625
+        ]
+      },
       "sourceFile": "FMA8256.stl",
       "sourceSha256": "48a8cb5f072ee227097420c8af4707f1a2cae82127b3b11f846a6a80d8a66803"
     },
@@ -4037,6 +4841,18 @@
       "compressedByteSize": 1868816,
       "vertexCount": 18569,
       "triangleCount": 37134,
+      "boundsBp3dMm": {
+        "min": [
+          15.17870044708252,
+          -162.7259979248047,
+          1086.2099609375
+        ],
+        "max": [
+          129.29800415039062,
+          -4.555729866027832,
+          1232.8699951171875
+        ]
+      },
       "sourceFile": "FMA8310.stl",
       "sourceSha256": "89a351122e11281fb5f2ac6a6b7d7d79ca3c6c04f5be19cfcb9264988b3c9c33"
     },
@@ -4051,6 +4867,18 @@
       "compressedByteSize": 1868816,
       "vertexCount": 18012,
       "triangleCount": 36020,
+      "boundsBp3dMm": {
+        "min": [
+          15.923199653625488,
+          -135.63999938964844,
+          1055.72998046875
+        ],
+        "max": [
+          127.46099853515625,
+          -7.507559776306152,
+          1205.8399658203125
+        ]
+      },
       "sourceFile": "FMA8391.stl",
       "sourceSha256": "b912e0b9e6238b00620a657d299db5f08fcfb7cc359ac56f80d8c5c45a93a3a4"
     },
@@ -4065,6 +4893,18 @@
       "compressedByteSize": 1868816,
       "vertexCount": 15881,
       "triangleCount": 31758,
+      "boundsBp3dMm": {
+        "min": [
+          16.265600204467773,
+          -121.24099731445312,
+          1025.4100341796875
+        ],
+        "max": [
+          125.58599853515625,
+          -15.36460018157959,
+          1177.18994140625
+        ]
+      },
       "sourceFile": "FMA8472.stl",
       "sourceSha256": "73ceca00c9334232a2ee2221eb03fbc75f7b37cfc45e3762dc867571e1ca67b9"
     },
@@ -4079,6 +4919,18 @@
       "compressedByteSize": 1868816,
       "vertexCount": 11415,
       "triangleCount": 22826,
+      "boundsBp3dMm": {
+        "min": [
+          17.576000213623047,
+          -100.68399810791016,
+          1012.3099975585938
+        ],
+        "max": [
+          114.21299743652344,
+          -22.102699279785156,
+          1140.1099853515625
+        ]
+      },
       "sourceFile": "FMA8532.stl",
       "sourceSha256": "1e744600b93e628619746faa6921a3b72b955c437dc4b35a1dbff0421776ac6b"
     },
@@ -4093,6 +4945,18 @@
       "compressedByteSize": 1868816,
       "vertexCount": 6865,
       "triangleCount": 13726,
+      "boundsBp3dMm": {
+        "min": [
+          18.12980079650879,
+          -74.88040161132812,
+          1009.8499755859375
+        ],
+        "max": [
+          82.02580261230469,
+          -31.914899826049805,
+          1104.5799560546875
+        ]
+      },
       "sourceFile": "FMA8534.stl",
       "sourceSha256": "47df6f4c18e72581fa78b08aa83326321d8179a3b363743a7e40697f645cd679"
     },
@@ -4107,6 +4971,18 @@
       "compressedByteSize": 1868816,
       "vertexCount": 5943,
       "triangleCount": 11882,
+      "boundsBp3dMm": {
+        "min": [
+          -28.287399291992188,
+          -179.072998046875,
+          1294.030029296875
+        ],
+        "max": [
+          26.963600158691406,
+          -128.45799255371094,
+          1346.2900390625
+        ]
+      },
       "sourceFile": "FMA7486.stl",
       "sourceSha256": "1d503e4a4b7b7090bb43ced9870d8bf8c618c4cc6c88f9570a6a3c0962b6597b"
     },
@@ -4121,6 +4997,18 @@
       "compressedByteSize": 1868816,
       "vertexCount": 9956,
       "triangleCount": 19916,
+      "boundsBp3dMm": {
+        "min": [
+          -24.065000534057617,
+          -206.58599853515625,
+          1187.06005859375
+        ],
+        "max": [
+          22.742000579833984,
+          -164.83999633789062,
+          1302.5999755859375
+        ]
+      },
       "sourceFile": "FMA7487.stl",
       "sourceSha256": "33488974f006fbf6404b7c3b095fac3502cd4c2abc787293eaf21e4c84193a90"
     },
@@ -4135,6 +5023,18 @@
       "compressedByteSize": 1868816,
       "vertexCount": 2045,
       "triangleCount": 4086,
+      "boundsBp3dMm": {
+        "min": [
+          -11.187100410461426,
+          -205.61000061035156,
+          1168.989990234375
+        ],
+        "max": [
+          9.858630180358887,
+          -190.6959991455078,
+          1191.050048828125
+        ]
+      },
       "sourceFile": "FMA7488.stl",
       "sourceSha256": "1cf0972021a6dc32d12b5d9da6bd4f3f68ba79005d3590ef550cb416b9cc1431"
     },
@@ -4149,6 +5049,18 @@
       "compressedByteSize": 556608,
       "vertexCount": 2558,
       "triangleCount": 5112,
+      "boundsBp3dMm": {
+        "min": [
+          -150.0330047607422,
+          -146.76600646972656,
+          1331.760009765625
+        ],
+        "max": [
+          -11.443900108337402,
+          -47.223899841308594,
+          1366.8599853515625
+        ]
+      },
       "sourceFile": "FMA13322.stl",
       "sourceSha256": "f340050375ea4397a85082fb7bd68ea553d52f4718656599804ecf8f4c7768be"
     },
@@ -4163,6 +5075,18 @@
       "compressedByteSize": 556608,
       "vertexCount": 2572,
       "triangleCount": 5140,
+      "boundsBp3dMm": {
+        "min": [
+          10.13860034942627,
+          -146.75,
+          1331.7900390625
+        ],
+        "max": [
+          148.6959991455078,
+          -47.234901428222656,
+          1366.8399658203125
+        ]
+      },
       "sourceFile": "FMA13323.stl",
       "sourceSha256": "ec68d362926061c62c2b7493fb6554941d78250f27ecdf744375659050bdc7ee"
     },
@@ -4177,6 +5101,18 @@
       "compressedByteSize": 556608,
       "vertexCount": 45902,
       "triangleCount": 91800,
+      "boundsBp3dMm": {
+        "min": [
+          -168.68499755859375,
+          -99.07630157470703,
+          1201.5
+        ],
+        "max": [
+          -59.31779861450195,
+          11.351699829101562,
+          1359.8499755859375
+        ]
+      },
       "sourceFile": "FMA13395.stl",
       "sourceSha256": "c0a3afd469db1fec9527bb81ec1f0956876d3d64d3acbf3a083619d4e7ce297b"
     },
@@ -4191,6 +5127,18 @@
       "compressedByteSize": 556608,
       "vertexCount": 45902,
       "triangleCount": 91800,
+      "boundsBp3dMm": {
+        "min": [
+          58.00849914550781,
+          -99.07839965820312,
+          1201.510009765625
+        ],
+        "max": [
+          167.37399291992188,
+          11.350099563598633,
+          1359.8499755859375
+        ]
+      },
       "sourceFile": "FMA13396.stl",
       "sourceSha256": "104b7749a10794987535c539d6c412b9b9afb3fd1819bdf5911ab1852f07a425"
     },
@@ -4205,6 +5153,18 @@
       "compressedByteSize": 556608,
       "vertexCount": 8136,
       "triangleCount": 16268,
+      "boundsBp3dMm": {
+        "min": [
+          -241.57899475097656,
+          -96.71520233154297,
+          1039.449951171875
+        ],
+        "max": [
+          -140.66799926757812,
+          -47.175201416015625,
+          1346.93994140625
+        ]
+      },
       "sourceFile": "FMA23130.stl",
       "sourceSha256": "6e26ad2b9794b136000abe2cc0b54cade989b943214e2149732cc2db2e337dce"
     },
@@ -4219,6 +5179,18 @@
       "compressedByteSize": 556608,
       "vertexCount": 8248,
       "triangleCount": 16492,
+      "boundsBp3dMm": {
+        "min": [
+          139.35499572753906,
+          -96.71089935302734,
+          1039.4599609375
+        ],
+        "max": [
+          240.25999450683594,
+          -47.17720031738281,
+          1346.93994140625
+        ]
+      },
       "sourceFile": "FMA23131.stl",
       "sourceSha256": "a0650a72c481093ee8c3b1fe7cf8ad97b2d63875685e1acf608dec7a5e031748"
     },
@@ -4233,6 +5205,18 @@
       "compressedByteSize": 556608,
       "vertexCount": 1404,
       "triangleCount": 2804,
+      "boundsBp3dMm": {
+        "min": [
+          -280.2409973144531,
+          -123.8489990234375,
+          816.0339965820312
+        ],
+        "max": [
+          -220.33099365234375,
+          -57.092201232910156,
+          1045.469970703125
+        ]
+      },
       "sourceFile": "FMA23464.stl",
       "sourceSha256": "23eed49ade9f558406782b47decee325d12ee9e1d5ef661a051a0516a142dfa3"
     },
@@ -4247,6 +5231,18 @@
       "compressedByteSize": 556608,
       "vertexCount": 1359,
       "triangleCount": 2714,
+      "boundsBp3dMm": {
+        "min": [
+          219.0330047607422,
+          -123.7699966430664,
+          816.0789794921875
+        ],
+        "max": [
+          278.8949890136719,
+          -57.12269973754883,
+          1045.4000244140625
+        ]
+      },
       "sourceFile": "FMA23465.stl",
       "sourceSha256": "1a09c41034b916d138696db3266bf66f159f3770f9446f45a9a198db4486ae07"
     },
@@ -4261,6 +5257,18 @@
       "compressedByteSize": 556608,
       "vertexCount": 1798,
       "triangleCount": 3592,
+      "boundsBp3dMm": {
+        "min": [
+          -248.13400268554688,
+          -120.06199645996094,
+          815.2470092773438
+        ],
+        "max": [
+          -197.2550048828125,
+          -40.45439910888672,
+          1062.9200439453125
+        ]
+      },
       "sourceFile": "FMA23467.stl",
       "sourceSha256": "c6074d69a2ccbcef6db2fb8bf758b44a5f6438b035da3399d6efb41b9d759a03"
     },
@@ -4275,6 +5283,18 @@
       "compressedByteSize": 556608,
       "vertexCount": 1771,
       "triangleCount": 3538,
+      "boundsBp3dMm": {
+        "min": [
+          196.00799560546875,
+          -120.08499908447266,
+          815.2630004882812
+        ],
+        "max": [
+          246.82699584960938,
+          -40.502899169921875,
+          1062.9100341796875
+        ]
+      },
       "sourceFile": "FMA23468.stl",
       "sourceSha256": "1284c72ce602b533b97cfb24fa73a72342cc049ebf6a6f8e709b686cdb828ed6"
     },
@@ -4289,6 +5309,18 @@
       "compressedByteSize": 556608,
       "vertexCount": 4858,
       "triangleCount": 9716,
+      "boundsBp3dMm": {
+        "min": [
+          -131.2169952392578,
+          -152.28199768066406,
+          758.9169921875
+        ],
+        "max": [
+          -3.458470106124878,
+          -13.849599838256836,
+          966.7789916992188
+        ]
+      },
       "sourceFile": "FMA16586.stl",
       "sourceSha256": "8e039b8dc53d82fda8d89045a97f0ee28022f1906b2c285204417859d9027693"
     },
@@ -4303,6 +5335,18 @@
       "compressedByteSize": 556608,
       "vertexCount": 4735,
       "triangleCount": 9470,
+      "boundsBp3dMm": {
+        "min": [
+          4.176390171051025,
+          -152.23399353027344,
+          759.4180297851562
+        ],
+        "max": [
+          131.92799377441406,
+          -13.876999855041504,
+          967.2650146484375
+        ]
+      },
       "sourceFile": "FMA16587.stl",
       "sourceSha256": "456552349a088b72f8e1b06660b93e005b7ffcebe713a0e38ea88f806535dbc7"
     },
@@ -4317,6 +5361,18 @@
       "compressedByteSize": 556608,
       "vertexCount": 6497,
       "triangleCount": 12990,
+      "boundsBp3dMm": {
+        "min": [
+          -144.718994140625,
+          -116.02300262451172,
+          402.87799072265625
+        ],
+        "max": [
+          -33.397499084472656,
+          -40.40739822387695,
+          843.0989990234375
+        ]
+      },
       "sourceFile": "FMA24474.stl",
       "sourceSha256": "a47d03f9a1064bab3db90876e05729924e8c4667c78c1e6373fb42d191cd5563"
     },
@@ -4331,6 +5387,18 @@
       "compressedByteSize": 556608,
       "vertexCount": 6603,
       "triangleCount": 13202,
+      "boundsBp3dMm": {
+        "min": [
+          32.07400131225586,
+          -116.00299835205078,
+          402.8739929199219
+        ],
+        "max": [
+          143.35899353027344,
+          -40.41400146484375,
+          843.1110229492188
+        ]
+      },
       "sourceFile": "FMA24475.stl",
       "sourceSha256": "31a0bc2939b51bca3edec6704702cebe9f9119f8d7fdbdae67c3417777bbe47e"
     },
@@ -4345,6 +5413,18 @@
       "compressedByteSize": 556608,
       "vertexCount": 669,
       "triangleCount": 1334,
+      "boundsBp3dMm": {
+        "min": [
+          -105.23400115966797,
+          -116.16899871826172,
+          397.052001953125
+        ],
+        "max": [
+          -63.243099212646484,
+          -93.85449981689453,
+          436.7900085449219
+        ]
+      },
       "sourceFile": "FMA24486.stl",
       "sourceSha256": "bf7bcd3d2b546a06e5d5be1cec4540a2a228c28501d50397b2f72e5a4e543aab"
     },
@@ -4359,6 +5439,18 @@
       "compressedByteSize": 556608,
       "vertexCount": 671,
       "triangleCount": 1338,
+      "boundsBp3dMm": {
+        "min": [
+          61.952598571777344,
+          -116.2020034790039,
+          397.0989990234375
+        ],
+        "max": [
+          103.89099884033203,
+          -93.89730072021484,
+          436.7560119628906
+        ]
+      },
       "sourceFile": "FMA24487.stl",
       "sourceSha256": "cf198828035679bf6cc9b4049c79e16b63e0c60ff807f4edb04c218b86551d89"
     },
@@ -4373,6 +5465,18 @@
       "compressedByteSize": 556608,
       "vertexCount": 3427,
       "triangleCount": 6850,
+      "boundsBp3dMm": {
+        "min": [
+          -115.0530014038086,
+          -102.88400268554688,
+          59.489898681640625
+        ],
+        "max": [
+          -38.975101470947266,
+          -36.86320114135742,
+          406.1940002441406
+        ]
+      },
       "sourceFile": "FMA24477.stl",
       "sourceSha256": "93c9c1b04dff757fc170e7e6bdd682f94816579c18c2fe0aa2170371c24635c2"
     },
@@ -4387,6 +5491,18 @@
       "compressedByteSize": 556608,
       "vertexCount": 3413,
       "triangleCount": 6822,
+      "boundsBp3dMm": {
+        "min": [
+          37.677398681640625,
+          -102.84500122070312,
+          59.5443000793457
+        ],
+        "max": [
+          113.6719970703125,
+          -36.86539840698242,
+          406.1419982910156
+        ]
+      },
       "sourceFile": "FMA24478.stl",
       "sourceSha256": "fa05a615a99e861a3967debaf6357bfc7a24213a26dd1e1970ffcbb1d68b86f7"
     },
@@ -4401,6 +5517,18 @@
       "compressedByteSize": 556608,
       "vertexCount": 2313,
       "triangleCount": 4622,
+      "boundsBp3dMm": {
+        "min": [
+          -126.5479965209961,
+          -72.02729797363281,
+          40.347999572753906
+        ],
+        "max": [
+          -92.95680236816406,
+          -40.01969909667969,
+          391.3689880371094
+        ]
+      },
       "sourceFile": "FMA24480.stl",
       "sourceSha256": "972e74cb7f9d774c8dbf477542414acba7d02358fb090726a1ec2ffa57a44357"
     },
@@ -4415,6 +5543,18 @@
       "compressedByteSize": 556608,
       "vertexCount": 2274,
       "triangleCount": 4544,
+      "boundsBp3dMm": {
+        "min": [
+          91.65390014648438,
+          -71.98590087890625,
+          40.35089874267578
+        ],
+        "max": [
+          125.21600341796875,
+          -40.00040054321289,
+          391.3590087890625
+        ]
+      },
       "sourceFile": "FMA24481.stl",
       "sourceSha256": "d7555b41d63678b6f5d45c4d4487cce3715411c16edab75532f51f48c8a6b39d"
     },
@@ -4429,6 +5569,18 @@
       "compressedByteSize": 1092984,
       "vertexCount": 102148,
       "triangleCount": 204000,
+      "boundsBp3dMm": {
+        "min": [
+          -36.33549880981445,
+          -176.62899780273438,
+          1184.3399658203125
+        ],
+        "max": [
+          79.18009948730469,
+          -67.06659698486328,
+          1289.6800537109375
+        ]
+      },
       "sourceFile": "FMA7274.stl",
       "sourceSha256": "ed570773264c7abf73db5f5da20e5e4f69943315e8c5995da850a2821988b0a2"
     },
@@ -4443,6 +5595,18 @@
       "compressedByteSize": 1092984,
       "vertexCount": 23608,
       "triangleCount": 47268,
+      "boundsBp3dMm": {
+        "min": [
+          -18.97249984741211,
+          -145.26600646972656,
+          1198.81005859375
+        ],
+        "max": [
+          29.51729965209961,
+          -113.5469970703125,
+          1246.6700439453125
+        ]
+      },
       "sourceFile": "FMA7234.stl",
       "sourceSha256": "96e2470c9ddd5fa0970014235abe2686d4c6084b1ed514edfec37677a7ae377e"
     },
@@ -4457,6 +5621,18 @@
       "compressedByteSize": 1092984,
       "vertexCount": 9529,
       "triangleCount": 19102,
+      "boundsBp3dMm": {
+        "min": [
+          13.516599655151367,
+          -123.27899932861328,
+          1209.739990234375
+        ],
+        "max": [
+          62.882301330566406,
+          -85.3634033203125,
+          1241.8599853515625
+        ]
+      },
       "sourceFile": "FMA7235.stl",
       "sourceSha256": "e434d63f98d789acff6943ae244713d524d2abf6aa6020445a46bd24bc03d70c"
     },
@@ -4471,6 +5647,18 @@
       "compressedByteSize": 1092984,
       "vertexCount": 9109,
       "triangleCount": 18201,
+      "boundsBp3dMm": {
+        "min": [
+          8.740050315856934,
+          -159.63600158691406,
+          1254.97998046875
+        ],
+        "max": [
+          40.99140167236328,
+          -127.54399871826172,
+          1275.4599609375
+        ]
+      },
       "sourceFile": "FMA7246.stl",
       "sourceSha256": "b1436a72cf5727be01c02fe08bda7eaefd667af6cfbbcd6261f915a61e7f48dc"
     },
@@ -4485,6 +5673,18 @@
       "compressedByteSize": 1092984,
       "vertexCount": 1932,
       "triangleCount": 3860,
+      "boundsBp3dMm": {
+        "min": [
+          12.005200386047363,
+          -172.7100067138672,
+          1189.8800048828125
+        ],
+        "max": [
+          47.292701721191406,
+          -151.13099670410156,
+          1219.22998046875
+        ]
+      },
       "sourceFile": "FMA7260.stl",
       "sourceSha256": "e6fe30295f9d229c227411f001c1616bb763520ca28d0006e51db89137561fa4"
     },
@@ -4499,6 +5699,18 @@
       "compressedByteSize": 1092984,
       "vertexCount": 1367,
       "triangleCount": 2730,
+      "boundsBp3dMm": {
+        "min": [
+          7.127079963684082,
+          -160.51699829101562,
+          1188.510009765625
+        ],
+        "max": [
+          36.7765998840332,
+          -131.8209991455078,
+          1203.050048828125
+        ]
+      },
       "sourceFile": "FMA7261.stl",
       "sourceSha256": "4ebf10dbcb09df59008bc24ea456c1cdc29e1a41bf567e12f03eca0440450853"
     },
@@ -4513,6 +5725,18 @@
       "compressedByteSize": 1092984,
       "vertexCount": 951,
       "triangleCount": 1898,
+      "boundsBp3dMm": {
+        "min": [
+          12.873000144958496,
+          -143.66000366210938,
+          1223.47998046875
+        ],
+        "max": [
+          32.36439895629883,
+          -128.19500732421875,
+          1250.489990234375
+        ]
+      },
       "sourceFile": "FMA7262.stl",
       "sourceSha256": "1026d3e20fc4b58313f8dffb8f874e871916446091b0adcf4649e32409d0ae0a"
     },
@@ -4527,6 +5751,18 @@
       "compressedByteSize": 1092984,
       "vertexCount": 1953,
       "triangleCount": 3902,
+      "boundsBp3dMm": {
+        "min": [
+          46.427101135253906,
+          -147.0070037841797,
+          1198.4300537109375
+        ],
+        "max": [
+          74.95559692382812,
+          -104.65299987792969,
+          1228.510009765625
+        ]
+      },
       "sourceFile": "FMA7266.stl",
       "sourceSha256": "def197ade00b5fca69d916f1329377e51cc589856f96fc6358ede93bbfbe60aa"
     },
@@ -4541,6 +5777,18 @@
       "compressedByteSize": 1092984,
       "vertexCount": 2046,
       "triangleCount": 4084,
+      "boundsBp3dMm": {
+        "min": [
+          31.485000610351562,
+          -160.08399963378906,
+          1201.8399658203125
+        ],
+        "max": [
+          56.65019989013672,
+          -124.48699951171875,
+          1234.9300537109375
+        ]
+      },
       "sourceFile": "FMA9352nsn.stl",
       "sourceSha256": "9c881e0cc650b690288d7d5814c324bd1f888c61d0c48ebb7ac767e08d665618"
     },
@@ -4555,6 +5803,18 @@
       "compressedByteSize": 1092984,
       "vertexCount": 1080,
       "triangleCount": 2156,
+      "boundsBp3dMm": {
+        "min": [
+          -8.136870384216309,
+          -139.44700622558594,
+          1251.8399658203125
+        ],
+        "max": [
+          26.560400009155273,
+          -105.36499786376953,
+          1302.989990234375
+        ]
+      },
       "sourceFile": "FMA3736.stl",
       "sourceSha256": "c99fcd415e7d7df717446f32601324b53656a96c41ff9190c766e39381e108e3"
     },
@@ -4569,6 +5829,18 @@
       "compressedByteSize": 1092984,
       "vertexCount": 1643,
       "triangleCount": 3282,
+      "boundsBp3dMm": {
+        "min": [
+          -8.015959739685059,
+          -137.67599487304688,
+          1301.9300537109375
+        ],
+        "max": [
+          31.593700408935547,
+          -54.305198669433594,
+          1339.4300537109375
+        ]
+      },
       "sourceFile": "FMA3768.stl",
       "sourceSha256": "d45fa63a0dda6f6cea8e5db8bdd3fba851fe8e4dd5c679afe68ae47eb6ad56eb"
     },
@@ -4583,6 +5855,18 @@
       "compressedByteSize": 1092984,
       "vertexCount": 11906,
       "triangleCount": 23808,
+      "boundsBp3dMm": {
+        "min": [
+          -0.9383080005645752,
+          -132.0970001220703,
+          959.97998046875
+        ],
+        "max": [
+          29.93600082397461,
+          -48.07709884643555,
+          1303.280029296875
+        ]
+      },
       "sourceFile": "FMA3784.stl",
       "sourceSha256": "b6bf061b1b50163b91ac0b11c3fb8dd0b5a28a18a3ee4d95d395a622448e4c16"
     },
@@ -4597,6 +5881,18 @@
       "compressedByteSize": 1092984,
       "vertexCount": 607,
       "triangleCount": 1210,
+      "boundsBp3dMm": {
+        "min": [
+          -19.351699829101562,
+          -119.89399719238281,
+          1315.5699462890625
+        ],
+        "max": [
+          18.24570083618164,
+          -101.81900024414062,
+          1353.6199951171875
+        ]
+      },
       "sourceFile": "FMA3932nsn.stl",
       "sourceSha256": "4d0ef7d674f6c4788a5ff6099fe2f3b6387c554cf23e23733ddbf97a0b9b19a1"
     },
@@ -4611,6 +5907,18 @@
       "compressedByteSize": 1092984,
       "vertexCount": 2214,
       "triangleCount": 4424,
+      "boundsBp3dMm": {
+        "min": [
+          -21.316299438476562,
+          -117.59600067138672,
+          1340.6700439453125
+        ],
+        "max": [
+          -8.574299812316895,
+          -105.35900115966797,
+          1384.68994140625
+        ]
+      },
       "sourceFile": "FMA3941.stl",
       "sourceSha256": "96f222b2fdb5cff8e1e018fc6b54ce35765b0823d73f496385766d798917b3c0"
     },
@@ -4625,6 +5933,18 @@
       "compressedByteSize": 1092984,
       "vertexCount": 351,
       "triangleCount": 698,
+      "boundsBp3dMm": {
+        "min": [
+          10.417699813842773,
+          -112.41000366210938,
+          1318.6800537109375
+        ],
+        "max": [
+          23.256099700927734,
+          -95.99819946289062,
+          1384.969970703125
+        ]
+      },
       "sourceFile": "FMA4058.stl",
       "sourceSha256": "81d0a45cb5ce9947ddebaf9e35c7324b2e2d5195885e85487937b1e83962a036"
     },
@@ -4639,6 +5959,18 @@
       "compressedByteSize": 1092984,
       "vertexCount": 1132,
       "triangleCount": 2260,
+      "boundsBp3dMm": {
+        "min": [
+          -82.27770233154297,
+          -112.3010025024414,
+          1342.1099853515625
+        ],
+        "max": [
+          -9.685480117797852,
+          -94.03849792480469,
+          1364.68994140625
+        ]
+      },
       "sourceFile": "FMA3953.stl",
       "sourceSha256": "cdc259455af237044c11af557a9a9f0dd99accb463472b97b162d4e936f484f0"
     },
@@ -4653,6 +5985,18 @@
       "compressedByteSize": 1092984,
       "vertexCount": 1619,
       "triangleCount": 3234,
+      "boundsBp3dMm": {
+        "min": [
+          17.62310028076172,
+          -105.68699645996094,
+          1318.550048828125
+        ],
+        "max": [
+          86.68419647216797,
+          -86.8478012084961,
+          1367.8299560546875
+        ]
+      },
       "sourceFile": "FMA4694.stl",
       "sourceSha256": "d4fc1c72acb2df558ced1ba9e0f18e29a0b9448ab38552295a69919e535c494e"
     },
@@ -4667,6 +6011,18 @@
       "compressedByteSize": 1092984,
       "vertexCount": 58474,
       "triangleCount": 116948,
+      "boundsBp3dMm": {
+        "min": [
+          -124.48699951171875,
+          -183.97999572753906,
+          1134.4200439453125
+        ],
+        "max": [
+          122.78800201416016,
+          -22.67639923095703,
+          1367.3499755859375
+        ]
+      },
       "sourceFile": "FMA66326.stl",
       "sourceSha256": "3067ec3d6f6c9a98ac2797d6de36f3eb39c7e2569edc6da7f44b6e545dde8af3"
     },
@@ -4681,6 +6037,18 @@
       "compressedByteSize": 1092984,
       "vertexCount": 36282,
       "triangleCount": 72548,
+      "boundsBp3dMm": {
+        "min": [
+          -123.43099975585938,
+          -171.02200317382812,
+          1133.6400146484375
+        ],
+        "max": [
+          123.47699737548828,
+          -22.52869987487793,
+          1368.52001953125
+        ]
+      },
       "sourceFile": "FMA66643.stl",
       "sourceSha256": "01f8c137a94b67eadee60ca6eb1de16565a420c81f8d08fce64951f7c5ad0d6c"
     },
@@ -4695,6 +6063,18 @@
       "compressedByteSize": 1092984,
       "vertexCount": 768,
       "triangleCount": 1532,
+      "boundsBp3dMm": {
+        "min": [
+          -26.731300354003906,
+          -127.31900024414062,
+          1285.0699462890625
+        ],
+        "max": [
+          -4.063290119171143,
+          -103.52200317382812,
+          1320.199951171875
+        ]
+      },
       "sourceFile": "FMA4720.stl",
       "sourceSha256": "5be118bf9a3112718d16876762df66eb6d8998e433dd417f3ff0042057a08e10"
     },
@@ -4709,6 +6089,18 @@
       "compressedByteSize": 1092984,
       "vertexCount": 3845,
       "triangleCount": 7686,
+      "boundsBp3dMm": {
+        "min": [
+          -26.845300674438477,
+          -133.43899536132812,
+          960.9619750976562
+        ],
+        "max": [
+          -3.1142899990081787,
+          -103.46499633789062,
+          1200.8699951171875
+        ]
+      },
       "sourceFile": "FMA10951.stl",
       "sourceSha256": "627622da12b0716e3b564c2f4812c6a5b0fbec0d49e0cbdc018c70247b66b609"
     },
@@ -4723,6 +6115,18 @@
       "compressedByteSize": 1092984,
       "vertexCount": 702,
       "triangleCount": 1400,
+      "boundsBp3dMm": {
+        "min": [
+          -32.0625,
+          -131.43699645996094,
+          1309.2099609375
+        ],
+        "max": [
+          -10.054699897766113,
+          -109.27300262451172,
+          1361.25
+        ]
+      },
       "sourceFile": "FMA4751.stl",
       "sourceSha256": "109f8f13294643633dd6aa43c4ad6095001fe62d735c44b398f7dec1a09e4618"
     },
@@ -4737,6 +6141,18 @@
       "compressedByteSize": 1092984,
       "vertexCount": 961,
       "triangleCount": 1918,
+      "boundsBp3dMm": {
+        "min": [
+          -23.835899353027344,
+          -132.43699645996094,
+          1307.1199951171875
+        ],
+        "max": [
+          28.046899795532227,
+          -110.46800231933594,
+          1359.3199462890625
+        ]
+      },
       "sourceFile": "FMA4761.stl",
       "sourceSha256": "f5b05af3b7c8f34ae753f37c2e01fa7055f0331eaf2ba2bcc7fb074dc98b35a6"
     },
@@ -4751,6 +6167,18 @@
       "compressedByteSize": 1092984,
       "vertexCount": 445,
       "triangleCount": 886,
+      "boundsBp3dMm": {
+        "min": [
+          -33.552799224853516,
+          -128.0260009765625,
+          913.4409790039062
+        ],
+        "max": [
+          -3.950500011444092,
+          -97.06169891357422,
+          976.6110229492188
+        ]
+      },
       "sourceFile": "FMA21387.stl",
       "sourceSha256": "e885a78370671957123951223f7d6b53c6593f94e015aaa73dafa2be751d75bb"
     },
@@ -4765,6 +6193,18 @@
       "compressedByteSize": 1092984,
       "vertexCount": 498,
       "triangleCount": 992,
+      "boundsBp3dMm": {
+        "min": [
+          -17.14109992980957,
+          -128.13499450683594,
+          912.10302734375
+        ],
+        "max": [
+          25.515100479125977,
+          -93.90080261230469,
+          976.6110229492188
+        ]
+      },
       "sourceFile": "FMA21388.stl",
       "sourceSha256": "63e57478cb96b2de215c69ebb46ce53b220164ce2d82e99ceb5465d7ab42e250"
     },
@@ -4779,6 +6219,18 @@
       "compressedByteSize": 1092984,
       "vertexCount": 963,
       "triangleCount": 1922,
+      "boundsBp3dMm": {
+        "min": [
+          -5.569739818572998,
+          -115.66300201416016,
+          1207.4000244140625
+        ],
+        "max": [
+          43.2692985534668,
+          -80.99700164794922,
+          1226.760009765625
+        ]
+      },
       "sourceFile": "FMA4706.stl",
       "sourceSha256": "03542a2590c4fa570efccc5e81c9b7936b0968cbad5b4c6d435e1e788481acf3"
     },
@@ -4793,6 +6245,18 @@
       "compressedByteSize": 1092984,
       "vertexCount": 3740,
       "triangleCount": 7476,
+      "boundsBp3dMm": {
+        "min": [
+          38.24259948730469,
+          -172.82000732421875,
+          1189.800048828125
+        ],
+        "max": [
+          74.6426010131836,
+          -81.8634033203125,
+          1263.489990234375
+        ]
+      },
       "sourceFile": "FMA4707.stl",
       "sourceSha256": "52b0738f4c0f57ea75314c2b548af1853dc7cd818e7c5e8972a0d8516202ea2b"
     },
@@ -4807,6 +6271,18 @@
       "compressedByteSize": 1092984,
       "vertexCount": 2165,
       "triangleCount": 4326,
+      "boundsBp3dMm": {
+        "min": [
+          1.5644899606704712,
+          -156.52000427246094,
+          1184.510009765625
+        ],
+        "max": [
+          70.61139678955078,
+          -107.9729995727539,
+          1217.4200439453125
+        ]
+      },
       "sourceFile": "FMA4713.stl",
       "sourceSha256": "fdbc7add270558e42f20604c651e5f8aa17d3c9024bebb8d85aabce5e4cd3509"
     },
@@ -4821,6 +6297,18 @@
       "compressedByteSize": 665312,
       "vertexCount": 6939,
       "triangleCount": 13869,
+      "boundsBp3dMm": {
+        "min": [
+          -13.46399974822998,
+          -119.35700225830078,
+          1299.1400146484375
+        ],
+        "max": [
+          12.336000442504883,
+          -77.24870300292969,
+          1416.9200439453125
+        ]
+      },
       "sourceFile": "FMA7394.stl",
       "sourceSha256": "6cc38ce5ad2602ba214ef47e9bc94f7f44ef650772258caeee7060e20f6deda0"
     },
@@ -4835,6 +6323,18 @@
       "compressedByteSize": 665312,
       "vertexCount": 57829,
       "triangleCount": 115630,
+      "boundsBp3dMm": {
+        "min": [
+          -120.53099822998047,
+          -180.69700622558594,
+          1125.1400146484375
+        ],
+        "max": [
+          123.3499984741211,
+          -24.533100128173828,
+          1369.8299560546875
+        ]
+      },
       "sourceFile": "FMA7409.stl",
       "sourceSha256": "05f5c75914a9aaba435d7f28e5de60ba9853665db5b02dcd309cf6fbbea132ac"
     },
@@ -4849,6 +6349,18 @@
       "compressedByteSize": 665312,
       "vertexCount": 15205,
       "triangleCount": 30396,
+      "boundsBp3dMm": {
+        "min": [
+          -116.01499938964844,
+          -181.05799865722656,
+          1183.27001953125
+        ],
+        "max": [
+          -7.12814998626709,
+          -27.25790023803711,
+          1372.4000244140625
+        ]
+      },
       "sourceFile": "FMA7333.stl",
       "sourceSha256": "cd168d6c22d10dcb5e8be3ec88e9a97b33a261fc3e8195001daaac32d964a177"
     },
@@ -4863,6 +6375,18 @@
       "compressedByteSize": 665312,
       "vertexCount": 11741,
       "triangleCount": 23477,
+      "boundsBp3dMm": {
+        "min": [
+          -121.38200378417969,
+          -197.4739990234375,
+          1160.8199462890625
+        ],
+        "max": [
+          -5.662499904632568,
+          -51.2322998046875,
+          1266.2900390625
+        ]
+      },
       "sourceFile": "FMA7383.stl",
       "sourceSha256": "a12839911dd06f97d21f716d717a207ad0237dc602ce2ad2ad53fbcd402d4673"
     },
@@ -4877,6 +6401,18 @@
       "compressedByteSize": 665312,
       "vertexCount": 32800,
       "triangleCount": 65592,
+      "boundsBp3dMm": {
+        "min": [
+          -128.06100463867188,
+          -190.63800048828125,
+          1117.949951171875
+        ],
+        "max": [
+          -1.5858999490737915,
+          -16.43779945373535,
+          1297.199951171875
+        ]
+      },
       "sourceFile": "FMA7337.stl",
       "sourceSha256": "cfb1641ad8443abd6da3919d3f7565f7d119dc740b7cf91d51d17ae9f2f67eda"
     },
@@ -4891,6 +6427,18 @@
       "compressedByteSize": 665312,
       "vertexCount": 20332,
       "triangleCount": 40652,
+      "boundsBp3dMm": {
+        "min": [
+          5.299160003662109,
+          -196.81100463867188,
+          1165.469970703125
+        ],
+        "max": [
+          119.01699829101562,
+          -29.187700271606445,
+          1373.469970703125
+        ]
+      },
       "sourceFile": "FMA7370.stl",
       "sourceSha256": "d5e0401182d8af9e9b05f4cac7eb4f728598650645370a15eec83ea1598b7e24"
     },
@@ -4905,6 +6453,18 @@
       "compressedByteSize": 665312,
       "vertexCount": 22132,
       "triangleCount": 44288,
+      "boundsBp3dMm": {
+        "min": [
+          16.04210090637207,
+          -195.4720001220703,
+          1114.6500244140625
+        ],
+        "max": [
+          125.3550033569336,
+          -17.290300369262695,
+          1308.3199462890625
+        ]
+      },
       "sourceFile": "FMA7371.stl",
       "sourceSha256": "17419dd2f9d837e162286b8545308893a9377e1f410c6e3c6385b45f1a6e90a3"
     },
@@ -4919,6 +6479,18 @@
       "compressedByteSize": 665312,
       "vertexCount": 11575,
       "triangleCount": 23146,
+      "boundsBp3dMm": {
+        "min": [
+          -19.94860076904297,
+          -129.17999267578125,
+          1402.77001953125
+        ],
+        "max": [
+          18.636999130249023,
+          -97.44830322265625,
+          1438.030029296875
+        ]
+      },
       "sourceFile": "FMA55099.stl",
       "sourceSha256": "cd0d5e4c13a2a67eee6e55361b2927ea0c22204c1d24d4065fe67f96ac6d7a18"
     },
@@ -4933,6 +6505,18 @@
       "compressedByteSize": 383752,
       "vertexCount": 1323,
       "triangleCount": 2642,
+      "boundsBp3dMm": {
+        "min": [
+          -10.109600067138672,
+          -108.3740005493164,
+          1166.239990234375
+        ],
+        "max": [
+          15.807999610900879,
+          -63.41640090942383,
+          1415.6099853515625
+        ]
+      },
       "sourceFile": "FMA7131.stl",
       "sourceSha256": "7783e109c2f4c81936632e1662686c9081460f4be2b5f1f51f8ebd439d0e464f"
     },
@@ -4947,6 +6531,18 @@
       "compressedByteSize": 383752,
       "vertexCount": 4694,
       "triangleCount": 9384,
+      "boundsBp3dMm": {
+        "min": [
+          -27.537700653076172,
+          -195.54100036621094,
+          1061.6700439453125
+        ],
+        "max": [
+          114.20500183105469,
+          -80.3102035522461,
+          1181.8699951171875
+        ]
+      },
       "sourceFile": "FMA7148.stl",
       "sourceSha256": "a6764d20879cf7ba1acd8284c1b0255b20111d8bd3b92838cf97600e6f3d9065"
     },
@@ -4961,6 +6557,18 @@
       "compressedByteSize": 383752,
       "vertexCount": 5977,
       "triangleCount": 11950,
+      "boundsBp3dMm": {
+        "min": [
+          -64.06839752197266,
+          -160.1750030517578,
+          1003.52001953125
+        ],
+        "max": [
+          55.54169845581055,
+          -104.65699768066406,
+          1101.0400390625
+        ]
+      },
       "sourceFile": "FMA7206.stl",
       "sourceSha256": "d0917ad9499253cbc836ab418d63c12e6b785b24dd55127ce4d98fe0469e6732"
     },
@@ -4975,6 +6583,18 @@
       "compressedByteSize": 383752,
       "vertexCount": 15780,
       "triangleCount": 31468,
+      "boundsBp3dMm": {
+        "min": [
+          -86.21900177001953,
+          -183.5679931640625,
+          921.77001953125
+        ],
+        "max": [
+          102.77799987792969,
+          -101.89900207519531,
+          1056.3800048828125
+        ]
+      },
       "sourceFile": "FMA7207.stl",
       "sourceSha256": "e75d35ad175976104bc7757605930c0e7715c72830dd86a482950dd9e516e2c8"
     },
@@ -4989,6 +6609,18 @@
       "compressedByteSize": 383752,
       "vertexCount": 15689,
       "triangleCount": 31250,
+      "boundsBp3dMm": {
+        "min": [
+          -97.73590087890625,
+          -166.23500061035156,
+          825.5250244140625
+        ],
+        "max": [
+          103.89800262451172,
+          -113.88500213623047,
+          967.9199829101562
+        ]
+      },
       "sourceFile": "FMA7208.stl",
       "sourceSha256": "47d26fb1bbc906d1b0743255cc049ef8bec28f17b6e00f47976e059c46f2f457"
     },
@@ -5003,6 +6635,18 @@
       "compressedByteSize": 383752,
       "vertexCount": 34760,
       "triangleCount": 69516,
+      "boundsBp3dMm": {
+        "min": [
+          -107.27999877929688,
+          -188.64700317382812,
+          846.1829833984375
+        ],
+        "max": [
+          111.08000183105469,
+          -61.70289993286133,
+          1087.219970703125
+        ]
+      },
       "sourceFile": "FMA14543nsn.stl",
       "sourceSha256": "ab970c4d688cf48b30d1c4f88634a0fca9233fc8e0cf3e7570edf0403448377f"
     },
@@ -5017,6 +6661,18 @@
       "compressedByteSize": 383752,
       "vertexCount": 4414,
       "triangleCount": 8824,
+      "boundsBp3dMm": {
+        "min": [
+          -22.296300888061523,
+          -85.77629852294922,
+          756.0089721679688
+        ],
+        "max": [
+          20.706100463867188,
+          -25.033700942993164,
+          888.1510009765625
+        ]
+      },
       "sourceFile": "FMA14544.stl",
       "sourceSha256": "dcbca766ae18f7404082fa34a7a33ed805dd07917ef28097e01e78b4c531df4f"
     },
@@ -5031,6 +6687,18 @@
       "compressedByteSize": 383752,
       "vertexCount": 347,
       "triangleCount": 690,
+      "boundsBp3dMm": {
+        "min": [
+          -83.93049621582031,
+          -136.625,
+          889.9099731445312
+        ],
+        "max": [
+          -35.556800842285156,
+          -125.49400329589844,
+          906.635986328125
+        ]
+      },
       "sourceFile": "FMA14542.stl",
       "sourceSha256": "a33df099870c84b9fa131d8b5167dda0f8efc8e56d2788b0061101fd10a7d370"
     },
@@ -5045,6 +6713,18 @@
       "compressedByteSize": 383752,
       "vertexCount": 9710,
       "triangleCount": 19416,
+      "boundsBp3dMm": {
+        "min": [
+          -117.96600341796875,
+          -192.4239959716797,
+          1030.3599853515625
+        ],
+        "max": [
+          81.0343017578125,
+          -42.42449951171875,
+          1204.31005859375
+        ]
+      },
       "sourceFile": "FMA7197.stl",
       "sourceSha256": "cbd634ccfbb532b33c01b6a1361dd706e95955de67aa729169d7d68752b6a98d"
     },
@@ -5059,6 +6739,18 @@
       "compressedByteSize": 383752,
       "vertexCount": 6925,
       "triangleCount": 13846,
+      "boundsBp3dMm": {
+        "min": [
+          -72.83360290527344,
+          -172.947998046875,
+          1058.739990234375
+        ],
+        "max": [
+          -36.95429992675781,
+          -129.4040069580078,
+          1104.780029296875
+        ]
+      },
       "sourceFile": "FMA7202.stl",
       "sourceSha256": "10576dcce2d437622b5d951a0edaae53648d80814706b5b2fac1044627ce8d95"
     },
@@ -5073,6 +6765,18 @@
       "compressedByteSize": 383752,
       "vertexCount": 5711,
       "triangleCount": 11414,
+      "boundsBp3dMm": {
+        "min": [
+          -52.45159912109375,
+          -149.06500244140625,
+          1021.739990234375
+        ],
+        "max": [
+          60.57099914550781,
+          -109.927001953125,
+          1094.0799560546875
+        ]
+      },
       "sourceFile": "FMA7198nsn.stl",
       "sourceSha256": "884948a0b7f2b274dd67ede43fd1d0aaacc6657451ff0de7eeb0063d261fa4ca"
     },
@@ -5087,6 +6791,18 @@
       "compressedByteSize": 75224,
       "vertexCount": 6199,
       "triangleCount": 12394,
+      "boundsBp3dMm": {
+        "min": [
+          -95.50170135498047,
+          -97.88200378417969,
+          999.5960083007812
+        ],
+        "max": [
+          -35.43560028076172,
+          -44.80609893798828,
+          1101.8199462890625
+        ]
+      },
       "sourceFile": "FMA7204.stl",
       "sourceSha256": "c69330266787669e89ef343ea294ca3fdcf0205382079c4b38e1b7252863d6f3"
     },
@@ -5101,6 +6817,18 @@
       "compressedByteSize": 75224,
       "vertexCount": 7681,
       "triangleCount": 15358,
+      "boundsBp3dMm": {
+        "min": [
+          24.576799392700195,
+          -96.54570007324219,
+          1014.6300048828125
+        ],
+        "max": [
+          85.14679718017578,
+          -52.44889831542969,
+          1117.5899658203125
+        ]
+      },
       "sourceFile": "FMA7205.stl",
       "sourceSha256": "b93be6a9ef9fa237bb1231b5c895cd938b25920266bb1400537b4319f4a35cdb"
     },
@@ -5115,6 +6843,18 @@
       "compressedByteSize": 75224,
       "vertexCount": 1107,
       "triangleCount": 2210,
+      "boundsBp3dMm": {
+        "min": [
+          -75.7699966430664,
+          -126.22899627685547,
+          812.9530029296875
+        ],
+        "max": [
+          -16.127899169921875,
+          -55.01449966430664,
+          1090.06005859375
+        ]
+      },
       "sourceFile": "FMA15571.stl",
       "sourceSha256": "819a96000cb2bf07215a9b47df34524c93a4892b050985cb5b89dac965fc57d8"
     },
@@ -5129,6 +6869,18 @@
       "compressedByteSize": 75224,
       "vertexCount": 1115,
       "triangleCount": 2226,
+      "boundsBp3dMm": {
+        "min": [
+          13.794699668884277,
+          -125.45700073242188,
+          814.5659790039062
+        ],
+        "max": [
+          69.9697036743164,
+          -51.71649932861328,
+          1101.1400146484375
+        ]
+      },
       "sourceFile": "FMA15572.stl",
       "sourceSha256": "9c8468f13f0873ed8c28b693f4cb731adf35a8a3e8482fd0a92c59dcb365942d"
     },
@@ -5143,6 +6895,18 @@
       "compressedByteSize": 75224,
       "vertexCount": 2010,
       "triangleCount": 4016,
+      "boundsBp3dMm": {
+        "min": [
+          -36.956600189208984,
+          -138.72000122070312,
+          789.5189819335938
+        ],
+        "max": [
+          35.62730026245117,
+          -55.88669967651367,
+          841.0819702148438
+        ]
+      },
       "sourceFile": "FMA15900.stl",
       "sourceSha256": "7a6badc84de63ac6c62acc8c2de1084c19885df1cbceb17ae02354c000a45b68"
     },
@@ -5157,6 +6921,18 @@
       "compressedByteSize": 75224,
       "vertexCount": 595,
       "triangleCount": 1186,
+      "boundsBp3dMm": {
+        "min": [
+          -8.829389572143555,
+          -185.03199768066406,
+          697.1069946289062
+        ],
+        "max": [
+          7.649569988250732,
+          -62.598201751708984,
+          810.7009887695312
+        ]
+      },
       "sourceFile": "FMA19667.stl",
       "sourceSha256": "d92aaac6e29d06e0044c817fdc487b339fcbe371f93517fd33f5131542f45330"
     },
@@ -5171,6 +6947,18 @@
       "compressedByteSize": 4960,
       "vertexCount": 141,
       "triangleCount": 278,
+      "boundsBp3dMm": {
+        "min": [
+          -30.974700927734375,
+          -163.48800659179688,
+          689.927001953125
+        ],
+        "max": [
+          -10.177900314331055,
+          -140.95700073242188,
+          719.0679931640625
+        ]
+      },
       "sourceFile": "FMA7211.stl",
       "sourceSha256": "a0f7ad9cd379ffeff78bc52184a639d781289089d98324fae638ff1f4de6b7da"
     },
@@ -5185,6 +6973,18 @@
       "compressedByteSize": 4960,
       "vertexCount": 142,
       "triangleCount": 280,
+      "boundsBp3dMm": {
+        "min": [
+          7.273059844970703,
+          -163.69200134277344,
+          689.6480102539062
+        ],
+        "max": [
+          27.898099899291992,
+          -141.05099487304688,
+          718.7570190429688
+        ]
+      },
       "sourceFile": "FMA7212.stl",
       "sourceSha256": "765d8992a6cf1096b07502c0a67af9e78aa980834fc33aa7e0fd3486f0dfc4c9"
     },
@@ -5199,6 +6999,18 @@
       "compressedByteSize": 1256664,
       "vertexCount": 61202,
       "triangleCount": 122400,
+      "boundsBp3dMm": {
+        "min": [
+          -25.103900909423828,
+          -138.14500427246094,
+          1551.699951171875
+        ],
+        "max": [
+          23.799299240112305,
+          -51.65409851074219,
+          1588.4100341796875
+        ]
+      },
       "sourceFile": "FMA86464.stl",
       "sourceSha256": "81abbbe732159738890a03907d28084d5facd9c132e09a473a4d9128ffa9e4c8"
     },
@@ -5213,6 +7025,18 @@
       "compressedByteSize": 1256664,
       "vertexCount": 5638,
       "triangleCount": 11272,
+      "boundsBp3dMm": {
+        "min": [
+          -33.089698791503906,
+          -131.43899536132812,
+          1547.800048828125
+        ],
+        "max": [
+          -3.010390043258667,
+          -71.39759826660156,
+          1582.8399658203125
+        ]
+      },
       "sourceFile": "FMA72826.stl",
       "sourceSha256": "d8d364a08d7e98a5a57752b09be2540fbd75f6bd2ec5a20994490f6263991e8d"
     },
@@ -5227,6 +7051,18 @@
       "compressedByteSize": 1256664,
       "vertexCount": 5582,
       "triangleCount": 11160,
+      "boundsBp3dMm": {
+        "min": [
+          1.7022299766540527,
+          -131.43600463867188,
+          1547.81005859375
+        ],
+        "max": [
+          31.75320053100586,
+          -71.39659881591797,
+          1582.8399658203125
+        ]
+      },
       "sourceFile": "FMA72827.stl",
       "sourceSha256": "8a307894f4f4a2cd557fdd9f41c14c581289082f80b35be1af19a34a48412d28"
     },
@@ -5241,6 +7077,18 @@
       "compressedByteSize": 1256664,
       "vertexCount": 15337,
       "triangleCount": 30670,
+      "boundsBp3dMm": {
+        "min": [
+          -33.774600982666016,
+          -126.15899658203125,
+          1552.699951171875
+        ],
+        "max": [
+          -16.51740074157715,
+          -85.72630310058594,
+          1577.3499755859375
+        ]
+      },
       "sourceFile": "FMA72828.stl",
       "sourceSha256": "ee203a0755d3ccbcb6bb535a6109dae9584549aef263e1a46899ce176566e483"
     },
@@ -5255,6 +7103,18 @@
       "compressedByteSize": 1256664,
       "vertexCount": 15320,
       "triangleCount": 30636,
+      "boundsBp3dMm": {
+        "min": [
+          15.225000381469727,
+          -126.15799713134766,
+          1552.699951171875
+        ],
+        "max": [
+          32.46329879760742,
+          -85.72720336914062,
+          1577.3499755859375
+        ]
+      },
       "sourceFile": "FMA72829.stl",
       "sourceSha256": "8b85165d23e1b12ea53e10f6b48939853058628cb32a4b1cf362ed58d6cbaef0"
     },
@@ -5269,6 +7129,18 @@
       "compressedByteSize": 1256664,
       "vertexCount": 11605,
       "triangleCount": 23206,
+      "boundsBp3dMm": {
+        "min": [
+          -28.65169906616211,
+          -117.78900146484375,
+          1553.52001953125
+        ],
+        "max": [
+          -12.858499526977539,
+          -90.1592025756836,
+          1569.8599853515625
+        ]
+      },
       "sourceFile": "FMA72830.stl",
       "sourceSha256": "53088c84419a96800e728e7f0eab42333f09b1b610a0d8acaa485c0cd7787d1e"
     },
@@ -5283,6 +7155,18 @@
       "compressedByteSize": 1256664,
       "vertexCount": 15371,
       "triangleCount": 30738,
+      "boundsBp3dMm": {
+        "min": [
+          11.547499656677246,
+          -117.78800201416016,
+          1553.530029296875
+        ],
+        "max": [
+          27.3435001373291,
+          -90.1615982055664,
+          1569.8599853515625
+        ]
+      },
       "sourceFile": "FMA72831.stl",
       "sourceSha256": "15bff551aaeaa83ba9411ce8d724e353a88a497491346c6450a9f40a0732b915"
     },
@@ -5297,6 +7181,18 @@
       "compressedByteSize": 1256664,
       "vertexCount": 874,
       "triangleCount": 1744,
+      "boundsBp3dMm": {
+        "min": [
+          -32.83300018310547,
+          -116.0780029296875,
+          1539.8900146484375
+        ],
+        "max": [
+          -16.4862003326416,
+          -98.53690338134766,
+          1552.1800537109375
+        ]
+      },
       "sourceFile": "FMA72832.stl",
       "sourceSha256": "f3ca51d983d4b02ebe81c9ea4efcf808e602466d1544cbd15d2007cff04802e4"
     },
@@ -5311,6 +7207,18 @@
       "compressedByteSize": 1256664,
       "vertexCount": 870,
       "triangleCount": 1736,
+      "boundsBp3dMm": {
+        "min": [
+          15.176899909973145,
+          -116.07599639892578,
+          1539.9000244140625
+        ],
+        "max": [
+          31.52389907836914,
+          -98.5863037109375,
+          1552.1800537109375
+        ]
+      },
       "sourceFile": "FMA72833.stl",
       "sourceSha256": "afc68bd353755bafcf95aa4cf19094df08c30de2e89bfec127314e9b0bf64835"
     },
@@ -5325,6 +7233,18 @@
       "compressedByteSize": 1256664,
       "vertexCount": 2228,
       "triangleCount": 4452,
+      "boundsBp3dMm": {
+        "min": [
+          -35.8390007019043,
+          -111.0790023803711,
+          1537.4200439453125
+        ],
+        "max": [
+          -16.92060089111328,
+          -70.59320068359375,
+          1558.199951171875
+        ]
+      },
       "sourceFile": "FMA72713.stl",
       "sourceSha256": "bd5eac2f2fe55edc2b0f68524171ee38a775fd770dfeb7257c71fedc8b45e259"
     },
@@ -5339,6 +7259,18 @@
       "compressedByteSize": 1256664,
       "vertexCount": 2142,
       "triangleCount": 4280,
+      "boundsBp3dMm": {
+        "min": [
+          15.61520004272461,
+          -111.0770034790039,
+          1537.4200439453125
+        ],
+        "max": [
+          34.51890182495117,
+          -70.5248031616211,
+          1558.199951171875
+        ]
+      },
       "sourceFile": "FMA72714.stl",
       "sourceSha256": "8cdbbe55c32006656574f414c8a56265d5f5c73bf206699c67a4feea94a17a21"
     },
@@ -5353,6 +7285,18 @@
       "compressedByteSize": 1256664,
       "vertexCount": 8852,
       "triangleCount": 17690,
+      "boundsBp3dMm": {
+        "min": [
+          -7.849299907684326,
+          -118.43000030517578,
+          1540.239990234375
+        ],
+        "max": [
+          6.539450168609619,
+          -101.49199676513672,
+          1559.0
+        ]
+      },
       "sourceFile": "FMA62008nsn.stl",
       "sourceSha256": "5598ae52eb0580509835f0ff3c9882aa8308b396209d6b4a51498297955c5788"
     },
@@ -5367,6 +7311,18 @@
       "compressedByteSize": 1256664,
       "vertexCount": 14652,
       "triangleCount": 29300,
+      "boundsBp3dMm": {
+        "min": [
+          -30.348499298095703,
+          -111.4219970703125,
+          1543.1400146484375
+        ],
+        "max": [
+          -0.6547589898109436,
+          -69.4385986328125,
+          1573.43994140625
+        ]
+      },
       "sourceFile": "FMA72924.stl",
       "sourceSha256": "a52c3b7a772e63baecfe1e9767518ea0b81335827c42b69e026dec9d489e8215"
     },
@@ -5381,6 +7337,18 @@
       "compressedByteSize": 1256664,
       "vertexCount": 14688,
       "triangleCount": 29372,
+      "boundsBp3dMm": {
+        "min": [
+          -0.6660090088844299,
+          -111.42400360107422,
+          1543.1400146484375
+        ],
+        "max": [
+          29.038999557495117,
+          -69.4385986328125,
+          1573.43994140625
+        ]
+      },
       "sourceFile": "FMA72925.stl",
       "sourceSha256": "80869ce2f13e426d38e732c6ebfd3c30e67143b3515c6420bb24d9b5e6c0f594"
     },
@@ -5395,6 +7363,18 @@
       "compressedByteSize": 1256664,
       "vertexCount": 28141,
       "triangleCount": 56314,
+      "boundsBp3dMm": {
+        "min": [
+          -14.499799728393555,
+          -105.00299835205078,
+          1536.719970703125
+        ],
+        "max": [
+          13.188899993896484,
+          -77.29100036621094,
+          1552.800048828125
+        ]
+      },
       "sourceFile": "FMA61993nsn.stl",
       "sourceSha256": "bc4a8dada1834e72bfda67b43d427325e289791fd3e52eb9572d829702e2f335"
     },
@@ -5409,6 +7389,18 @@
       "compressedByteSize": 1256664,
       "vertexCount": 44983,
       "triangleCount": 90071,
+      "boundsBp3dMm": {
+        "min": [
+          -20.573299407958984,
+          -105.99299621582031,
+          1511.77001953125
+        ],
+        "max": [
+          19.26580047607422,
+          -73.50080108642578,
+          1538.800048828125
+        ]
+      },
       "sourceFile": "FMA67943.stl",
       "sourceSha256": "464721a0893b05d7e830b327725cbd71c92d5fba6016c218bdbc4057f519e867"
     },
@@ -5423,6 +7415,18 @@
       "compressedByteSize": 1256664,
       "vertexCount": 26328,
       "triangleCount": 52760,
+      "boundsBp3dMm": {
+        "min": [
+          -13.269599914550781,
+          -94.16000366210938,
+          1476.3399658203125
+        ],
+        "max": [
+          11.960100173950195,
+          -62.81779861450195,
+          1515.300048828125
+        ]
+      },
       "sourceFile": "FMA62004.stl",
       "sourceSha256": "9c3b3ed2c81667526e14ba3cd5f427c4611f596eb38df6939d2154324dd6bb07"
     },
@@ -5437,6 +7441,18 @@
       "compressedByteSize": 1256664,
       "vertexCount": 81604,
       "triangleCount": 163200,
+      "boundsBp3dMm": {
+        "min": [
+          -50.931800842285156,
+          -79.08660125732422,
+          1497.7900390625
+        ],
+        "max": [
+          49.621299743652344,
+          -25.959999084472656,
+          1548.0699462890625
+        ]
+      },
       "sourceFile": "FMA67944.stl",
       "sourceSha256": "a023ac8cad7440cbb16814782f0d78643c9e81cdf04272971afa11a0100bd6fe"
     },
@@ -5451,6 +7467,18 @@
       "compressedByteSize": 1256664,
       "vertexCount": 5157,
       "triangleCount": 10310,
+      "boundsBp3dMm": {
+        "min": [
+          -31.46380043029785,
+          -157.64599609375,
+          1528.8900146484375
+        ],
+        "max": [
+          -1.2482000589370728,
+          -110.83000183105469,
+          1549.760009765625
+        ]
+      },
       "sourceFile": "FMA50875.stl",
       "sourceSha256": "e9f65589fc60b5193e4cf381742e790abcde510b691463ddacf3f6e522e163b7"
     },
@@ -5465,6 +7493,18 @@
       "compressedByteSize": 1256664,
       "vertexCount": 5153,
       "triangleCount": 10302,
+      "boundsBp3dMm": {
+        "min": [
+          -0.05913899838924408,
+          -157.64599609375,
+          1528.8900146484375
+        ],
+        "max": [
+          30.153400421142578,
+          -110.83300018310547,
+          1549.760009765625
+        ]
+      },
       "sourceFile": "FMA50878.stl",
       "sourceSha256": "6b8e244b2a7280ece5df8d4194b6a4dd2cf66dedd90371922f24ac4b0d114006"
     },
@@ -5479,6 +7519,18 @@
       "compressedByteSize": 1773632,
       "vertexCount": 71398,
       "triangleCount": 142800,
+      "boundsBp3dMm": {
+        "min": [
+          -122.6969985961914,
+          -196.9720001220703,
+          992.9719848632812
+        ],
+        "max": [
+          120.7030029296875,
+          -32.74689865112305,
+          1209.22998046875
+        ]
+      },
       "sourceFile": "FMA13295.stl",
       "sourceSha256": "c795e5300bf93f81805de8e2788449d9230da2c1bc93a005bb995c691b3fae84"
     },
@@ -5493,6 +7545,18 @@
       "compressedByteSize": 1773632,
       "vertexCount": 15842,
       "triangleCount": 31680,
+      "boundsBp3dMm": {
+        "min": [
+          -189.9669952392578,
+          -73.40910339355469,
+          1232.0400390625
+        ],
+        "max": [
+          -61.66590118408203,
+          15.489700317382812,
+          1342.050048828125
+        ]
+      },
       "sourceFile": "FMA32547.stl",
       "sourceSha256": "fa08072e033c6b77f741c950c884da3e2ce0a0bf0a7d778b273203bfd6eae327"
     },
@@ -5507,6 +7571,18 @@
       "compressedByteSize": 1773632,
       "vertexCount": 15951,
       "triangleCount": 31898,
+      "boundsBp3dMm": {
+        "min": [
+          60.42599868774414,
+          -73.26100158691406,
+          1232.1199951171875
+        ],
+        "max": [
+          188.6540069580078,
+          15.48740005493164,
+          1342.06005859375
+        ]
+      },
       "sourceFile": "FMA32548.stl",
       "sourceSha256": "f25e37c4b771627d7c11ca5fc45d1ba50705971eae4d64c8f66e50804826bf98"
     },
@@ -5521,6 +7597,18 @@
       "compressedByteSize": 1773632,
       "vertexCount": 61164,
       "triangleCount": 122400,
+      "boundsBp3dMm": {
+        "min": [
+          -137.0919952392578,
+          -192.1199951171875,
+          1022.3900146484375
+        ],
+        "max": [
+          135.8419952392578,
+          -3.3234400749206543,
+          1382.5999755859375
+        ]
+      },
       "sourceFile": "FMA9756.stl",
       "sourceSha256": "ae91483257e2c6a088e611f952e394da91d4fe51b8f2500cc77aa209de206f23"
     },
@@ -5535,6 +7623,18 @@
       "compressedByteSize": 1773632,
       "vertexCount": 61221,
       "triangleCount": 122400,
+      "boundsBp3dMm": {
+        "min": [
+          -135.20799255371094,
+          -206.4770050048828,
+          1030.4000244140625
+        ],
+        "max": [
+          133.94200134277344,
+          -6.664060115814209,
+          1350.0
+        ]
+      },
       "sourceFile": "FMA9757.stl",
       "sourceSha256": "d78e9e6e27b070ebb2f72669d4c91fc79d8c6981cfeaf78c177ff53e7ddc26ff"
     },
@@ -5549,6 +7649,18 @@
       "compressedByteSize": 1773632,
       "vertexCount": 61146,
       "triangleCount": 122400,
+      "boundsBp3dMm": {
+        "min": [
+          -131.41400146484375,
+          -191.70599365234375,
+          1036.43994140625
+        ],
+        "max": [
+          130.08900451660156,
+          -10.124500274658203,
+          1350.9300537109375
+        ]
+      },
       "sourceFile": "FMA9758.stl",
       "sourceSha256": "ad2a3f8f991bbd80f805a2adfce7f8eb90fa8a81a1c098203b6d2c2c47679390"
     },
@@ -5563,6 +7675,18 @@
       "compressedByteSize": 1773632,
       "vertexCount": 61208,
       "triangleCount": 122399,
+      "boundsBp3dMm": {
+        "min": [
+          -79.72339630126953,
+          -213.82000732421875,
+          809.35400390625
+        ],
+        "max": [
+          -3.535939931869507,
+          -141.4770050048828,
+          1205.1600341796875
+        ]
+      },
       "sourceFile": "FMA13377.stl",
       "sourceSha256": "4349d30019c36fc1823c1473b9c5ea5e06275f1d1f50b62ded4c2989ad6233a9"
     },
@@ -5577,6 +7701,18 @@
       "compressedByteSize": 1773632,
       "vertexCount": 61208,
       "triangleCount": 122399,
+      "boundsBp3dMm": {
+        "min": [
+          -6.647540092468262,
+          -213.77999877929688,
+          809.7999877929688
+        ],
+        "max": [
+          78.41719818115234,
+          -141.4709930419922,
+          1205.1600341796875
+        ]
+      },
       "sourceFile": "FMA13378.stl",
       "sourceSha256": "ae21dee8f0c8be12b817a8c6eb06c4ebd009e297e584844a71d4751d60452437"
     },
@@ -5591,6 +7727,18 @@
       "compressedByteSize": 1773632,
       "vertexCount": 5564,
       "triangleCount": 11098,
+      "boundsBp3dMm": {
+        "min": [
+          -22.31719970703125,
+          -134.87899780273438,
+          1324.31005859375
+        ],
+        "max": [
+          -4.664060115814209,
+          -105.79900360107422,
+          1420.0
+        ]
+      },
       "sourceFile": "FMA13350.stl",
       "sourceSha256": "f1cf2a8ddad9e9c477802bd8cc6d6fb09ea0d1a0c38b7c46c7856d060f16da6e"
     },
@@ -5605,6 +7753,18 @@
       "compressedByteSize": 1773632,
       "vertexCount": 5459,
       "triangleCount": 10918,
+      "boundsBp3dMm": {
+        "min": [
+          3.3578100204467773,
+          -134.7429962158203,
+          1324.300048828125
+        ],
+        "max": [
+          21.029699325561523,
+          -105.8239974975586,
+          1419.9000244140625
+        ]
+      },
       "sourceFile": "FMA13351.stl",
       "sourceSha256": "893c882e1a43f18513f3ba7af959fb3d66ff2041fe8720e30dfc2bc0b12c1949"
     },
@@ -5619,6 +7779,18 @@
       "compressedByteSize": 1773632,
       "vertexCount": 6973,
       "triangleCount": 13946,
+      "boundsBp3dMm": {
+        "min": [
+          -27.15239906311035,
+          -133.56199645996094,
+          1332.3599853515625
+        ],
+        "max": [
+          -4.114910125732422,
+          -115.47200012207031,
+          1437.02001953125
+        ]
+      },
       "sourceFile": "FMA13346.stl",
       "sourceSha256": "807c4e2fcb4d58d4f4e52132f743cefe399a6e5393c57aa64dde30b79f163818"
     },
@@ -5633,6 +7805,18 @@
       "compressedByteSize": 1773632,
       "vertexCount": 6884,
       "triangleCount": 13764,
+      "boundsBp3dMm": {
+        "min": [
+          2.8100900650024414,
+          -133.5500030517578,
+          1332.3199462890625
+        ],
+        "max": [
+          25.86319923400879,
+          -115.47200012207031,
+          1436.9599609375
+        ]
+      },
       "sourceFile": "FMA13347.stl",
       "sourceSha256": "3394ce337fbf669c3cc4db9e05f0e7ab1e1aa505e90c1be9ec120cd4af18c033"
     },
@@ -5647,6 +7831,18 @@
       "compressedByteSize": 1773632,
       "vertexCount": 3672,
       "triangleCount": 7277,
+      "boundsBp3dMm": {
+        "min": [
+          -19.81279945373535,
+          -129.0070037841797,
+          1406.739990234375
+        ],
+        "max": [
+          -7.886620044708252,
+          -104.677001953125,
+          1436.6800537109375
+        ]
+      },
       "sourceFile": "FMA13352.stl",
       "sourceSha256": "801417da5ccafe4e0ed62c591ab1eb8911ac62eb3ccaa3358348283e4ba376ae"
     },
@@ -5661,6 +7857,18 @@
       "compressedByteSize": 1773632,
       "vertexCount": 3624,
       "triangleCount": 7244,
+      "boundsBp3dMm": {
+        "min": [
+          6.60713005065918,
+          -128.9969940185547,
+          1406.8499755859375
+        ],
+        "max": [
+          18.52039909362793,
+          -104.7969970703125,
+          1436.6800537109375
+        ]
+      },
       "sourceFile": "FMA13353.stl",
       "sourceSha256": "4b7598098cf9eec6cc6c9ec0c40b587c0d0eaafd28cd09a5b4364d307c839456"
     },
@@ -5675,6 +7883,18 @@
       "compressedByteSize": 208144,
       "vertexCount": 4939,
       "triangleCount": 9874,
+      "boundsBp3dMm": {
+        "min": [
+          -58.52830123901367,
+          -80.32510375976562,
+          1070.050048828125
+        ],
+        "max": [
+          -24.025800704956055,
+          -55.16490173339844,
+          1115.199951171875
+        ]
+      },
       "sourceFile": "FMA15629.stl",
       "sourceSha256": "d95183a434b4f62d8ebcfe34fff67ede03b13e989fcb76b7bb2899d34aaf1e25"
     },
@@ -5689,6 +7909,18 @@
       "compressedByteSize": 208144,
       "vertexCount": 9896,
       "triangleCount": 19788,
+      "boundsBp3dMm": {
+        "min": [
+          18.44770050048828,
+          -89.1259994506836,
+          1076.81005859375
+        ],
+        "max": [
+          49.924598693847656,
+          -56.02050018310547,
+          1132.0
+        ]
+      },
       "sourceFile": "FMA15630.stl",
       "sourceSha256": "b13f1d7441cbada25aeb9b076e72f9ed26f2b64d1907c9be24ec7f1c95ea90b8"
     },
@@ -5703,6 +7935,18 @@
       "compressedByteSize": 208144,
       "vertexCount": 2528,
       "triangleCount": 5052,
+      "boundsBp3dMm": {
+        "min": [
+          -6.497660160064697,
+          -118.80500030517578,
+          1531.1099853515625
+        ],
+        "max": [
+          5.192969799041748,
+          -109.8479995727539,
+          1543.3800048828125
+        ]
+      },
       "sourceFile": "FMA13889.stl",
       "sourceSha256": "23355459e7a025368378b5cc93488e1502921074ba0c2a9cb85b4531d245715c"
     },
@@ -5717,6 +7961,18 @@
       "compressedByteSize": 208144,
       "vertexCount": 16136,
       "triangleCount": 32268,
+      "boundsBp3dMm": {
+        "min": [
+          -26.900400161743164,
+          -170.26300048828125,
+          1229.699951171875
+        ],
+        "max": [
+          18.7539005279541,
+          -123.21099853515625,
+          1329.3699951171875
+        ]
+      },
       "sourceFile": "FMA71194.stl",
       "sourceSha256": "ceb34fae4ffcf10f560e9285165c4a613c9e264a7d54d824ed567cffc537cd28"
     },
@@ -5731,6 +7987,18 @@
       "compressedByteSize": 208144,
       "vertexCount": 22974,
       "triangleCount": 45944,
+      "boundsBp3dMm": {
+        "min": [
+          -3.7356700897216797,
+          -172.2169952392578,
+          1241.8199462890625
+        ],
+        "max": [
+          69.6156005859375,
+          -115.61900329589844,
+          1349.030029296875
+        ]
+      },
       "sourceFile": "FMA71195.stl",
       "sourceSha256": "0f80921398f38201517c617a086d967d611ebb6506701ac2412b5b7c7d2d0439"
     },
@@ -5745,6 +8013,18 @@
       "compressedByteSize": 19368,
       "vertexCount": 4510,
       "triangleCount": 9016,
+      "boundsBp3dMm": {
+        "min": [
+          42.504798889160156,
+          -147.4759979248047,
+          1071.1400146484375
+        ],
+        "max": [
+          116.42500305175781,
+          -48.20790100097656,
+          1154.81005859375
+        ]
+      },
       "sourceFile": "FMA7196.stl",
       "sourceSha256": "72c0248b1e35490c66a0d0bde0ecdde6a362f3940a5bb6d3e770718ff5eeb94a"
     }

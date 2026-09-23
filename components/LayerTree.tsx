@@ -13,10 +13,17 @@
  * Toggling a checkbox writes into the zustand store; AnatomyViewer applies
  * `visible` / `opacity` to the corresponding 3D mesh. Checkboxes cascade to
  * descendants and render a tri-state (checked / unchecked / indeterminate).
+ *
+ * ME/CFS & Fibromyalgia extensions:
+ *  - Clinical layers section (autonomic schematic, 18 tender points,
+ *    pain-paint mode with today's painted-structures count)
+ *  - Low Cognitive Load switch (LowStimProvider-backed): high contrast +
+ *    plain-language aliases for every label
  */
 import { useEffect, useMemo, useState } from "react";
 
-import { checkState, useAnatomy } from "@/lib/store";
+import { checkState, painColor, useAnatomy } from "@/lib/store";
+import { useLowStim } from "@/lib/low-stim";
 import type { OrganNodeDto } from "@/lib/types";
 
 // ---------------------------------------------------------------------------
@@ -45,6 +52,168 @@ function TriCheckbox({
   );
 }
 
+function ToggleRow({
+  checked,
+  onChange,
+  label,
+  hint,
+  accent,
+}: {
+  checked: boolean;
+  onChange: (next: boolean) => void;
+  label: string;
+  hint?: string;
+  accent: string;
+}) {
+  const { lowStim } = useLowStim();
+  return (
+    <button
+      role="switch"
+      aria-checked={checked}
+      onClick={() => onChange(!checked)}
+      className={`flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-[13px] transition-colors ${
+        lowStim ? "hover:bg-white/10" : "hover:bg-white/5"
+      }`}
+      style={checked ? { backgroundColor: lowStim ? "#1d4ed855" : `${accent}22` } : undefined}
+    >
+      <span
+        className="flex h-4 w-7 shrink-0 items-center rounded-full p-0.5 transition-colors"
+        style={{
+          background: checked ? accent : lowStim ? "#444" : "#475569",
+          boxShadow: lowStim ? "inset 0 0 0 1px #fff" : undefined,
+        }}
+        aria-hidden
+      >
+        <span
+          className="h-3 w-3 rounded-full bg-white transition-transform"
+          style={{ transform: checked ? "translateX(12px)" : "translateX(0)" }}
+        />
+      </span>
+      <span className="flex-1 truncate">
+        {label}
+        {hint && (
+          <span className="ml-1 text-[10px] normal-case opacity-50">{hint}</span>
+        )}
+      </span>
+    </button>
+  );
+}
+
+function ClinicalSection() {
+  const { lowStim, t } = useLowStim();
+  const painMode = useAnatomy((s) => s.painMode);
+  const setPainMode = useAnatomy((s) => s.setPainMode);
+  const painMap = useAnatomy((s) => s.painMap);
+  const clearAllPain = useAnatomy((s) => s.clearAllPain);
+  const ansVisible = useAnatomy((s) => s.ansVisible);
+  const setAnsVisible = useAnatomy((s) => s.setAnsVisible);
+  const tenderVisible = useAnatomy((s) => s.tenderVisible);
+  const setTenderVisible = useAnatomy((s) => s.setTenderVisible);
+  const tenderTally = useAnatomy((s) => s.tenderTally);
+  const [pacingHint, setPacingHint] = useState(false);
+
+  return (
+    <section
+      className="mb-2 rounded-lg border p-1.5"
+      style={{
+        borderColor: lowStim ? "#fff" : "#ffffff14",
+        background: lowStim ? "#000" : "rgba(14, 23, 42, 0.6)",
+      }}
+    >
+      <p className="px-1.5 pb-1 text-[10px] font-semibold uppercase tracking-wider text-slate-500">
+        Clinical layers · ME/CFS & fibromyalgia
+      </p>
+      <ToggleRow
+        checked={ansVisible}
+        onChange={setAnsVisible}
+        label={t("Autonomic nervous system")}
+        hint="(dysautonomia)"
+        accent="#38bdf8"
+      />
+      <ToggleRow
+        checked={tenderVisible}
+        onChange={setTenderVisible}
+        label={t("Tender points (18)")}
+        hint={
+          tenderTally.positive
+            ? `${tenderTally.positive}/18 marked`
+            : "(fibromyalgia)"
+        }
+        accent="#fb7185"
+      />
+      <ToggleRow
+        checked={painMode}
+        onChange={setPainMode}
+        label={t("Paint pain on the model")}
+        hint={painMap.size ? `${painMap.size} today` : undefined}
+        accent="#f43f5e"
+      />
+      {painMap.size > 0 && (
+        <div className="flex items-center justify-between px-2 pb-1 pt-0.5">
+          <div className="flex gap-0.5">
+            {[...painMap.values()]
+              .sort((a, b) => a - b)
+              .map((v, i) => {
+                const [r, g, b] = painColor(v);
+                return (
+                  <span
+                    key={i}
+                    className="h-2 w-2 rounded-full"
+                    style={{ background: `rgb(${r * 255},${g * 255},${b * 255})` }}
+                    title={`intensity ${v}`}
+                  />
+                );
+              })}
+          </div>
+          <button
+            onClick={() => void clearAllPain()}
+            className="text-[10px] text-slate-500 underline hover:text-slate-300"
+          >
+            clear today
+          </button>
+        </div>
+      )}
+      <ToggleRow
+        checked={false}
+        onChange={() => {
+          setPacingHint(true);
+          window.dispatchEvent(new CustomEvent("anatomy:open-pacing"));
+          setTimeout(() => setPacingHint(false), 600);
+        }}
+        label={t("Estimate activity energy cost")}
+        hint="(pacing)"
+        accent="#facc15"
+      />
+      {pacingHint && (
+        <p className="px-2 pb-1 text-[10px] text-amber-400/80">
+          Opening the estimator…
+        </p>
+      )}
+    </section>
+  );
+}
+
+function LowStimSection() {
+  const { lowStim, toggle } = useLowStim();
+  return (
+    <section
+      className="mb-2 rounded-lg border p-1.5"
+      style={{
+        borderColor: lowStim ? "#fff" : "#ffffff14",
+        background: lowStim ? "#000" : "rgba(14, 23, 42, 0.6)",
+      }}
+    >
+      <ToggleRow
+        checked={lowStim}
+        onChange={toggle}
+        label="Low Cognitive Load mode"
+        hint="high contrast · simple words · no animations"
+        accent="#22c55e"
+      />
+    </section>
+  );
+}
+
 function OrganRow({ node, depth }: { node: OrganNodeDto; depth: number }) {
   const hidden = useAnatomy((s) => s.hidden);
   const toggleOrgan = useAnatomy((s) => s.toggleOrgan);
@@ -54,18 +223,23 @@ function OrganRow({ node, depth }: { node: OrganNodeDto; depth: number }) {
   const hover = useAnatomy((s) => s.hover);
   const opacity = useAnatomy((s) => s.opacity);
   const setOpacity = useAnatomy((s) => s.setOpacity);
+  const painMap = useAnatomy((s) => s.painMap);
+  const { lowStim, t } = useLowStim();
 
   const [open, setOpen] = useState(depth < 2);
   const state = checkState(node, hidden);
   const isSelected = selectedId === node.id;
   const isHovered = hoveredId === node.id;
+  const pain = painMap.get(node.id);
 
   return (
     <li role="treeitem" aria-expanded={open} aria-selected={isSelected}>
       <div
         className={`group flex items-center gap-1.5 rounded px-1.5 py-[3px] text-[13px] leading-none transition-colors ${
           isSelected
-            ? "bg-sky-500/20 text-sky-100 ring-1 ring-sky-500/40"
+            ? lowStim
+              ? "bg-white/25 text-white ring-1 ring-white"
+              : "bg-sky-500/20 text-sky-100 ring-1 ring-sky-500/40"
             : isHovered
               ? "bg-white/5 text-slate-100"
               : "text-slate-300 hover:bg-white/5"
@@ -101,8 +275,21 @@ function OrganRow({ node, depth }: { node: OrganNodeDto; depth: number }) {
           onChange={(next) => toggleOrgan(node.id, next)}
         />
 
-        <span className={`flex-1 truncate ${node.hasMesh ? "" : "italic text-slate-400"}`}>
-          {node.name}
+        {pain != null && (
+          <span
+            className="h-2 w-2 shrink-0 rounded-full"
+            style={{
+              background: `rgb(${painColor(pain)
+                .map((c) => Math.round(c * 255))
+                .join(",")})`,
+              boxShadow: lowStim ? "0 0 0 1px #fff" : undefined,
+            }}
+            title={`pain today: ${pain}/10`}
+          />
+        )}
+
+        <span className={`flex-1 truncate ${node.hasMesh ? "" : "italic opacity-60"}`}>
+          {t(node.name)}
         </span>
 
         {node.mesh && (
@@ -112,7 +299,7 @@ function OrganRow({ node, depth }: { node: OrganNodeDto; depth: number }) {
         )}
         {!node.hasMesh && (
           <span className="shrink-0 text-[9px] uppercase tracking-wider text-slate-600">
-            taxonomy
+            {t("taxonomy")}
           </span>
         )}
 
@@ -178,6 +365,7 @@ function SystemSection({
 }) {
   const hidden = useAnatomy((s) => s.hidden);
   const toggleSystem = useAnatomy((s) => s.toggleSystem);
+  const { lowStim, t } = useLowStim();
   const [open, setOpen] = useState(defaultOpen);
 
   const state = useMemo(() => {
@@ -198,7 +386,13 @@ function SystemSection({
 
   return (
     <section className="mb-1">
-      <div className="flex items-center gap-2 rounded-md bg-white/[0.04] px-2 py-1.5">
+      <div
+        className="flex items-center gap-2 rounded-md px-2 py-1.5"
+        style={{
+          background: lowStim ? "#111" : "rgba(255,255,255,0.04)",
+          boxShadow: lowStim ? "inset 0 0 0 1px #555" : undefined,
+        }}
+      >
         <button
           className="flex h-4 w-4 items-center justify-center rounded text-slate-500 hover:bg-white/10 hover:text-slate-200"
           onClick={() => setOpen((o) => !o)}
@@ -218,7 +412,7 @@ function SystemSection({
           style={{ backgroundColor: color }}
         />
         <span className="flex-1 truncate text-[13px] font-medium text-slate-200">
-          {name}
+          {t(name)}
         </span>
         <span className="shrink-0 text-[10px] tabular-nums text-slate-500">
           {organCount}
@@ -245,11 +439,14 @@ export default function LayerTree() {
   const tree = useAnatomy((s) => s.tree);
   const treeError = useAnatomy((s) => s.treeError);
   const loadTree = useAnatomy((s) => s.loadTree);
+  const hydratePainLogs = useAnatomy((s) => s.hydratePainLogs);
+  const { lowStim, t } = useLowStim();
   const [query, setQuery] = useState("");
 
   useEffect(() => {
     void loadTree();
-  }, [loadTree]);
+    void hydratePainLogs();
+  }, [loadTree, hydratePainLogs]);
 
   const systems = tree?.systems ?? [];
   const visibleSystems = useMemo(() => {
@@ -275,8 +472,14 @@ export default function LayerTree() {
   }, [systems, query]);
 
   return (
-    <aside className="flex h-full w-80 shrink-0 flex-col border-r border-white/10 bg-slate-950/80">
-      <div className="border-b border-white/10 px-3 py-3">
+    <aside
+      className="flex h-full w-80 shrink-0 flex-col border-r bg-slate-950/80"
+      style={{ borderColor: lowStim ? "#fff" : "rgba(255,255,255,0.1)" }}
+    >
+      <div
+        className="border-b px-3 py-3"
+        style={{ borderColor: lowStim ? "#fff" : "rgba(255,255,255,0.1)" }}
+      >
         <h1 className="text-sm font-semibold tracking-tight text-slate-100">
           Interactive Anatomy Engine
         </h1>
@@ -287,11 +490,14 @@ export default function LayerTree() {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Filter structures…"
-          className="mt-2.5 w-full rounded-md border border-white/10 bg-slate-900 px-2.5 py-1.5 text-[13px] text-slate-200 placeholder:text-slate-600 focus:border-sky-500/60 focus:outline-none"
+          className="mt-2.5 w-full rounded-md border bg-slate-900 px-2.5 py-1.5 text-[13px] text-slate-200 placeholder:text-slate-600 focus:outline-none"
+          style={{ borderColor: lowStim ? "#fff" : "rgba(255,255,255,0.1)" }}
         />
       </div>
 
       <div className="min-h-0 flex-1 overflow-y-auto px-2 py-2" role="tree">
+        <LowStimSection />
+        <ClinicalSection />
         {treeError && (
           <p className="m-2 rounded bg-red-950/70 px-2 py-1.5 text-xs text-red-300">
             {treeError}
@@ -316,7 +522,10 @@ export default function LayerTree() {
         ))}
       </div>
 
-      <div className="border-t border-white/10 px-3 py-2 text-[10px] leading-relaxed text-slate-600">
+      <div
+        className="border-t px-3 py-2 text-[10px] leading-relaxed text-slate-600"
+        style={{ borderColor: lowStim ? "#fff" : "rgba(255,255,255,0.1)" }}
+      >
         {tree?.meta.dataset} v{tree?.meta.datasetVersion} · {tree?.meta.license} ·{" "}
         {tree?.meta.rightsHolder}
       </div>

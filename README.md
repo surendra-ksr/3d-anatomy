@@ -89,19 +89,77 @@ See `pipeline/README.md` for the full design.
 ```
 components/AnatomyViewer.tsx   R3F canvas: useGLTF(+Draco), explicit pointer
                                raycasting → FMA selection, medical lighting rig,
-                               OrbitControls, per-part visibility/opacity/highlight
+                               OrbitControls, per-part visibility/opacity/highlight,
+                               pain heatmap materials, clinical overlay layers
 components/LayerTree.tsx       nested checkbox tree (systems → organs), tri-state
-                               checkboxes, cascade, search, opacity sliders
+                               checkboxes, cascade, search, opacity sliders,
+                               clinical layers (ANS / tender points / pain paint /
+                               low-stim switch), plain-language aliases
 components/InfoPanel.tsx       FMA metadata + mesh provenance for the selection
-lib/store.ts                   zustand bridge between DOM tree and 3D scene
+components/PainSlider.tsx      floating 1–10 pain intensity control
+components/PacingDialog.tsx    "Energy Drain" activity-cost estimator dialog
+components/overlays/           AutonomicLayer (vagus/ANS schematic tubes),
+                               TenderPointLayer (18 ACR-1990 sites)
+lib/store.ts                   zustand bridge between DOM tree and 3D scene +
+                               pain log state (SymptomLog persistence)
+lib/low-stim.tsx               Low Cognitive Load context (high contrast, aliases)
+lib/anchors.ts                 BP3D bounds → world-space anchor resolution
+lib/aliases.ts                 FMA term → plain-language alias table
 app/api/anatomy/tree/route.ts  full hierarchy (Prisma → PostgreSQL)
 app/api/anatomy/[fmaId]/route.ts   one concept by FMA id + mesh URL
-backend/main.py                FastAPI data service (same database, psycopg)
-prisma/schema.prisma           AnatomicalSystem / Organ / MeshAsset (+ enums)
+app/api/pain-logs/route.ts     pain log CRUD (Prisma → SymptomLog table)
+backend/main.py                FastAPI data service (same database, psycopg) +
+                               /api/metabolic-cost pacing model
+pipeline/anatomy_pipeline/metabolic.py  segment-weighted energy-drain model
+public/data/clinical-overlays.json      ANS graph + 18 tender-point anchors
+prisma/schema.prisma           AnatomicalSystem / Organ / MeshAsset / User /
+                               SymptomLog (+ enums)
 pipeline/                      Python data pipeline (see above)
 ```
 
+---
+
+## ME/CFS & Fibromyalgia feature set
+
+Layered on top of the core viewer:
+
+1. **Autonomic Nervous System layer** (`AutonomicLayer.tsx`) — the vagus
+   nerve, vagal trunks, sympathetic chains, carotid sinuses and the
+   baroreflex arc to the medulla, drawn as animated tubes anchored to real
+   BodyParts3D meshes (`public/data/clinical-overlays.json`); toggled from
+   the tree for dysautonomia visualisation.
+2. **Tender Point layer** (`TenderPointLayer.tsx`) — the 18 ACR-1990
+   fibromyalgia tender points placed via per-part bounding-box fractions
+   (occiput, mid/upper trapezius, supra/infra-spinatous, lateral
+   epicondyle, gluteal, greater trochanter, knee, rib/costochondral,
+   low cervical). Clickable → mark positive; running `x/18` tally.
+3. **Pain heatmap logging** — click a structure → 1–10 slider → the mesh's
+   material is tinted on a green→yellow(3)→orange→red(8)→crimson(10) scale
+   and the rating is persisted to the `SymptomLog` table (one row per
+   user/FMA/day, upserted on re-rating).
+4. **Pacing / Energy Drain estimator** — `POST /api/metabolic-cost` takes
+   activated muscles (FMA ids) + minutes + severity and returns a 0–100
+   Energy Drain score with risk band, per-muscle watt/kcal breakdown and
+   references. Segment masses from de Leva/Dempster anthropometry, muscle
+   RMR from Elia (13 kcal/kg/day); `pipeline/anatomy_pipeline/metabolic.py`
+   is the canonical model (23 mapped muscle groups).
+5. **Low Cognitive Load mode** — `lib/low-stim.tsx` context: strict
+   high-contrast dark theme (`html[data-ls="on"]` in `globals.css`), Three.js
+   post-processing/AA/damping/pulse animations disabled (canvas remount at
+   DPR 1), and FMA terminology swapped for plain-language aliases across the
+   tree, sliders and panels.
+
+```
+// POST /api/metabolic-cost
+{ "fmaIds": ["FMA22428","FMA22541","FMA13377"], "minutes": 15, "severity": "moderate" }
+→ { "energyDrain": 5.1, "riskBand": "low", "totalKcal": 3.07,
+    "muscles": [ { "fmaId": "FMA22428", "watts": 12.9, ... } ], ... }
+```
+
+Not a diagnostic tool — overlays/pacing outputs carry an explicit disclaimer.
+
 ### API examples
+
 
 ```bash
 curl localhost:3000/api/anatomy/FMA7274      # wall of heart (Next/Prisma)
