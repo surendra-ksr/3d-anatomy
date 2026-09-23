@@ -111,6 +111,7 @@ app/api/pain-logs/route.ts     pain log CRUD (Prisma → SymptomLog table)
 backend/main.py                FastAPI data service (same database, psycopg) +
                                /api/metabolic-cost pacing model
 pipeline/anatomy_pipeline/metabolic.py  segment-weighted energy-drain model
+pipeline/anatomy_pipeline/analytics.py  flare co-occurrence + PEM lag model
 public/data/clinical-overlays.json      ANS graph + 18 tender-point anchors
 prisma/schema.prisma           AnatomicalSystem / Organ / MeshAsset / User /
                                SymptomLog (+ enums)
@@ -154,9 +155,45 @@ Layered on top of the core viewer:
 { "fmaIds": ["FMA22428","FMA22541","FMA13377"], "minutes": 15, "severity": "moderate" }
 → { "energyDrain": 5.1, "riskBand": "low", "totalKcal": 3.07,
     "muscles": [ { "fmaId": "FMA22428", "watts": 12.9, ... } ], ... }
+
+// GET /api/analytics/daily?days=14   (Prisma: SymptomLog joined to ActivityLog, per day)
+→ { "days": [ { "date": "2026-09-17", "energyDrain": 52.4, "painAvg": 7.5, ... } ],
+    "pem": { "bestLagDays": 2, "pearsonAtBest": 0.93, "byLag": [...], "interpretation": "..." } }
+
+// GET /api/py/analytics/clusters?days=90&minIntensity=3&minSupport=2
+→ { "pairRules": [ { "statement": "When occiput (base of skull) flares ...", "confidence": 1.0, "lift": 1.5 } ],
+    "regionClusters": [ { "members": ["occiput (base of skull)", "trapezius (neck/shoulder)"], "support": 4 } ] }
 ```
 
 Not a diagnostic tool — overlays/pacing outputs carry an explicit disclaimer.
+
+---
+
+## Longitudinal analytics & temporal visualization
+
+1. **Temporal heatmap (time-scrubbing)** — a timeline bar at the bottom of
+   the viewer (7/30-day windows, play/pause, day stepping, amber ticks on
+   days that have logs). Scrubbing to a past day re-tints every mesh from
+   that day's `SymptomLog` rows, animating how pain migrates across the
+   body; painting while scrubbing backfills that day. Cursor on today =
+   the live map.
+2. **Energy vs Symptom dashboard** (`/dashboard`) — Prisma aggregation
+   joins `ActivityLog` (saved Energy-Drain estimates; "Log this activity"
+   in the pacing dialog persists them) with `SymptomLog` per day and
+   Recharts draws the dual-axis line chart (left: daily energy drain,
+   right: avg pain 0–10). A lag cross-correlation (Pearson r at 0–3 days)
+   surfaces the delayed exertion→pain pattern of PEM and states its
+   confidence/limitations honestly.
+3. **Symptom clustering** — `GET /api/py/analytics/clusters` runs
+   association-rule mining (support/confidence/lift) over per-day flare
+   baskets plus single-linkage clustering of the region co-occurrence
+   matrix (`pipeline/anatomy_pipeline/analytics.py`), e.g. "When trapezius
+   flares (pain ≥ 7), occiput is also flaring 85% of the time (4 days
+   together, lift 1.5)". Surfaced in the in-viewer "📈 Insights" panel and
+   on the dashboard.
+
+All analytics run on the user's own logged history only — no synthetic
+data anywhere; empty states explain how to accumulate real entries.
 
 ### API examples
 

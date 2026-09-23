@@ -5,7 +5,7 @@
  * pain-paint mode. Saving upserts a SymptomLog via /api/pain-logs and applies
  * the heatmap color to the 3D material (see AnatomyViewer.useApplyPartStyles).
  */
-import { painColor, useAnatomy } from "@/lib/store";
+import { painColor, rangeDates, useAnatomy } from "@/lib/store";
 import { useLowStim } from "@/lib/low-stim";
 
 function cssColor([r, g, b]: [number, number, number]) {
@@ -28,9 +28,14 @@ export default function PainSlider() {
   const close = useAnatomy((s) => s.closePainDraft);
   const clearPain = useAnatomy((s) => s.clearPain);
   const saving = useAnatomy((s) => s.painSaving);
+  const timelineRange = useAnatomy((s) => s.timelineRange);
+  const cursorOffset = useAnatomy((s) => s.cursorOffset);
   const { lowStim, t } = useLowStim();
 
   if (!draft) return null;
+  const dates = rangeDates(timelineRange);
+  const isToday = cursorOffset >= dates.length - 1;
+  const draftDateIso = isToday ? dates[dates.length - 1] : dates[cursorOffset];
   const color = cssColor(painColor(draft.value));
   const label = LABELS[Math.round(draft.value)] ?? "";
 
@@ -94,7 +99,7 @@ export default function PainSlider() {
           {saving ? "Saving…" : "Save pain level"}
         </button>
         <button
-          onClick={() => clearPain(draft.organId)}
+          onClick={() => void clearPain(draft.organId)}
           className="rounded-md border px-3 py-1.5 text-xs font-medium"
           style={{ borderColor: lowStim ? "#fff" : "#ffffff33" }}
         >
@@ -102,8 +107,9 @@ export default function PainSlider() {
         </button>
       </div>
       <p className="mt-2 text-[10px] leading-snug opacity-60">
-        Saved to your symptom log (today). Re-painting a structure the same day
-        updates its rating.
+        {draftDateIso
+          ? `Saved to your symptom log for ${draftDateIso}${isToday ? " (live map)" : " — backfills history"}. Re-painting the same day updates the rating.`
+          : "Saved to your symptom log."}
       </p>
     </div>
   );

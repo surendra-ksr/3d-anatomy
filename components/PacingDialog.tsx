@@ -56,6 +56,7 @@ export default function PacingDialog({ onClose }: { onClose: () => void }) {
   const [severity, setSeverity] = useState("moderate");
   const [result, setResult] = useState<EstimateResponse | null>(null);
   const [busy, setBusy] = useState(false);
+  const [saveState, setSaveState] = useState<"idle" | "saving" | "saved" | "error">("idle");
 
   useEffect(() => {
     fetch("/api/py/metabolic-cost/groups")
@@ -80,6 +81,7 @@ export default function PacingDialog({ onClose }: { onClose: () => void }) {
     if (selected.size === 0) return;
     setBusy(true);
     setResult(null);
+    setSaveState("idle");
     try {
       const res = await fetch("/api/py/metabolic-cost", {
         method: "POST",
@@ -89,6 +91,28 @@ export default function PacingDialog({ onClose }: { onClose: () => void }) {
       if (res.ok) setResult((await res.json()) as EstimateResponse);
     } finally {
       setBusy(false);
+    }
+  };
+
+  /** Persist this estimate to the activity history (dashboard join input). */
+  const saveToHistory = async () => {
+    if (!result) return;
+    setSaveState("saving");
+    try {
+      const res = await fetch("/api/activity-logs", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          fmaIds: [...selected],
+          minutes: result.minutes,
+          severity,
+          energyDrain: result.energyDrain,
+          totalKcal: result.totalKcal,
+        }),
+      });
+      setSaveState(res.ok ? "saved" : "error");
+    } catch {
+      setSaveState("error");
     }
   };
 
@@ -233,6 +257,33 @@ export default function PacingDialog({ onClose }: { onClose: () => void }) {
             <p className="mt-3 border-t border-white/10 pt-2 text-[10px] leading-snug opacity-60">
               {data?.disclaimer}
             </p>
+            <div className="mt-2 flex items-center gap-2">
+              <button
+                onClick={() => void saveToHistory()}
+                disabled={saveState === "saving" || saveState === "saved"}
+                className="rounded-md border border-white/20 px-3 py-1.5 text-[11px] font-semibold text-slate-100 hover:bg-white/10 disabled:opacity-60"
+                style={lowStim ? { borderColor: "#fff", borderWidth: 2 } : undefined}
+              >
+                {saveState === "saving"
+                  ? "Saving…"
+                  : saveState === "saved"
+                    ? "Saved to activity history ✓"
+                    : "Log this activity"}
+              </button>
+              {saveState === "saved" && (
+                <a
+                  href="/dashboard"
+                  className="text-[11px] text-sky-400 hover:underline"
+                >
+                  see it on the dashboard →
+                </a>
+              )}
+              {saveState === "error" && (
+                <span className="text-[11px] text-red-400">
+                  could not save — is the API up?
+                </span>
+              )}
+            </div>
           </div>
         )}
       </div>

@@ -118,3 +118,23 @@ DO $$ BEGIN
     FOREIGN KEY ("userId") REFERENCES "users"("id")
     ON DELETE CASCADE ON UPDATE CASCADE;
 EXCEPTION WHEN duplicate_object THEN NULL; WHEN duplicate_table THEN NULL; END $$;
+
+CREATE TABLE IF NOT EXISTS "activity_logs" (
+    "id"          SERIAL NOT NULL,
+    "userId"      INTEGER NOT NULL,
+    "fmaIds"      TEXT[] NOT NULL DEFAULT '{}',
+    "minutes"     INTEGER NOT NULL,
+    "severity"    TEXT NOT NULL,
+    "energyDrain" DOUBLE PRECISION NOT NULL,
+    "totalKcal"   DOUBLE PRECISION NOT NULL,
+    "logDate"     DATE NOT NULL,
+    "createdAt"   TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT "activity_logs_pkey" PRIMARY KEY ("id")
+);
+CREATE INDEX IF NOT EXISTS "activity_logs_userId_logDate_idx"
+  ON "activity_logs"("userId", "logDate");
+DO $$ BEGIN
+  ALTER TABLE "activity_logs" ADD CONSTRAINT "activity_logs_userId_fkey"
+    FOREIGN KEY ("userId") REFERENCES "users"("id")
+    ON DELETE CASCADE ON UPDATE CASCADE;
+EXCEPTION WHEN duplicate_object THEN NULL; WHEN duplicate_table THEN NULL; END $$;

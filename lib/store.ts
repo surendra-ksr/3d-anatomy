@@ -69,8 +69,21 @@ interface AnatomyState {
   ansVisible: boolean;
   tenderVisible: boolean;
   tenderTally: Partial<Record<"none" | "positive", number>>;
-  /** mirror of LowStimProvider state for r3f-side reads */
+  /** mirror of Low Cognitive Load provider state for r3f-side reads */
   lowStim: boolean;
+
+  // --- longitudinal: timeline scrubbing ------------------------------------
+  /** ISO date (UTC midnight) -> fmaId -> intensity, loaded history window */
+  historyLogs: Map<string, Map<string, number>>;
+  /** ISO dates in the window that have at least one log (track dots) */
+  historyDays: Set<string>;
+  /** scrubber window length in days */
+  timelineRange: 7 | 30;
+  /** 0 = oldest day of the window … timelineRange-1 = today (live) */
+  cursorOffset: number;
+  /** playback state for the animated pain-migration view */
+  playing: boolean;
+  historyLoading: boolean;
 
   // actions
   loadTree: () => Promise<void>;
@@ -89,14 +102,40 @@ interface AnatomyState {
   setPainDraftValue: (value: number) => void;
   closePainDraft: () => void;
   savePainDraft: () => Promise<void>;
-  clearPain: (organId: number) => void;
+  clearPain: (organId: number) => Promise<void>;
   clearAllPain: () => Promise<void>;
   hydratePainLogs: () => Promise<void>;
+
+  loadHistory: () => Promise<void>;
+  setTimelineRange: (days: 7 | 30) => void;
+  setCursorOffset: (offset: number) => void;
+  stepCursor: (delta: number) => void;
+  setPlaying: (on: boolean) => void;
+  jumpToToday: () => void;
 
   setAnsVisible: (on: boolean) => void;
   setTenderVisible: (on: boolean) => void;
   setLowStim: (on: boolean) => void;
 }
+
+/** All dates are UTC-based: both backends key SymptomLog rows by UTC date. */
+export function todayIso(): string {
+  return new Date().toISOString().slice(0, 10);
+}
+
+/** The scrubber window: `range` UTC dates ending today (oldest first). */
+export function rangeDates(range: 7 | 30): string[] {
+  const out: string[] = [];
+  const d = new Date(todayIso());
+  d.setUTCDate(d.getUTCDate() - (range - 1));
+  for (let i = 0; i < range; i++) {
+    out.push(d.toISOString().slice(0, 10));
+    d.setUTCDate(d.getUTCDate() + 1);
+  }
+  return out;
+}
+
+const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 
 export function flattenTree(tree: AnatomyTreeResponse | null) {
   const organById = new Map<number, OrganNodeDto>();
@@ -173,6 +212,13 @@ export const useAnatomy = create<AnatomyState>((set, get) => ({
   tenderVisible: false,
   tenderTally: {},
   lowStim: false,
+
+  historyLogs: new Map(),
+  historyDays: new Set(),
+  timelineRange: 7,
+  cursorOffset: 6,
+  playing: false,
+  historyLoading: false,
 
   loadTree: async () => {
     try {
@@ -285,36 +331,83 @@ export const useAnatomy = create<AnatomyState>((set, get) => ({
     if (!draft) return;
     set({ painSaving: true });
     try {
+      const dates = rangeDates(get().timelineRange);
+      const cursorIso =
+        get().cursorOffset < dates.length - 1
+          ? dates[get().cursorOffset]
+          : null; // null = live/today
       const res = await fetch("/api/pain-logs", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          entries: [{ fmaId: draft.fmaId, intensity: Math.round(draft.value) }],
+          entries: [
+            {
+              fmaId: draft.fmaId,
+              intensity: Math.round(draft.value),
+              ...(cursorIso ? { logDate: cursorIso } : {}),
+            },
+          ],
         }),
       });
       if (!res.ok) throw new Error(`save failed: ${res.status}`);
-      const painMap = new Map(get().painMap);
-      const painMapByFmaId = new Map(get().painMapByFmaId);
-      painMap.set(draft.organId, Math.round(draft.value));
-      painMapByFmaId.set(draft.fmaId, Math.round(draft.value));
-      set({ painMap, painMapByFmaId, painDraft: null });
+      const value = Math.round(draft.value);
+      if (cursorIso == null) {
+        const painMap = new Map(get().painMap);
+        const painMapByFmaId = new Map(get().painMapByFmaId);
+        painMap.set(draft.organId, value);
+        painMapByFmaId.set(draft.fmaId, value);
+        set({ painMap, painMapByFmaId, painDraft: null });
+      } else {
+        set({ painDraft: null });
+      }
+      // refresh the scrubber cache (cheap; also updates the track dots)
+      void get().loadHistory();
     } finally {
       set({ painSaving: false });
     }
   },
 
-  clearPain: (organId) => {
+  clearPain: async (organId) => {
+    const node = get().organById.get(organId);
+    const dates = rangeDates(get().timelineRange);
+    const cursorIso =
+      get().cursorOffset < dates.length - 1 ? dates[get().cursorOffset] : null;
+    set({ painDraft: null });
+    if (cursorIso) {
+      // reviewing a past day: remove the backfilled row server-side
+      if (node) {
+        await fetch(
+          `/api/pain-logs?fmaId=${encodeURIComponent(node.fmaId)}&logDate=${cursorIso}`,
+          { method: "DELETE" },
+        ).catch(() => undefined);
+        void get().loadHistory();
+      }
+      return;
+    }
+    if (node && get().painMapByFmaId.has(node.fmaId)) {
+      await fetch(`/api/pain-logs?fmaId=${encodeURIComponent(node.fmaId)}`, {
+        method: "DELETE",
+      }).catch(() => undefined);
+    }
     const painMap = new Map(get().painMap);
     const painMapByFmaId = new Map(get().painMapByFmaId);
-    const node = get().organById.get(organId);
     painMap.delete(organId);
     if (node) painMapByFmaId.delete(node.fmaId);
-    set({ painMap, painMapByFmaId, painDraft: null });
+    set({ painMap, painMapByFmaId });
   },
 
   clearAllPain: async () => {
-    await fetch("/api/pain-logs", { method: "DELETE" });
-    set({ painMap: new Map(), painMapByFmaId: new Map(), painDraft: null });
+    const dates = rangeDates(get().timelineRange);
+    const cursorIso =
+      get().cursorOffset < dates.length - 1 ? dates[get().cursorOffset] : null;
+    const qs = cursorIso ? `?logDate=${cursorIso}` : "";
+    await fetch(`/api/pain-logs${qs}`, { method: "DELETE" });
+    if (cursorIso) {
+      void get().loadHistory();
+    } else {
+      set({ painMap: new Map(), painMapByFmaId: new Map(), painDraft: null });
+      void get().loadHistory();
+    }
   },
 
   hydratePainLogs: async () => {
@@ -343,7 +436,71 @@ export const useAnatomy = create<AnatomyState>((set, get) => ({
   setAnsVisible: (on) => set({ ansVisible: on }),
   setTenderVisible: (on) => set({ tenderVisible: on }),
   setLowStim: (on) => set({ lowStim: on }),
+
+  loadHistory: async () => {
+    await loadHistoryImpl(get, set);
+  },
+
+  setTimelineRange: (days) => {
+    set({ timelineRange: days, cursorOffset: days - 1, playing: false });
+    void get().loadHistory();
+  },
+
+  setCursorOffset: (offset) => {
+    const range = get().timelineRange;
+    set({ cursorOffset: Math.min(range - 1, Math.max(0, offset)) });
+  },
+
+  stepCursor: (delta) => {
+    const { cursorOffset, timelineRange } = get();
+    const next = Math.min(timelineRange - 1, Math.max(0, cursorOffset + delta));
+    set({ cursorOffset: next });
+  },
+
+  setPlaying: (on) => set({ playing: on }),
+
+  jumpToToday: () => set({ cursorOffset: get().timelineRange - 1, playing: false }),
 }));
+
+/**
+ * Fetch the pain-log history window into historyLogs (fmaId-keyed so the 3D
+ * materials can consume it directly) + the set of days that have logs.
+ */
+async function loadHistoryImpl(
+  get: () => AnatomyState,
+  set: (partial: Partial<AnatomyState>) => void,
+) {
+  const range = get().timelineRange;
+  const dates = rangeDates(range);
+  set({ historyLoading: true });
+  try {
+    const res = await fetch(
+      `/api/pain-logs?from=${dates[0]}&until=${dates[dates.length - 1]}`,
+      { cache: "no-store" },
+    );
+    if (!res.ok) return;
+    const data = (await res.json()) as {
+      logs: { fmaId: string; intensity: number; logDate: string }[];
+    };
+    const historyLogs = new Map<string, Map<string, number>>();
+    const historyDays = new Set<string>();
+    for (const log of data.logs) {
+      if (!DATE_RE.test(log.logDate)) continue;
+      let day = historyLogs.get(log.logDate);
+      if (!day) {
+        day = new Map();
+        historyLogs.set(log.logDate, day);
+      }
+      day.set(log.fmaId, log.intensity);
+      historyDays.add(log.logDate);
+    }
+    set({ historyLogs, historyDays });
+  } catch {
+    // offline-tolerant: timeline simply shows no history
+  } finally {
+    set({ historyLoading: false });
+  }
+}
 
 function collectIds(system: SystemTreeDto): number[] {
   const out: number[] = [];

@@ -29,6 +29,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from anatomy_pipeline import build as build_mod  # noqa: E402
 from anatomy_pipeline import config  # noqa: E402
 from anatomy_pipeline import metabolic  # noqa: E402
+from anatomy_pipeline import analytics as analytics_mod  # noqa: E402
 from anatomy_pipeline.fma import FmaCatalog  # noqa: E402
 from anatomy_pipeline import sources  # noqa: E402
 
@@ -83,6 +84,17 @@ def _validate_overlays(fma_labels: dict[str, str], catalog) -> list[str]:
     return problems
 
 
+def _validate_analytics(fma_labels: dict[str, str]) -> list[str]:
+    """The analytics region tables must line up with the FMA data."""
+    problems = list(analytics_mod.validate())
+    for fid in analytics_mod.TENDER_POINT_REGIONS:
+        if fma_labels and fid not in fma_labels:
+            problems.append(
+                f"analytics tender-region id {fid} is not in FMA.csv"
+            )
+    return problems
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__,
                                      formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -107,6 +119,7 @@ def main() -> int:
         problems = cat.validate_selection(work / "stl") + cat.verify_system_ids()
         problems += metabolic.validate_against_catalog(cat._fma_labels)
         problems += _validate_overlays(cat._fma_labels, cat)
+        problems += _validate_analytics(cat._fma_labels)
         problems = [p for p in problems if "STL file missing" not in p] \
             if args.stage == "validate" else problems
         if problems:
@@ -114,8 +127,8 @@ def main() -> int:
             for p in problems:
                 print(f"  - {p}")
             return 2
-        print("Selection, metabolic model and clinical overlays are "
-              "consistent with the BodyParts3D/FMA data.")
+        print("Selection, metabolic model, clinical overlays and analytics "
+              "are consistent with the BodyParts3D/FMA data.")
 
     if args.stage == "fetch":
         from anatomy_pipeline import build as b

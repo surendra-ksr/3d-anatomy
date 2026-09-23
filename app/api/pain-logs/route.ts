@@ -15,23 +15,36 @@ async function getDefaultUserId() {
   return user.id;
 }
 
+const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
+
 /**
- * GET /api/pain-logs?since=YYYY-MM-DD
- * Today's (or all) painted pain ratings - SymptomLog rows.
+ * GET /api/pain-logs?since=...&from=...&until=...
+ * Pain ratings for a day window - feeds the live pain map (`since`) and the
+ * timeline scrubber (`from`+`until`).
  */
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
-  const since = searchParams.get("since");
   const userId = await getDefaultUserId();
+
+  const window: { gte?: Date; lte?: Date } = {};
+  for (const [param, op] of [
+    ["since", "gte"],
+    ["from", "gte"],
+    ["until", "lte"],
+  ] as const) {
+    const value = searchParams.get(param);
+    if (!value) continue;
+    if (!DATE_RE.test(value) || Number.isNaN(Date.parse(value))) {
+      return NextResponse.json({ error: `bad '${param}' date` }, { status: 400 });
+    }
+    if (op === "gte") window.gte = new Date(value);
+    else window.lte = new Date(value);
+  }
+
   const logs = await prisma.symptomLog.findMany({
-    where: {
-      userId,
-      ...(since && !Number.isNaN(Date.parse(since))
-        ? { logDate: { gte: new Date(since) } }
-        : {}),
-    },
+    where: { userId, logDate: window },
     orderBy: { timestamp: "desc" },
-    take: 500,
+    take: 2000,
   });
   return NextResponse.json({
     user: DEFAULT_USER,
@@ -49,12 +62,14 @@ interface PainEntryBody {
   fmaId?: unknown;
   intensity?: unknown;
   note?: unknown;
+  logDate?: unknown;
 }
 
 /**
  * POST /api/pain-logs
- * Body: { entries: [{ fmaId, intensity (1-10), note? }] }
- * Upserts today's rating per structure (one SymptomLog per user/FMA/day).
+ * Body: { entries: [{ fmaId, intensity (1-10), note?, logDate? }] }
+ * Upserts one rating per structure per day; logDate backfills history
+ * (defaults to today UTC).
  */
 export async function POST(request: Request) {
   let body: { entries?: PainEntryBody[] };
@@ -71,11 +86,16 @@ export async function POST(request: Request) {
     );
   }
 
+  const todayIso = new Date().toISOString().slice(0, 10);
   const normalized = [];
   for (const entry of entries) {
     const fmaIdRaw = typeof entry.fmaId === "string" ? entry.fmaId.trim().toUpperCase() : "";
     const fmaId = fmaIdRaw.startsWith("FMA") ? fmaIdRaw : `FMA${fmaIdRaw}`;
     const intensity = Number(entry.intensity);
+    const logDateIso =
+      typeof entry.logDate === "string" && DATE_RE.test(entry.logDate)
+        ? entry.logDate
+        : todayIso;
     if (!/^FMA[0-9A-Za-z]+$/.test(fmaId)) {
       return NextResponse.json({ error: `bad fmaId: ${entry.fmaId}` }, { status: 400 });
     }
@@ -85,14 +105,20 @@ export async function POST(request: Request) {
         { status: 400 },
       );
     }
+    if (Date.parse(logDateIso) > Date.parse(todayIso)) {
+      return NextResponse.json(
+        { error: `logDate ${logDateIso} is in the future` },
+        { status: 400 },
+      );
+    }
     const note = typeof entry.note === "string" ? entry.note.slice(0, 500) : null;
-    normalized.push({ fmaId, intensity, note });
+    normalized.push({ fmaId, intensity, note, logDateIso });
   }
 
   const userId = await getDefaultUserId();
-  const logDate = new Date(new Date().toISOString().slice(0, 10));
   const saved = [];
   for (const entry of normalized) {
+    const logDate = new Date(entry.logDateIso);
     const row = await prisma.symptomLog.upsert({
       where: {
         userId_fmaId_logDate: {
@@ -117,22 +143,28 @@ export async function POST(request: Request) {
       timestamp: row.timestamp.toISOString(),
     });
   }
-  return NextResponse.json({ saved, logDate: logDate.toISOString().slice(0, 10) });
+  return NextResponse.json({
+    saved,
+    logDate: saved[0]?.logDate ?? todayIso,
+  });
 }
 
 /**
- * DELETE /api/pain-logs?fmaId=FMA13377
- * Clears one structure's rating, or the whole current pain map.
+ * DELETE /api/pain-logs?fmaId=FMA13377&logDate=2026-09-20
+ * Clears one structure's rating on a day (default today), or the whole day
+ * when fmaId is omitted.
  */
 export async function DELETE(request: Request) {
   const { searchParams } = new URL(request.url);
   const fmaIdRaw = searchParams.get("fmaId");
+  const logDateRaw = searchParams.get("logDate");
+  const todayIso = new Date().toISOString().slice(0, 10);
+  const logDateIso = logDateRaw && DATE_RE.test(logDateRaw) ? logDateRaw : todayIso;
   const userId = await getDefaultUserId();
-  const logDate = new Date(new Date().toISOString().slice(0, 10));
   const deleted = await prisma.symptomLog.deleteMany({
     where: {
       userId,
-      logDate,
+      logDate: new Date(logDateIso),
       ...(fmaIdRaw
         ? {
             fmaId: fmaIdRaw.toUpperCase().startsWith("FMA")
@@ -142,5 +174,5 @@ export async function DELETE(request: Request) {
         : {}),
     },
   });
-  return NextResponse.json({ deleted: deleted.count });
+  return NextResponse.json({ deleted: deleted.count, logDate: logDateIso });
 }

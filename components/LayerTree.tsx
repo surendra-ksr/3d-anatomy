@@ -22,7 +22,7 @@
  */
 import { useEffect, useMemo, useState } from "react";
 
-import { checkState, painColor, useAnatomy } from "@/lib/store";
+import { checkState, painColor, rangeDates, useAnatomy } from "@/lib/store";
 import { useLowStim } from "@/lib/low-stim";
 import type { OrganNodeDto } from "@/lib/types";
 
@@ -110,6 +110,10 @@ function ClinicalSection() {
   const tenderVisible = useAnatomy((s) => s.tenderVisible);
   const setTenderVisible = useAnatomy((s) => s.setTenderVisible);
   const tenderTally = useAnatomy((s) => s.tenderTally);
+  const reviewing = useAnatomy((s) => s.cursorOffset < s.timelineRange - 1);
+  const cursorIso = reviewing
+    ? rangeDates(useAnatomy.getState().timelineRange)[useAnatomy.getState().cursorOffset]
+    : null;
   const [pacingHint, setPacingHint] = useState(false);
 
   return (
@@ -169,7 +173,7 @@ function ClinicalSection() {
             onClick={() => void clearAllPain()}
             className="text-[10px] text-slate-500 underline hover:text-slate-300"
           >
-            clear today
+            clear {cursorIso ?? "day"}
           </button>
         </div>
       )}
@@ -224,13 +228,19 @@ function OrganRow({ node, depth }: { node: OrganNodeDto; depth: number }) {
   const opacity = useAnatomy((s) => s.opacity);
   const setOpacity = useAnatomy((s) => s.setOpacity);
   const painMap = useAnatomy((s) => s.painMap);
+  // review-mode dot: the scrubbed day's rating for this structure
+  const reviewPain = useAnatomy((s) =>
+    s.cursorOffset < s.timelineRange - 1
+      ? s.historyLogs.get(rangeDates(s.timelineRange)[s.cursorOffset])?.get(node.fmaId) ?? null
+      : null,
+  );
   const { lowStim, t } = useLowStim();
 
   const [open, setOpen] = useState(depth < 2);
   const state = checkState(node, hidden);
   const isSelected = selectedId === node.id;
   const isHovered = hoveredId === node.id;
-  const pain = painMap.get(node.id);
+  const pain = reviewPain ?? painMap.get(node.id) ?? null;
 
   return (
     <li role="treeitem" aria-expanded={open} aria-selected={isSelected}>
@@ -440,13 +450,15 @@ export default function LayerTree() {
   const treeError = useAnatomy((s) => s.treeError);
   const loadTree = useAnatomy((s) => s.loadTree);
   const hydratePainLogs = useAnatomy((s) => s.hydratePainLogs);
+  const loadHistory = useAnatomy((s) => s.loadHistory);
   const { lowStim, t } = useLowStim();
   const [query, setQuery] = useState("");
 
   useEffect(() => {
     void loadTree();
     void hydratePainLogs();
-  }, [loadTree, hydratePainLogs]);
+    void loadHistory();
+  }, [loadTree, hydratePainLogs, loadHistory]);
 
   const systems = tree?.systems ?? [];
   const visibleSystems = useMemo(() => {

@@ -33,13 +33,15 @@ import { Canvas, useThree } from "@react-three/fiber";
 import { OrbitControls, useGLTF, useProgress } from "@react-three/drei";
 import * as THREE from "three";
 
-import { useAnatomy, painColor, type PainDraft } from "@/lib/store";
+import { useAnatomy, painColor, rangeDates } from "@/lib/store";
 import { useLowStim } from "@/lib/low-stim";
 import type { GroupDto } from "@/lib/types";
 import AutonomicLayer from "@/components/overlays/AutonomicLayer";
 import TenderPointLayer from "@/components/overlays/TenderPointLayer";
 import PainSlider from "@/components/PainSlider";
 import PacingDialog from "@/components/PacingDialog";
+import TimelineBar from "@/components/TimelineBar";
+import AnalyticsPanel from "@/components/AnalyticsPanel";
 
 // ---------------------------------------------------------------------------
 // shared mesh registry
@@ -300,6 +302,16 @@ function useApplyPartStyles(registry: MeshRegistry) {
   const organById = useAnatomy((s) => s.organById);
   const painMap = useAnatomy((s) => s.painMap);
   const lowStim = useAnatomy((s) => s.lowStim);
+  // temporal heatmap: when the scrubber rests on a past day, that day's
+  // fmaId-keyed history map replaces the live pain map
+  const isReviewing = useAnatomy(
+    (s) => s.cursorOffset < s.timelineRange - 1,
+  );
+  const reviewPain = useAnatomy((s) =>
+    s.cursorOffset < s.timelineRange - 1
+      ? s.historyLogs.get(rangeDates(s.timelineRange)[s.cursorOffset]) ?? null
+      : null,
+  );
 
   useEffect(() => {
     const SELECTED_COLOR = new THREE.Color(lowStim ? "#ffffff" : "#ff8a3c");
@@ -328,7 +340,9 @@ function useApplyPartStyles(registry: MeshRegistry) {
       mat.opacity = opa;
       mat.depthWrite = opa >= 1;
 
-      const pain = painMap.get(organId);
+      const pain = reviewPain
+        ? reviewPain.get(entry.fmaId)
+        : painMap.get(organId);
       const isSelected = selectedId === organId;
       const isHovered = hoveredId === organId && !isSelected;
 
@@ -352,7 +366,18 @@ function useApplyPartStyles(registry: MeshRegistry) {
 
       mesh.visible = visible;
     }
-  }, [registry, hidden, opacity, selectedId, hoveredId, isolate, organById, painMap, lowStim]);
+  }, [
+    registry,
+    hidden,
+    opacity,
+    selectedId,
+    hoveredId,
+    isolate,
+    organById,
+    painMap,
+    reviewPain,
+    lowStim,
+  ]);
 }
 
 // ---------------------------------------------------------------------------
@@ -545,7 +570,9 @@ export default function AnatomyViewer() {
   const select = useAnatomy((s) => s.select);
   const painMode = useAnatomy((s) => s.painMode);
   const painDraft = useAnatomy((s) => s.painDraft);
+  const isReviewing = useAnatomy((s) => s.cursorOffset < s.timelineRange - 1);
   const [pacingOpen, setPacingOpen] = useState(false);
+  const [analyticsOpen, setAnalyticsOpen] = useState(false);
   const [mouse, setMouse] = useState<{ x: number; y: number } | null>(null);
   const { lowStim } = useLowStim();
 
@@ -589,6 +616,13 @@ export default function AnatomyViewer() {
       <PainSlider />
 
       {pacingOpen && <PacingDialog onClose={() => setPacingOpen(false)} />}
+      {analyticsOpen && <AnalyticsPanel onClose={() => setAnalyticsOpen(false)} />}
+
+      {isReviewing && (
+        <div className="pointer-events-none absolute left-1/2 top-3 z-10 -translate-x-1/2 rounded-md bg-amber-500/90 px-3 py-1.5 text-xs font-medium text-black shadow ring-1 ring-amber-300">
+          Temporal heatmap — replaying a past day (painting backfills it)
+        </div>
+      )}
 
       {hoveredName && mouse && !painDraft && (
         <div
@@ -599,12 +633,28 @@ export default function AnatomyViewer() {
         </div>
       )}
 
+      <TimelineBar />
+
       <div className="pointer-events-auto absolute bottom-3 right-3 flex items-center gap-2">
         {painMode && (
           <span className="rounded-md bg-rose-600/90 px-2.5 py-1.5 text-xs font-medium text-white shadow ring-1 ring-rose-400">
             Pain paint ON — click a structure
           </span>
         )}
+        <button
+          onClick={() => setAnalyticsOpen(true)}
+          className="rounded-md bg-slate-900/85 px-3 py-1.5 text-xs font-medium text-slate-300 shadow ring-1 ring-white/10 hover:bg-slate-800"
+          title="Your flare patterns and clusters"
+        >
+          📈 Insights
+        </button>
+        <a
+          href="/dashboard"
+          className="rounded-md bg-slate-900/85 px-3 py-1.5 text-xs font-medium text-slate-300 shadow ring-1 ring-white/10 hover:bg-slate-800"
+          title="Energy vs symptom correlation dashboard"
+        >
+          📊 Dashboard
+        </a>
         <button
           onClick={() => setPacingOpen(true)}
           className="rounded-md bg-slate-900/85 px-3 py-1.5 text-xs font-medium text-slate-300 shadow ring-1 ring-white/10 hover:bg-slate-800"
@@ -631,7 +681,7 @@ export default function AnatomyViewer() {
         </button>
       </div>
 
-      <div className="pointer-events-none absolute bottom-3 left-3 text-[10px] leading-tight text-slate-500">
+      <div className="pointer-events-none absolute left-3 top-3 text-[10px] leading-tight text-slate-500">
         Meshes: BodyParts3D v3.0 · DBCLS · CC BY-SA 2.1 JP — mapped to FMA
         <br />
         Drag to rotate · scroll to zoom · right-drag to pan · click a part to select

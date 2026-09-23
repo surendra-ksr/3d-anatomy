@@ -378,6 +378,7 @@ class PainEntry(BaseModel):
     fmaId: str = Field(min_length=3, max_length=32)
     intensity: int = Field(ge=1, le=10)
     note: str | None = Field(default=None, max_length=500)
+    logDate: str | None = Field(default=None, pattern=r"^\d{4}-\d{2}-\d{2}$")
 
 
 class PainLogWrite(BaseModel):
@@ -390,33 +391,32 @@ def _normalize_fma(raw: str) -> str:
 
 
 @app.get("/api/pain-logs")
-def pain_logs_get(since: str | None = None):
-    """List the user's pain logs (optionally since a date, YYYY-MM-DD)."""
+def pain_logs_get(
+    since: str | None = None,
+    From: str | None = Query(default=None, alias="from"),
+    until: str | None = None,
+):
+    """List pain logs (optionally windowed: since / from / until, YYYY-MM-DD)."""
     with pool.connection() as conn:
         user_id, _ = get_or_create_default_user(conn)
-        if since:
-            try:
-                since_date = date.fromisoformat(since)
-            except ValueError as exc:
-                raise HTTPException(400, f"bad 'since' date: {exc}") from exc
-            rows = conn.execute(
-                """
-                select "fmaId", intensity, note, "logDate", "timestamp"
-                from symptom_logs
-                where "userId" = %s and "logDate" >= %s
-                order by "timestamp" desc
-                """,
-                (user_id, since_date),
-            ).fetchall()
-        else:
-            rows = conn.execute(
-                """
-                select "fmaId", intensity, note, "logDate", "timestamp"
-                from symptom_logs where "userId" = %s
-                order by "timestamp" desc limit 500
-                """,
-                (user_id,),
-            ).fetchall()
+        clauses = ['"userId" = %s']
+        params: list[object] = [user_id]
+        for param, value, op in (("since", since, ">="), ("from", From, ">="),
+                                 ("until", until, "<=")):
+            if value:
+                try:
+                    clauses.append(f'"logDate" {op} %s')
+                    params.append(date.fromisoformat(value))
+                except ValueError as exc:
+                    raise HTTPException(400, f"bad '{param}' date: {exc}") from exc
+        sql = f"""
+            select "fmaId", intensity, note, "logDate", "timestamp"
+            from symptom_logs
+            where {' and '.join(clauses)}
+            order by "timestamp" desc
+            limit 2000
+        """
+        rows = conn.execute(sql, params).fetchall()
     return {
         "user": DEFAULT_USER,
         "logs": [
@@ -434,13 +434,18 @@ def pain_logs_get(since: str | None = None):
 
 @app.post("/api/pain-logs")
 def pain_logs_post(body: PainLogWrite):
-    """Upsert today's pain ratings (one row per structure per day)."""
+    """Upsert pain ratings (one row per structure per day). Each entry
+    defaults to today (UTC); pass logDate (YYYY-MM-DD) to backfill history."""
     today = datetime.now(timezone.utc).date()
     saved = []
     with pool.connection() as conn:
         user_id, _ = get_or_create_default_user(conn)
         for entry in body.entries:
             fid = _normalize_fma(entry.fmaId)
+            try:
+                entry_date = date.fromisoformat(entry.logDate) if entry.logDate else today
+            except ValueError as exc:
+                raise HTTPException(400, f"bad logDate: {exc}") from exc
             row = conn.execute(
                 """
                 insert into symptom_logs
@@ -452,7 +457,7 @@ def pain_logs_post(body: PainLogWrite):
                               "timestamp" = now()
                 returning "fmaId", intensity, "logDate", "timestamp"
                 """,
-                (user_id, fid, entry.intensity, entry.note, today),
+                (user_id, fid, entry.intensity, entry.note, entry_date),
             ).fetchone()
             saved.append({
                 "fmaId": row[0],
@@ -460,27 +465,37 @@ def pain_logs_post(body: PainLogWrite):
                 "logDate": row[2].isoformat(),
                 "timestamp": row[3].isoformat(),
             })
-    return {"saved": saved, "logDate": today.isoformat()}
+    return {"saved": saved, "logDate": saved[0]["logDate"] if saved else today.isoformat()}
 
 
 @app.delete("/api/pain-logs")
-def pain_logs_delete(fmaId: str | None = Query(default=None)):
-    """Clear one structure's rating, or the whole current pain map."""
+def pain_logs_delete(
+    fmaId: str | None = Query(default=None),
+    logDate: str | None = Query(default=None),
+):
+    """Clear one structure's rating, a whole day, or the whole current map."""
     today = datetime.now(timezone.utc).date()
+    if logDate:
+        try:
+            target = date.fromisoformat(logDate)
+        except ValueError as exc:
+            raise HTTPException(400, f"bad logDate: {exc}") from exc
+    else:
+        target = today
     with pool.connection() as conn:
         user_id, _ = get_or_create_default_user(conn)
         if fmaId:
             deleted = conn.execute(
                 'delete from symptom_logs where "userId" = %s and "fmaId" = %s '
                 'and "logDate" = %s',
-                (user_id, _normalize_fma(fmaId), today),
+                (user_id, _normalize_fma(fmaId), target),
             ).rowcount
         else:
             deleted = conn.execute(
                 'delete from symptom_logs where "userId" = %s and "logDate" = %s',
-                (user_id, today),
+                (user_id, target),
             ).rowcount
-    return {"deleted": deleted, "logDate": today.isoformat()}
+    return {"deleted": deleted, "logDate": target.isoformat()}
 
 
 # ---------------------------------------------------------------------------
@@ -531,3 +546,50 @@ def metabolic_groups():
         "references": metabolic.REFERENCES,
         "disclaimer": metabolic.DISCLAIMER,
     }
+
+
+# ---------------------------------------------------------------------------
+# longitudinal analytics: symptom clustering
+# ---------------------------------------------------------------------------
+
+@app.get("/api/analytics/clusters")
+def analytics_clusters(
+    days: int = Query(default=90, ge=7, le=365),
+    minIntensity: int = Query(default=1, ge=1, le=10, alias="minIntensity"),
+    minSupport: int = Query(default=2, ge=2, le=60),
+):
+    """
+    Cluster the user's flare history: which structures / regions tend to
+    hurt together? Association rules (support / confidence / lift) over
+    per-day flare baskets + single-linkage clustering of the region
+    co-occurrence matrix. See anatomy_pipeline.analytics for the model.
+    """
+    from anatomy_pipeline import analytics as analytics_mod
+
+    with pool.connection() as conn:
+        user_id, _ = get_or_create_default_user(conn)
+        rows = conn.execute(
+            """
+            select s."fmaId", s."logDate", s.intensity, o.name
+            from symptom_logs s
+            left join organs o on o."fmaId" = s."fmaId"
+            where s."userId" = %s
+            order by s."logDate"
+            """,
+            (user_id,),
+        ).fetchall()
+
+    return analytics_mod.compute_clusters(
+        [
+            {
+                "fmaId": r[0],
+                "logDate": r[1],
+                "intensity": r[2],
+                "name": r[3],
+            }
+            for r in rows
+        ],
+        days=days,
+        min_intensity=minIntensity,
+        min_support=minSupport,
+    )
