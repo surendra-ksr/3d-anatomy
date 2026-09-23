@@ -1,0 +1,111 @@
+// ---------------------------------------------------------------------------
+// Interactive Anatomy Engine - database schema
+//
+// Stores the anatomical hierarchy imported from the BodyParts3D (DBCLS)
+// distribution mapped onto the Foundational Model of Anatomy (FMA) ontology:
+//
+//   AnatomicalSystem  e.g. Cardiovascular System  (FMA7161)
+//        └─ Organ          e.g. Heart (FMA7088)
+//             └─ Organ     e.g. Right ventricle (FMA7098)
+//                  └─ Organ  e.g. Tricuspid valve (FMA7234)  [has mesh]
+//                       └─ MeshAsset  Draco-compressed .glb + node path
+//
+// The Rust-free Prisma setup (engineType = "client") runs the query compiler
+// as WASM and talks to PostgreSQL through the `pg` driver adapter, so no
+// native engine binary is required.
+// ---------------------------------------------------------------------------
+
+generator client {
+  provider   = "prisma-client-js"
+  engineType = "client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+/// One of the classic anatomical systems (skeletal, circulatory, ...).
+model AnatomicalSystem {
+  id        Int      @id @default(autoincrement())
+  /// FMA concept id of the system, e.g. "FMA7161" (cardiovascular system).
+  fmaId     String   @unique
+  /// Stable slug used by the frontend, e.g. "circulatory".
+  key       String   @unique
+  name      String
+  /// Base color (hex) used for system tinting in the UI.
+  color     String   @default("#888888")
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+
+  organs Organ[]
+
+  @@map("anatomical_systems")
+}
+
+/// An anatomical structure. Organs form a containment forest
+/// (left ventricle -> heart -> cardiovascular system). Organs may exist
+/// without a mesh when they are pure taxonomy nodes (e.g. "Heart" itself,
+/// whose geometry in BodyParts3D 3.0 lives in "Wall of heart").
+model Organ {
+  id         Int        @id @default(autoincrement())
+  /// FMA concept id, e.g. "FMA7274". BP3D-original ids ("BPnnn", "xxxnsn")
+  /// are preserved in bp3dId / on the MeshAsset.
+  fmaId      String     @unique
+  /// Native BodyParts3D model id when it differs from the FMA concept id.
+  bp3dId     String?
+  name       String
+  laterality Laterality @default(MIDLINE)
+  systemId   Int
+  system     AnatomicalSystem @relation(fields: [systemId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  /// Containment parent (conventional part-of relation from BP3D).
+  parentId   Int?
+  parent     Organ?     @relation("OrganHierarchy", fields: [parentId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  children   Organ[]    @relation("OrganHierarchy")
+
+  mesh MeshAsset?
+
+  createdAt DateTime @default(now())
+
+  @@index([systemId])
+  @@index([parentId])
+  @@map("organs")
+}
+
+/// A Draco-compressed glTF asset. BodyParts3D parts are packed one .glb per
+/// delivery group (e.g. "circulatory.glb"); `nodePath` addresses the part's
+/// node inside that GLB. `url` is relative in development (/models/...) and
+/// an absolute S3/CDN URL in production (set MESH_ASSET_BASE_URL).
+model MeshAsset {
+  id            Int    @id @default(autoincrement())
+  organId       Int    @unique
+  organ         Organ  @relation(fields: [organId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  url           String
+  /// Name of the glTF node inside the GLB (the BP3D part id).
+  nodePath      String
+  /// Delivery group key ("skull", "circulatory", ...).
+  groupKey      String
+  format        String @default("glb")
+  compression   String @default("draco")
+  /// Size of the containing GLB artifact in bytes (parts share one GLB).
+  byteSize      Int
+  vertexCount   Int
+  triangleCount Int
+  sourceDataset String @default("BodyParts3D 3.0")
+  /// Original BP3D STL file name and checksum for provenance.
+  sourceFile    String
+  sourceSha256  String
+
+  createdAt DateTime @default(now())
+
+  @@index([groupKey])
+  @@map("mesh_assets")
+}
+
+enum Laterality {
+  LEFT
+  RIGHT
+  MIDLINE
+  PAIRED
+}
