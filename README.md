@@ -112,6 +112,7 @@ backend/main.py                FastAPI data service (same database, psycopg) +
                                /api/metabolic-cost pacing model
 pipeline/anatomy_pipeline/metabolic.py  segment-weighted energy-drain model
 pipeline/anatomy_pipeline/analytics.py  flare co-occurrence + PEM lag model
+pipeline/anatomy_pipeline/report.py     clinical PDF renderer (ReportLab/matplotlib)
 public/data/clinical-overlays.json      ANS graph + 18 tender-point anchors
 prisma/schema.prisma           AnatomicalSystem / Organ / MeshAsset / User /
                                SymptomLog (+ enums)
@@ -163,7 +164,9 @@ Layered on top of the core viewer:
 // GET /api/py/analytics/clusters?days=90&minIntensity=3&minSupport=2
 → { "pairRules": [ { "statement": "When occiput (base of skull) flares ...", "confidence": 1.0, "lift": 1.5 } ],
     "regionClusters": [ { "members": ["occiput (base of skull)", "trapezius (neck/shoulder)"], "support": 4 } ] }
-```
+
+// GET /api/py/export/report?days=30  →  clinical_report_2026-09-23.pdf
+//   (ReportLab + matplotlib: summary, PEM chart, clusters, body pain maps)
 
 Not a diagnostic tool — overlays/pacing outputs carry an explicit disclaimer.
 
@@ -194,6 +197,30 @@ Not a diagnostic tool — overlays/pacing outputs carry an explicit disclaimer.
 
 All analytics run on the user's own logged history only — no synthetic
 data anywhere; empty states explain how to accumulate real entries.
+
+---
+
+## Clinical export & PDF generation
+
+`GET /api/py/export/report` (`pipeline/anatomy_pipeline/report.py` +
+ReportLab/matplotlib) renders a downloadable **clinical PDF** for the
+patient's physician over any date window:
+
+1. Executive summary ("Patient logged N day(s) of symptom data …, average
+   daily pain X/10 …" + PEM lag interpretation + stat table)
+2. The Energy-Drain-vs-pain dual-axis chart, rendered server-side with
+   matplotlib (Agg; per-figure API, no global pyplot state)
+3. Top symptom clusters — the same association-rule/region-cluster model
+   as the dashboard
+4. Static front/back schematic body pain maps: markers at the most
+   frequently logged structures (color = peak intensity on the clinical
+   scale, size = days logged; bilateral ids split into two dots; ids that
+   have no 2D placement are still counted and listed in the caption)
+5. Per-structure table + day-by-day appendix + disclaimer
+
+The `/dashboard` page carries the **Export for Physician** panel:
+30/60/90-day presets or a custom start/end range → downloads
+`clinical_report_<end>.pdf` (Content-Disposition attachment).
 
 ### API examples
 

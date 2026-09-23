@@ -22,7 +22,7 @@ import os
 import re
 import sys
 from contextlib import asynccontextmanager
-from datetime import date, datetime, timezone
+from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 
 import psycopg
@@ -592,4 +592,101 @@ def analytics_clusters(
         days=days,
         min_intensity=minIntensity,
         min_support=minSupport,
+    )
+
+
+# ---------------------------------------------------------------------------
+# clinical PDF export (Extension 3)
+# ---------------------------------------------------------------------------
+
+def _parse_iso_date(value: str, name: str) -> date:
+    try:
+        return date.fromisoformat(value)
+    except ValueError as exc:
+        raise HTTPException(422, f"bad '{name}' date (need YYYY-MM-DD): {exc}") from exc
+
+
+@app.get("/api/export/report")
+def export_report(
+    days: int = Query(default=30, ge=1, le=365),
+    start: str | None = Query(default=None, description="YYYY-MM-DD (overrides days)"),
+    end: str | None = Query(default=None, description="YYYY-MM-DD (default today, UTC)"),
+):
+    """
+    Downloadable clinical PDF (ReportLab + matplotlib) summarizing the user's
+    own logged data: executive summary, the Energy-Drain-vs-pain PEM chart,
+    top symptom clusters (Extension 2 model) and static front/back body pain
+    maps. Content-Type: application/pdf.
+    """
+    from anatomy_pipeline import analytics as analytics_mod
+    from anatomy_pipeline import report as report_mod
+
+    end_date = _parse_iso_date(end, "end") if end else datetime.now(timezone.utc).date()
+    start_date = _parse_iso_date(start, "start") if start else (
+        end_date - timedelta(days=days - 1)
+    )
+    if start_date > end_date:
+        raise HTTPException(422, "'start' must be on or before 'end'")
+
+    with pool.connection() as conn:
+        user_id, user_name = get_or_create_default_user(conn)
+        pain_rows = conn.execute(
+            """
+            select s."fmaId", s."logDate", s.intensity, o.name
+            from symptom_logs s
+            left join organs o on o."fmaId" = s."fmaId"
+            where s."userId" = %s and s."logDate" >= %s and s."logDate" <= %s
+            order by s."logDate"
+            """,
+            (user_id, start_date, end_date),
+        ).fetchall()
+        activity_rows = conn.execute(
+            """
+            select "fmaIds", "logDate", minutes, severity, "energyDrain", "totalKcal"
+            from activity_logs
+            where "userId" = %s and "logDate" >= %s and "logDate" <= %s
+            order by "logDate"
+            """,
+            (user_id, start_date, end_date),
+        ).fetchall()
+
+    pain = [
+        {"fmaId": r[0], "logDate": r[1], "intensity": r[2], "name": r[3]}
+        for r in pain_rows
+    ]
+    activities = [
+        {"fmaId": ",".join(r[0]) if r[0] else None, "logDate": r[1],
+         "intensity": None, "energyDrain": r[4], "totalKcal": r[5],
+         "minutes": r[2], "severity": r[3]}
+        for r in activity_rows
+    ]
+    window = (end_date - start_date).days + 1
+    series = analytics_mod.daily_series(
+        pain + activities, days=window, today=end_date)
+    pem = analytics_mod.pem_lag_analysis(series, max_lag=3)
+    clusters = analytics_mod.compute_clusters(
+        pain, days=window, min_intensity=1, min_support=2)
+
+    pdf = report_mod.build_report_pdf(
+        profile=user_name,
+        start=start_date,
+        end=end_date,
+        pain_rows=pain,
+        activity_rows=activities,
+        series=series,
+        pem=pem,
+        clusters=clusters,
+        generated_utc=datetime.now(timezone.utc),
+    )
+
+    from fastapi import Response
+
+    filename = f"clinical_report_{end_date.isoformat()}.pdf"
+    return Response(
+        content=pdf,
+        media_type="application/pdf",
+        headers={
+            "Content-Disposition": f'attachment; filename="{filename}"',
+            "Cache-Control": "no-store",
+        },
     )

@@ -29,6 +29,7 @@ import {
 
 import { LowStimProvider, useLowStim } from "@/lib/low-stim";
 import ClusterList from "@/components/ClusterList";
+import ExportPanel from "@/components/ExportPanel";
 import type {
   ClustersResponse,
   DailyAnalyticsResponse,
@@ -291,6 +292,9 @@ function DashboardBody() {
             <ClusterList data={clusters} />
           </div>
         </section>
+
+        {/* clinical export */}
+        <ExportPanel />
 
         <footer className="mt-6 text-[10px] leading-relaxed text-slate-500">
           Energy Drain model: de Leva/Dempster segment anthropometry + Elia
