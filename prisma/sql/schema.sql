@@ -1,0 +1,147 @@
+-- ---------------------------------------------------------------------------
+-- Interactive Anatomy Engine - PostgreSQL DDL
+--
+-- Hand-maintained to mirror prisma/schema.prisma exactly. Applied by
+-- scripts/db_init.py (idempotent). We apply DDL directly instead of
+-- `prisma db push` because the schema-engine binary is unavailable in
+-- engine-free (WASM query compiler) deployments.
+-- ---------------------------------------------------------------------------
+
+DO $$ BEGIN
+  CREATE TYPE "Laterality" AS ENUM ('LEFT', 'RIGHT', 'MIDLINE', 'PAIRED');
+EXCEPTION WHEN duplicate_object THEN NULL; WHEN duplicate_table THEN NULL; END $$;
+
+CREATE TABLE IF NOT EXISTS "anatomical_systems" (
+    "id"        SERIAL NOT NULL,
+    "fmaId"     TEXT   NOT NULL,
+    "key"       TEXT   NOT NULL,
+    "name"      TEXT   NOT NULL,
+    "color"     TEXT   NOT NULL DEFAULT '#888888',
+    "sortOrder" INTEGER NOT NULL DEFAULT 0,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT "anatomical_systems_pkey" PRIMARY KEY ("id")
+);
+DO $$ BEGIN
+  ALTER TABLE "anatomical_systems" ADD CONSTRAINT "anatomical_systems_fmaId_key" UNIQUE ("fmaId");
+EXCEPTION WHEN duplicate_object THEN NULL; WHEN duplicate_table THEN NULL; END $$;
+DO $$ BEGIN
+  ALTER TABLE "anatomical_systems" ADD CONSTRAINT "anatomical_systems_key_key" UNIQUE ("key");
+EXCEPTION WHEN duplicate_object THEN NULL; WHEN duplicate_table THEN NULL; END $$;
+
+CREATE TABLE IF NOT EXISTS "organs" (
+    "id"         SERIAL NOT NULL,
+    "fmaId"      TEXT   NOT NULL,
+    "bp3dId"     TEXT,
+    "name"       TEXT   NOT NULL,
+    "laterality" "Laterality" NOT NULL DEFAULT 'MIDLINE',
+    "systemId"   INTEGER NOT NULL,
+    "parentId"   INTEGER,
+    "createdAt"  TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT "organs_pkey" PRIMARY KEY ("id")
+);
+DO $$ BEGIN
+  ALTER TABLE "organs" ADD CONSTRAINT "organs_fmaId_key" UNIQUE ("fmaId");
+EXCEPTION WHEN duplicate_object THEN NULL; WHEN duplicate_table THEN NULL; END $$;
+CREATE INDEX IF NOT EXISTS "organs_systemId_idx" ON "organs"("systemId");
+CREATE INDEX IF NOT EXISTS "organs_parentId_idx" ON "organs"("parentId");
+
+CREATE TABLE IF NOT EXISTS "mesh_assets" (
+    "id"            SERIAL NOT NULL,
+    "organId"       INTEGER NOT NULL,
+    "url"           TEXT   NOT NULL,
+    "nodePath"      TEXT   NOT NULL,
+    "groupKey"      TEXT   NOT NULL,
+    "format"        TEXT   NOT NULL DEFAULT 'glb',
+    "compression"   TEXT   NOT NULL DEFAULT 'draco',
+    "byteSize"      INTEGER NOT NULL,
+    "vertexCount"   INTEGER NOT NULL,
+    "triangleCount" INTEGER NOT NULL,
+    "sourceDataset" TEXT   NOT NULL DEFAULT 'BodyParts3D 3.0',
+    "sourceFile"    TEXT   NOT NULL,
+    "sourceSha256"  TEXT   NOT NULL,
+    "createdAt"     TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT "mesh_assets_pkey" PRIMARY KEY ("id")
+);
+DO $$ BEGIN
+  ALTER TABLE "mesh_assets" ADD CONSTRAINT "mesh_assets_organId_key" UNIQUE ("organId");
+EXCEPTION WHEN duplicate_object THEN NULL; WHEN duplicate_table THEN NULL; END $$;
+CREATE INDEX IF NOT EXISTS "mesh_assets_groupKey_idx" ON "mesh_assets"("groupKey");
+
+DO $$ BEGIN
+  ALTER TABLE "organs" ADD CONSTRAINT "organs_systemId_fkey"
+    FOREIGN KEY ("systemId") REFERENCES "anatomical_systems"("id")
+    ON DELETE RESTRICT ON UPDATE CASCADE;
+EXCEPTION WHEN duplicate_object THEN NULL; WHEN duplicate_table THEN NULL; END $$;
+DO $$ BEGIN
+  ALTER TABLE "organs" ADD CONSTRAINT "organs_parentId_fkey"
+    FOREIGN KEY ("parentId") REFERENCES "organs"("id")
+    ON DELETE SET NULL ON UPDATE CASCADE;
+EXCEPTION WHEN duplicate_object THEN NULL; WHEN duplicate_table THEN NULL; END $$;
+DO $$ BEGIN
+  ALTER TABLE "mesh_assets" ADD CONSTRAINT "mesh_assets_organId_fkey"
+    FOREIGN KEY ("organId") REFERENCES "organs"("id")
+    ON DELETE CASCADE ON UPDATE CASCADE;
+EXCEPTION WHEN duplicate_object THEN NULL; WHEN duplicate_table THEN NULL; END $$;
+
+-- ---------------------------------------------------------------------------
+-- users + symptom logs (pain map tracking)
+-- ---------------------------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS "users" (
+    "id"           SERIAL NOT NULL,
+    "name"         TEXT   NOT NULL,
+    "email"        TEXT,
+    "passwordHash" TEXT,
+    "createdAt"    TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT "users_pkey" PRIMARY KEY ("id")
+);
+DO $$ BEGIN
+  ALTER TABLE "users" ADD CONSTRAINT "users_name_key" UNIQUE ("name");
+EXCEPTION WHEN duplicate_object THEN NULL; WHEN duplicate_table THEN NULL; END $$;
+ALTER TABLE "users" ADD COLUMN IF NOT EXISTS "email" TEXT;
+ALTER TABLE "users" ADD COLUMN IF NOT EXISTS "passwordHash" TEXT;
+DO $$ BEGIN
+  ALTER TABLE "users" ADD CONSTRAINT "users_email_key" UNIQUE ("email");
+EXCEPTION WHEN duplicate_object THEN NULL; WHEN duplicate_table THEN NULL; END $$;
+
+CREATE TABLE IF NOT EXISTS "symptom_logs" (
+    "id"        SERIAL NOT NULL,
+    "userId"    INTEGER NOT NULL,
+    "fmaId"     TEXT   NOT NULL,
+    "intensity" INTEGER NOT NULL,
+    "note"      TEXT,
+    "logDate"   DATE   NOT NULL,
+    "timestamp" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT "symptom_logs_pkey" PRIMARY KEY ("id")
+);
+CREATE INDEX IF NOT EXISTS "symptom_logs_userId_timestamp_idx"
+  ON "symptom_logs"("userId", "timestamp");
+DO $$ BEGIN
+  ALTER TABLE "symptom_logs" ADD CONSTRAINT "symptom_logs_userId_fmaId_logDate_key"
+    UNIQUE ("userId", "fmaId", "logDate");
+EXCEPTION WHEN duplicate_object THEN NULL; WHEN duplicate_table THEN NULL; END $$;
+DO $$ BEGIN
+  ALTER TABLE "symptom_logs" ADD CONSTRAINT "symptom_logs_userId_fkey"
+    FOREIGN KEY ("userId") REFERENCES "users"("id")
+    ON DELETE CASCADE ON UPDATE CASCADE;
+EXCEPTION WHEN duplicate_object THEN NULL; WHEN duplicate_table THEN NULL; END $$;
+
+CREATE TABLE IF NOT EXISTS "activity_logs" (
+    "id"          SERIAL NOT NULL,
+    "userId"      INTEGER NOT NULL,
+    "fmaIds"      TEXT[] NOT NULL DEFAULT '{}',
+    "minutes"     INTEGER NOT NULL,
+    "severity"    TEXT NOT NULL,
+    "energyDrain" DOUBLE PRECISION NOT NULL,
+    "totalKcal"   DOUBLE PRECISION NOT NULL,
+    "logDate"     DATE NOT NULL,
+    "createdAt"   TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT "activity_logs_pkey" PRIMARY KEY ("id")
+);
+CREATE INDEX IF NOT EXISTS "activity_logs_userId_logDate_idx"
+  ON "activity_logs"("userId", "logDate");
+DO $$ BEGIN
+  ALTER TABLE "activity_logs" ADD CONSTRAINT "activity_logs_userId_fkey"
+    FOREIGN KEY ("userId") REFERENCES "users"("id")
+    ON DELETE CASCADE ON UPDATE CASCADE;
+EXCEPTION WHEN duplicate_object THEN NULL; WHEN duplicate_table THEN NULL; END $$;

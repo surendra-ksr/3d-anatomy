@@ -1,0 +1,91 @@
+# ---------------------------------------------------------------------------
+# Interactive Anatomy Engine — production-like local stack
+#
+#   docker compose up --build          → http://localhost:3000
+#   docker compose --profile seed run seed   # optional: load the anatomical
+#                                            # catalog from public/models
+#
+# The PostgreSQL container applies prisma/sql/schema.sql automatically on
+# first boot (docker-entrypoint-initdb.d). Users then self-register via the
+# /login screen; each account's symptom + activity data is isolated.
+#
+# Secrets: the values below are placeholders — set real ones via .env or
+# your orchestrator's secret mechanism (ECS secrets / SSM) in production.
+# ---------------------------------------------------------------------------
+name: anatomy-engine
+
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_DB: anatomy
+      # local-only; use a managed database or secret store in production
+      POSTGRES_HOST_AUTH_METHOD: trust
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      # schema applied on first init (idempotent DDL)
+      - ./prisma/sql/schema.sql:/docker-entrypoint-initdb.d/10-schema.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d anatomy"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    ports:
+      - "5432:5432"
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    environment:
+      DATABASE_URL: postgresql://postgres@db:5432/anatomy
+      # must match the frontend's AUTH_INTERNAL_SECRET
+      AUTH_INTERNAL_SECRET: ${AUTH_INTERNAL_SECRET:-change-me-internal}
+      NODE_ENV: production
+      # optional CDN delivery of GLBs (see scripts/upload_assets.py)
+      MESH_ASSET_BASE_URL: ${MESH_ASSET_BASE_URL:-}
+    depends_on:
+      db:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        # inlined into the edge middleware + client bundle at build time
+        FASTAPI_URL: http://backend:8000
+        NEXT_PUBLIC_MESH_ASSET_BASE_URL: ${MESH_ASSET_BASE_URL:-}
+        AUTH_INTERNAL_SECRET: ${AUTH_INTERNAL_SECRET:-change-me-internal}
+    environment:
+      DATABASE_URL: postgresql://postgres@db:5432/anatomy
+      FASTAPI_URL: http://backend:8000
+      NEXTAUTH_URL: ${NEXTAUTH_URL:-http://localhost:3000}
+      NEXTAUTH_SECRET: ${NEXTAUTH_SECRET:-change-me-nextauth}
+      # must match the backend service
+      AUTH_INTERNAL_SECRET: ${AUTH_INTERNAL_SECRET:-change-me-internal}
+      NODE_ENV: production
+    ports:
+      - "3000:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+      backend:
+        condition: service_started
+
+  # optional one-shot: docker compose --profile seed run --rm seed
+  seed:
+    profiles: ["seed"]
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      DATABASE_URL: postgresql://postgres@db:5432/anatomy
+    entrypoint: ["sh", "-c", "node node_modules/prisma/build/index.js generate --schema=prisma/schema.prisma && npx tsx prisma/seed.ts"]
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  pgdata:

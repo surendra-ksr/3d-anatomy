@@ -1,0 +1,62 @@
+@import "tailwindcss";
+
+/* ---------------------------------------------------------------------------
+ * Low Cognitive Load mode (html[data-ls="on"])
+ * Strict high-contrast dark theme: pure black/white, no gradients, no soft
+ * shadows, no decorative animations, thicker focus rings.
+ * ------------------------------------------------------------------------- */
+html[data-ls="on"] {
+  color-scheme: dark;
+  filter: none;
+}
+html[data-ls="on"] body {
+  background: #000 !important;
+  color: #fff !important;
+}
+html[data-ls="on"] *:not(svg):not(path) {
+  animation: none !important;
+  transition: none !important;
+  text-shadow: none !important;
+  box-shadow: none !important;
+  border-color: #fff !important;
+  outline-color: #fff !important;
+}
+html[data-ls="on"] [class*="text-slate-"],
+html[data-ls="on"] [class*="opacity-"] {
+  color: #fff !important;
+  opacity: 1 !important;
+}
+html[data-ls="on"] input[type="range"] {
+  accent-color: #ffffff;
+  height: 1rem;
+}
+html[data-ls="on"] button {
+  border-width: 1px !important;
+}
+html[data-ls="on"] :focus-visible {
+  outline: 3px solid #fff !important;
+  outline-offset: 1px;
+}
+html[data-ls="on"] ::-webkit-scrollbar-thumb {
+  background: #fff;
+}
+
+/* base */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.25);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(148, 163, 184, 0.4);
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+input[type="range"] {
+  accent-color: #0ea5e9;
+}
